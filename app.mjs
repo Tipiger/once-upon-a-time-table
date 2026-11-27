@@ -72,7 +72,7 @@ function homeTheme() {
  const hint=document.getElementById('moduleInfo');
  if(hint) hint.textContent=entry.description;
 }
-const appearance = '<div class="head-actions"><button class="soft font-trigger" type="button" aria-haspopup="dialog">字体</button><button class="soft theme-trigger" type="button" aria-haspopup="dialog">主题</button></div>';
+const appearance = '<div class="head-actions"><button type="button" data-dialog="rules" aria-haspopup="dialog" aria-controls="rules">游戏规则</button><button type="button" data-dialog="settings" aria-haspopup="dialog" aria-controls="settings">设置</button></div>';
 function top() {
  return '<header class="between"><span class="brand">故事牌桌</span>'+appearance+'</header>';
 }
@@ -411,8 +411,14 @@ app.addEventListener('click',e=>{
    const from=new URL(document.referrer);
    if(from.origin===location.origin && from.pathname===location.pathname && history.length>1){e.preventDefault();history.back();return;}
  }
- if(e.target.closest('.theme-trigger')){themePicker.showModal();return;}
- if(e.target.closest('.font-trigger')){openFontPicker();return;}const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);});
+ const trigger=e.target.closest('button[data-dialog]');
+ if(trigger){
+   if(trigger.dataset.dialog==='settings')openSettings();
+   else document.getElementById('rules').showModal();
+   return;
+ }
+ const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);
+});
 app.addEventListener('change',e=>{if(e.target.id==='module'){selected=e.target.value;homeTheme();}
 });
 async function openPacket(){
@@ -438,7 +444,7 @@ async function init(){
    }
    if(location.hash.startsWith('#deal='))await openPacket();
    render();
-   if(new URLSearchParams(location.search).get('preview')==='fonts')openFontPicker();
+   if(new URLSearchParams(location.search).get('preview')==='fonts')openSettings();
  }catch(err){app.textContent='牌桌未能打开：'+err.message;}
 }
 document.addEventListener('keydown',event=>{
@@ -448,7 +454,7 @@ document.addEventListener('keydown',event=>{
 window.addEventListener('hashchange',async()=>{if(location.hash.startsWith('#deal=')){await openPacket();render();}});
 window.addEventListener('pageshow',async e=>{if(e.persisted&&table){table=await g.updateSaved(key(table.id));render();}});
 document.addEventListener('visibilitychange',async()=>{if(!document.hidden&&table&&!busy){table=await g.updateSaved(key(table.id));render();}});
-const picker = document.getElementById('font-picker');
+const picker = document.getElementById('settings');
 let activeTheme;
 const moduleFontKey = () => 'story-table.font.' + activeTheme.id;
 function setFont(value) {
@@ -457,7 +463,7 @@ function setFont(value) {
   picker.querySelector('input[value="' + font + '"]').checked = true;
   document.documentElement.dataset.font = font;
 }
-async function openFontPicker() {
+async function openSettings() {
   const entry = activeTheme;
   const sample = document.getElementById('font-sample');
   sample.replaceChildren();
@@ -470,25 +476,35 @@ async function openFontPicker() {
   } catch (err) { sample.textContent = err.message; }
 }
 picker.addEventListener('change', event => {
+  if (event.target.name !== 'typeface') return;
   setFont(event.target.value);
   try { localStorage.setItem(moduleFontKey(), event.target.value); } catch {}
 });
-const themePicker = document.getElementById('theme-picker');
 const themeKey = 'story-table.ui-theme';
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+let themePreference;
+function applyTheme() {
+  const dark = themePreference === 'graphite' || (themePreference === 'system' && systemTheme.matches);
+  document.documentElement.dataset.uiTheme = dark ? 'graphite' : 'silver';
+  document.querySelector('meta[name="theme-color"]').content = dark ? '#303133' : '#e3e4e3';
+}
 function setTheme(value) {
-  const theme = value === 'silver' ? 'silver' : 'graphite';
-  document.documentElement.dataset.uiTheme = theme;
-  themePicker.querySelector('input[value="' + theme + '"]').checked = true;
-  document.querySelector('meta[name="theme-color"]').content = theme === 'silver' ? '#e3e4e3' : '#303133';
+  themePreference = ['graphite', 'system'].includes(value) ? value : 'silver';
+  picker.querySelector('input[name="theme"][value="' + themePreference + '"]').checked = true;
+  applyTheme();
 }
 let savedTheme;
 try { savedTheme = localStorage.getItem(themeKey); } catch {}
 setTheme(savedTheme);
-themePicker.addEventListener('change', event => {
+systemTheme.addEventListener('change', () => {
+  if (themePreference === 'system') applyTheme();
+});
+picker.addEventListener('change', event => {
+  if (event.target.name !== 'theme') return;
   setTheme(event.target.value);
-  try { localStorage.setItem(themeKey, event.target.value); } catch {}
+  try { localStorage.setItem(themeKey, themePreference); } catch {}
 });
 window.addEventListener('storage', event => {
-  if (event.key === themeKey) setTheme(event.newValue);
+  if (event.key === themeKey || event.key === null) setTheme(event.newValue);
 });
 init();

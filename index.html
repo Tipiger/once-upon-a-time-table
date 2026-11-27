@@ -1,18 +1,26 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#303133"><title>故事牌桌 · 很久很久以前</title><link rel="stylesheet" href="./style.css?v=turn-foil-1"><link rel="stylesheet" id="module-theme"></head><body><main id="app" aria-busy="true">正在摆好牌桌…</main><div id="notice" role="status"></div><dialog id="font-picker" aria-labelledby="font-title">
+<!doctype html><html lang="zh-CN" data-ui-theme="silver"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#e3e4e3"><title>故事牌桌 · 很久很久以前</title><link rel="stylesheet" href="./style.css?v=rules-settings-1"><link rel="stylesheet" id="module-theme"></head><body><main id="app" aria-busy="true">正在摆好牌桌…</main><div id="notice" role="status"></div>
+<dialog id="rules" aria-labelledby="rules-title">
+  <form method="dialog" class="dialog-head"><h2 id="rules-title" tabindex="-1" autofocus>游戏规则</h2><button class="soft">关闭</button></form>
+  <section><h3>怎样获胜？</h3><p>大家接力讲同一个故事，各自保守结局的秘密。谁先出完手里的故事牌，再用自己的一张结局牌为故事收尾，谁就获胜。</p></section>
+  <section><h3>开头与出牌</h3><p>每人看好手牌，选一位讲述者开头。玩「西方童话」时，就从“很久很久以前……”讲起。</p><p>轮到你讲时，把牌上的内容编进情节，让它在故事里起作用，就可以亮出这张牌。每句话最多出一张。只要没人接讲，你就可以继续讲。</p></section>
+  <section><h3>怎么接过故事？</h3><p><strong>普通故事牌</strong>　别人讲到了你牌上的内容，你就可以亮牌接讲。例如对方说“他们把公主关进了地牢”，你就可以出「地牢」，接着讲公主在里面遇见了谁。</p><p><strong>打断牌</strong>　别人讲故事时，你随时可以亮出打断牌接讲，无需等对方出牌，也不限类型。接住刚才那一幕，让新情节自然发生。比如对方刚讲到“狱卒趴在桌上睡着了”，你就可以出「钥匙」，接一句：“公主刚伸手去摘他腰上的钥匙，狱卒就翻了个身。”</p><p>轮到自己讲时，打断牌也可以当普通故事牌使用。把牌上的内容讲进情节，就可以打出。</p><p>打断成功后，原讲述者补 1 张故事牌。</p></section>
+  <section><h3>想主动交棒？</h3><p>说一声“换你讲”，自己先补 1 张故事牌，再决定是否弃 1 张故事牌，由左手边的玩家接着讲。</p></section>
+  <section><h3>怎么收尾？</h3><p>轮到你讲、手里的故事牌也已经出完时，亮出一张结局牌，讲完最后几句。结局牌不能被打断。只要结局接得上前面的故事，大家认可，你就赢了。</p></section>
+</dialog>
+<dialog id="settings" aria-labelledby="settings-title">
   <form method="dialog">
-    <div class="picker-head"><div id="font-sample"></div><div><h2 id="font-title" tabindex="-1" autofocus>牌面字体</h2><small id="sample-module"></small><button class="primary" value="close">完成</button></div></div>
-    <fieldset aria-label="选择本模组的字体">
+    <div class="dialog-head"><h2 id="settings-title" tabindex="-1" autofocus>设置</h2><button class="primary">完成</button></div>
+    <fieldset>
+      <legend>界面配色</legend>
+      <label class="theme-option"><input type="radio" name="theme" value="silver"><span>亮色</span><i class="swatch silver" aria-hidden="true"></i></label>
+      <label class="theme-option"><input type="radio" name="theme" value="graphite"><span>暗色</span><i class="swatch graphite" aria-hidden="true"></i></label>
+      <label class="theme-option"><input type="radio" name="theme" value="system"><span>跟随系统</span><i class="swatch system" aria-hidden="true"></i></label>
+    </fieldset>
+    <fieldset>
+      <legend>牌面字体</legend>
+      <div class="picker-head"><div id="font-sample" aria-hidden="true"></div><small id="sample-module"></small></div>
       <label class="font-option" data-font="wenkai"><input type="radio" name="typeface" value="wenkai"><span><small>霞鹜文楷</small><strong>森林　秘密揭晓</strong></span></label>
       <label class="font-option" data-font="hei"><input type="radio" name="typeface" value="hei"><span><small>黑体 · Noto Sans</small><strong>森林　秘密揭晓</strong></span></label>
     </fieldset>
   </form>
-</dialog>
-<dialog id="theme-picker" aria-labelledby="theme-title">
-  <form method="dialog">
-    <div class="theme-head"><h2 id="theme-title">界面主题</h2><button class="primary" value="close">完成</button></div>
-    <fieldset aria-label="界面主题">
-      <label class="theme-option"><input type="radio" name="theme" value="graphite"><span>石墨灰</span><i class="swatch graphite" aria-hidden="true"></i></label>
-      <label class="theme-option"><input type="radio" name="theme" value="silver"><span>银灰</span><i class="swatch silver" aria-hidden="true"></i></label>
-    </fieldset>
-  </form>
-</dialog><script src="./app.mjs?v=gallery-flip-1" type="module"></script></body></html>
+</dialog><script src="./app.mjs?v=rules-settings-1" type="module"></script></body></html>
