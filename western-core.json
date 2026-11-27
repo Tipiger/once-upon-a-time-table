@@ -1,0 +1,1117 @@
+{
+  "moduleId": "once-upon-a-time-3e-core",
+  "source": "https://www.atlas-games.com/pdf_storage/OUAT3CoreCardlistWEB.pdf",
+  "sourceKey": "ID 由官方牌表的 A/B/C 栏及栏内编号组成。三栏合为一个模组。",
+  "localization": "故事牌采用中文工作译名。结局牌按官方编号提供中文剧情目标概述，供玩家用自己的话收尾。",
+  "cardCanvas": {
+    "width": 1120,
+    "height": 1740
+  },
+  "cards": [
+    {
+      "id": "A01",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "竞赛"
+    },
+    {
+      "id": "A02",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "逃脱"
+    },
+    {
+      "id": "A03",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "打斗"
+    },
+    {
+      "id": "A04",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "追逐"
+    },
+    {
+      "id": "A05",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "有人受伤"
+    },
+    {
+      "id": "A06",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "遭到囚禁"
+    },
+    {
+      "id": "A07",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "东西坏了"
+    },
+    {
+      "id": "A08",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": true,
+      "labelZh": "获救"
+    },
+    {
+      "id": "A09",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "食物"
+    },
+    {
+      "id": "A10",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "戒指"
+    },
+    {
+      "id": "A11",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "宝剑"
+    },
+    {
+      "id": "A12",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "陷阱"
+    },
+    {
+      "id": "A13",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": true,
+      "labelZh": "钥匙"
+    },
+    {
+      "id": "A14",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": true,
+      "labelZh": "王冠"
+    },
+    {
+      "id": "A15",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": true,
+      "labelZh": "财宝"
+    },
+    {
+      "id": "A16",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "美丽"
+    },
+    {
+      "id": "A17",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "勇敢"
+    },
+    {
+      "id": "A18",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "乔装"
+    },
+    {
+      "id": "A19",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "隐藏"
+    },
+    {
+      "id": "A20",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "痊愈"
+    },
+    {
+      "id": "A21",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "被盗"
+    },
+    {
+      "id": "A22",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "睿智"
+    },
+    {
+      "id": "A23",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": true,
+      "labelZh": "秘密"
+    },
+    {
+      "id": "A24",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "城市"
+    },
+    {
+      "id": "A25",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "地牢"
+    },
+    {
+      "id": "A26",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "花园"
+    },
+    {
+      "id": "A27",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "宫殿"
+    },
+    {
+      "id": "A28",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "道路"
+    },
+    {
+      "id": "A29",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "高塔"
+    },
+    {
+      "id": "A30",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": true,
+      "labelZh": "教堂"
+    },
+    {
+      "id": "A31",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "国王"
+    },
+    {
+      "id": "A32",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "王子"
+    },
+    {
+      "id": "A33",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "公主"
+    },
+    {
+      "id": "A34",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "王后"
+    },
+    {
+      "id": "A35",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "卫兵"
+    },
+    {
+      "id": "A36",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "厨师"
+    },
+    {
+      "id": "A37",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": true,
+      "labelZh": "敌人"
+    },
+    {
+      "id": "A38",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": true,
+      "labelZh": "小偷"
+    },
+    {
+      "id": "A39",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "宫中共舞"
+    },
+    {
+      "id": "A40",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "暴政终结"
+    },
+    {
+      "id": "A41",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "国王赦罪"
+    },
+    {
+      "id": "A42",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "勇气换来财富"
+    },
+    {
+      "id": "A43",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "逃回故乡"
+    },
+    {
+      "id": "A44",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "守护珍宝"
+    },
+    {
+      "id": "A45",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "王子亮明身份"
+    },
+    {
+      "id": "A46",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "以真身成婚"
+    },
+    {
+      "id": "A47",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "御宴佳肴"
+    },
+    {
+      "id": "A48",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "国王允婚"
+    },
+    {
+      "id": "A49",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "女王兑现奖赏"
+    },
+    {
+      "id": "A50",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "君主复位"
+    },
+    {
+      "id": "A51",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "结伴脱逃返家"
+    },
+    {
+      "id": "A52",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "物归原主"
+    },
+    {
+      "id": "A53",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "国王践约"
+    },
+    {
+      "id": "A54",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "王子恢复神智"
+    },
+    {
+      "id": "A55",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "二人继承王位"
+    },
+    {
+      "id": "B01",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "争吵"
+    },
+    {
+      "id": "B02",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "入睡"
+    },
+    {
+      "id": "B03",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "坠入爱河"
+    },
+    {
+      "id": "B04",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "恶作剧"
+    },
+    {
+      "id": "B05",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "相遇"
+    },
+    {
+      "id": "B06",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "谋划"
+    },
+    {
+      "id": "B07",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": true,
+      "labelZh": "分道扬镳"
+    },
+    {
+      "id": "B08",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": true,
+      "labelZh": "秘密揭晓"
+    },
+    {
+      "id": "B09",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "斧头"
+    },
+    {
+      "id": "B10",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "衣服"
+    },
+    {
+      "id": "B11",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "门"
+    },
+    {
+      "id": "B12",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "楼梯"
+    },
+    {
+      "id": "B13",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "树"
+    },
+    {
+      "id": "B14",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "墙"
+    },
+    {
+      "id": "B15",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "窗户"
+    },
+    {
+      "id": "B16",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "愚蠢"
+    },
+    {
+      "id": "B17",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "害怕"
+    },
+    {
+      "id": "B18",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "快乐"
+    },
+    {
+      "id": "B19",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "幸运"
+    },
+    {
+      "id": "B20",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "悲伤"
+    },
+    {
+      "id": "B21",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "丑陋"
+    },
+    {
+      "id": "B22",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "力大无穷"
+    },
+    {
+      "id": "B23",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": true,
+      "labelZh": "失明"
+    },
+    {
+      "id": "B24",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": true,
+      "labelZh": "疯癫"
+    },
+    {
+      "id": "B25",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "小屋"
+    },
+    {
+      "id": "B26",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "森林"
+    },
+    {
+      "id": "B27",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "厨房"
+    },
+    {
+      "id": "B28",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "河流"
+    },
+    {
+      "id": "B29",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "村庄"
+    },
+    {
+      "id": "B30",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": true,
+      "labelZh": "家"
+    },
+    {
+      "id": "B31",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "乞丐"
+    },
+    {
+      "id": "B32",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "兄弟或姐妹"
+    },
+    {
+      "id": "B33",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "孩子"
+    },
+    {
+      "id": "B34",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "继母"
+    },
+    {
+      "id": "B35",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "父亲或母亲"
+    },
+    {
+      "id": "B36",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": true,
+      "labelZh": "丈夫或妻子"
+    },
+    {
+      "id": "B37",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": true,
+      "labelZh": "老人"
+    },
+    {
+      "id": "B38",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": true,
+      "labelZh": "孤儿"
+    },
+    {
+      "id": "B39",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "献礼悦亲"
+    },
+    {
+      "id": "B40",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "铭记父训"
+    },
+    {
+      "id": "B41",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "预言成真"
+    },
+    {
+      "id": "B42",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "骨肉团聚"
+    },
+    {
+      "id": "B43",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "作恶而失明"
+    },
+    {
+      "id": "B44",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "子女继承遗物"
+    },
+    {
+      "id": "B45",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "以行乞赎罪"
+    },
+    {
+      "id": "B46",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "改过自新"
+    },
+    {
+      "id": "B47",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "伤愈心未愈"
+    },
+    {
+      "id": "B48",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "认清继母"
+    },
+    {
+      "id": "B49",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "宽恕与婚姻"
+    },
+    {
+      "id": "B50",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "姐妹的忠心"
+    },
+    {
+      "id": "B51",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "村庄复兴"
+    },
+    {
+      "id": "B52",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "换位复原"
+    },
+    {
+      "id": "B53",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "永不相争"
+    },
+    {
+      "id": "B54",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "赤诚致胜"
+    },
+    {
+      "id": "B55",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "慎择同伴"
+    },
+    {
+      "id": "C01",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "迷失"
+    },
+    {
+      "id": "C02",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "被找到"
+    },
+    {
+      "id": "C03",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "旅程"
+    },
+    {
+      "id": "C04",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "活了过来"
+    },
+    {
+      "id": "C05",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "风暴"
+    },
+    {
+      "id": "C06",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "时光流逝"
+    },
+    {
+      "id": "C07",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": false,
+      "labelZh": "变形"
+    },
+    {
+      "id": "C08",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": true,
+      "labelZh": "死去"
+    },
+    {
+      "id": "C09",
+      "kind": "story",
+      "categoryZh": "事件",
+      "interrupt": true,
+      "labelZh": "归来"
+    },
+    {
+      "id": "C10",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "书"
+    },
+    {
+      "id": "C11",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "大锅"
+    },
+    {
+      "id": "C12",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "火"
+    },
+    {
+      "id": "C13",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "咒语"
+    },
+    {
+      "id": "C14",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": false,
+      "labelZh": "水井"
+    },
+    {
+      "id": "C15",
+      "kind": "story",
+      "categoryZh": "物品",
+      "interrupt": true,
+      "labelZh": "礼物"
+    },
+    {
+      "id": "C16",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "受到诅咒"
+    },
+    {
+      "id": "C17",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "中毒"
+    },
+    {
+      "id": "C18",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "会飞"
+    },
+    {
+      "id": "C19",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "会说话"
+    },
+    {
+      "id": "C20",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "微小"
+    },
+    {
+      "id": "C21",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": false,
+      "labelZh": "邪恶"
+    },
+    {
+      "id": "C22",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": true,
+      "labelZh": "遥远"
+    },
+    {
+      "id": "C23",
+      "kind": "story",
+      "categoryZh": "特征",
+      "interrupt": true,
+      "labelZh": "失散已久"
+    },
+    {
+      "id": "C24",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "洞穴"
+    },
+    {
+      "id": "C25",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "天空"
+    },
+    {
+      "id": "C26",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "山"
+    },
+    {
+      "id": "C27",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "夜晚"
+    },
+    {
+      "id": "C28",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": false,
+      "labelZh": "沼泽"
+    },
+    {
+      "id": "C29",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": true,
+      "labelZh": "王国"
+    },
+    {
+      "id": "C30",
+      "kind": "story",
+      "categoryZh": "地点",
+      "interrupt": true,
+      "labelZh": "废墟"
+    },
+    {
+      "id": "C31",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "仙子"
+    },
+    {
+      "id": "C32",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "巨人"
+    },
+    {
+      "id": "C33",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "狼"
+    },
+    {
+      "id": "C34",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "青蛙"
+    },
+    {
+      "id": "C35",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "马"
+    },
+    {
+      "id": "C36",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "怪物"
+    },
+    {
+      "id": "C37",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "龙"
+    },
+    {
+      "id": "C38",
+      "kind": "story",
+      "categoryZh": "角色",
+      "interrupt": false,
+      "labelZh": "女巫"
+    },
+    {
+      "id": "C39",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "永远无法卸下"
+    },
+    {
+      "id": "C40",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "女巫葬身釜中"
+    },
+    {
+      "id": "C41",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "驱逐怪物"
+    },
+    {
+      "id": "C42",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "失物无踪"
+    },
+    {
+      "id": "C43",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "违命后的忏悔"
+    },
+    {
+      "id": "C44",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "解咒成婚"
+    },
+    {
+      "id": "C45",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "恢复人形"
+    },
+    {
+      "id": "C46",
+      "kind": "ending",
+      "sourcePage": 2,
+      "textZh": "访客原是怪物"
+    },
+    {
+      "id": "C47",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "恶人坠井"
+    },
+    {
+      "id": "C48",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "破法重获自由"
+    },
+    {
+      "id": "C49",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "应验解咒"
+    },
+    {
+      "id": "C50",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "火焚邪地"
+    },
+    {
+      "id": "C51",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "除怪安城"
+    },
+    {
+      "id": "C52",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "合葬与国丧"
+    },
+    {
+      "id": "C53",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "真爱解咒"
+    },
+    {
+      "id": "C54",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "国名的由来"
+    },
+    {
+      "id": "C55",
+      "kind": "ending",
+      "sourcePage": 3,
+      "textZh": "仇敌死后成婚"
+    }
+  ],
+  "endingLabel": "结局目标"
+}

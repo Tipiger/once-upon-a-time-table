@@ -1,0 +1,20 @@
+[
+  {
+    "id": "once-upon-a-time-3e-core",
+    "name": "西方童话 · 第三版基础",
+    "file": "western-core.json",
+    "description": "114 张故事牌，51 张结局牌。结局以中文目标概述呈现，请用自己的话收尾。",
+    "art": {
+      "storyBack": "western-story-back.webp",
+      "endingBack": "western-ending-back.webp",
+      "storyFrame": "western-story-frame.webp",
+      "endingFrame": "western-ending-frame.webp"
+    }
+  },
+  {
+    "id": "western-demo-v1",
+    "name": "西方童话 · 原创结局",
+    "file": "deck.json",
+    "description": "114 张故事牌，24 张原创结局。使用试玩版卡面。"
+  }
+]

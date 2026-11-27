@@ -32,3 +32,24 @@
 @media (max-width: 480px) {
   .hand-ending .endface > span:last-child { display: none; }
 }
+
+/* Individually printed faces and backs; card copy stays selectable by the UI. */
+.story-art { width:76%; height:53%; object-fit:contain; }
+.printed-deck .card, .printed-deck .mini {
+  background-size:100% 100%; background-position:center; background-repeat:no-repeat;
+}
+.printed-deck .card { background-image:var(--story-frame); color:var(--tone,#394b39); }
+.printed-deck .card.endface { background-image:var(--ending-frame); color:#59332a; }
+.printed-deck .card.back, .printed-deck .deckfan .mini:first-child { background-image:var(--story-back); }
+.printed-deck .card.endback, .printed-deck .deckfan .mini:last-child { background-image:var(--ending-back); }
+.printed-deck .mini { color:transparent; }
+.printed-deck .card:before, .printed-deck .card:after { display:none; }
+.printed-deck .back { justify-content:flex-end; }
+.printed-deck .back>span { visibility:hidden; }
+.printed-deck .back strong { padding:.16em .5em; color:#fff0c4; background:#20291ef2; border:1px solid #d3bb80; border-radius:.2em; }
+.printed-deck .endback strong { background:#4d2224f2; }
+.printed-deck .card.endface .sentence { text-align:center; padding-inline:5%; }
+.printed-deck .large.endface .sentence { padding:7%; }
+.printed-deck .card:not(.back):not(.endface) { display:grid; grid-template-rows:15% minmax(0,1fr) 16%; justify-items:center; align-items:center; padding:0 7%; }
+.printed-deck .card:not(.back):not(.endface) .emblem { width:68%; height:70%; }
+.printed-deck .card:not(.back):not(.endface) .story-art { width:93%; height:93%; object-fit:contain; }

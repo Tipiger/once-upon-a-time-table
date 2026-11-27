@@ -1,13 +1,14 @@
 import * as g from './game.mjs';
+import { catalog, readJSON, savedModule } from './catalog.mjs';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');
 const notice = document.querySelector('#notice');
 const latest = 'story-table.demo.latest';
-let deck, lookup, table, page = 'home', seat = 1, target = 2, slip, noticeTimer, busy = false;
+let modules, selected, deck, table, page = 'home', seat = 1, target = 2, slip, noticeTimer, busy = false;
 const key = id => 'demo/' + id;
 const current = () => table?.players[seat];
-const get = id => lookup.get(id);
+const get = id => deck.byId.get(id);
 const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const btn = (action, label, cls='', val='') => '<button class="'+cls+'" data-action="'+action+'" data-value="'+esc(val)+'">'+label+'</button>';
 const options = (total, chosen, suffix, start=1) => Array.from({length:total-start+1},(_,i)=>'<option value="'+(i+start)+'" '+(i+start===chosen?'selected':'')+'>'+(i+start)+suffix+'</option>').join('');
@@ -31,20 +32,36 @@ function card(id, {back=false,action='',large=false,flip=false}={}) {
   const cls='card '+(back?'back '+(end?'endback':''):end?'endface':'')+(large?' large':'')+(flip?' flip':'');
   const attr=action?' data-action="'+action+'" data-value="'+id+'"':'';
   const body=back?'<span>✧</span><span class="seal">'+(end?'☾':'✥')+'</span><strong>'+(end?'结局牌':'故事牌')+'</strong>':
-    end?'<span class="kind">✧ 结局 ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
-    '<span class="kind">'+esc(c.categoryZh)+(c.interrupt?' · 打断':'')+'</span>'+emblem(c.categoryZh)+'<strong>'+esc(c.labelZh)+'</strong>';
+    end?'<span class="kind">✧ '+esc(deck.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
+    '<span class="kind">'+esc(c.categoryZh)+(c.interrupt?' · 打断':'')+'</span>'+(c.image?'<img class="story-art" src="'+esc(c.image)+'" alt="">':emblem(c.categoryZh))+'<strong>'+esc(c.labelZh)+'</strong>';
   return '<'+tag+' class="'+cls+'"'+attr+(back?'':' style="--tone:'+ (inks[c.categoryZh]||'#784535')+'"')+'>'+body+'</'+tag+'>';
+}
+function applyArt(entry) {
+ const art = entry?.art || {};
+ for (const type of ['storyBack','endingBack','storyFrame','endingFrame']) {
+   const cssName = '--' + type.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
+   if (art[type]) app.style.setProperty(cssName, 'url(' + JSON.stringify(art[type]) + ')');
+   else app.style.removeProperty(cssName);
+ }
+ app.classList.toggle('printed-deck', Boolean(art.storyFrame));
+}
+function selectedEntry() { return modules.entries.find(e => e.id === selected); }
+function homeTheme() {
+ const entry = selectedEntry();
+ applyArt(entry);
+ const hint = document.getElementById('moduleInfo');
+ if (hint) hint.textContent = entry.description;
 }
 function top(aux='') {return '<header class="between"><span class="brand"><i>✥</i>故事牌桌</span>'+aux+'</header>';}
 const tabs = () => '<nav class="toolbar" aria-label="牌桌功能">'+[['hand','我的手牌'],['discard','弃牌堆'],...(table.host&&seat===1?[['dealer','发牌台']]:[])].map(([a,t])=>'<button data-action="tab" data-value="'+a+'" aria-pressed="'+(page===a)+'">'+t+'</button>').join('')+'</nav>';
 function home(){
- return top('<span class="small">西方童话 · 试玩版</span>')+'<section class="hero"><div><h1>很久很久以前</h1><p>抽一手牌，和同桌的人讲一个故事。</p></div><div aria-hidden="true" class="deckfan"><div class="mini">✧</div><div class="mini">✥</div></div></section>'+
+ return top()+'<section class="hero"><div><h1>很久很久以前</h1><p>抽一手牌，和同桌的人讲一个故事。</p></div><div aria-hidden="true" class="deckfan"><div class="mini">✧</div><div class="mini">✥</div></div></section>'+
  (table?'<section class="panel row between"><div><b>上次的牌局</b><br><small>'+(table.seats?table.seats+' 人 · ':'')+(table.solo?'单机试玩':'同桌牌局')+'</small></div>'+btn('resume','继续牌局','primary')+'</section>':'')+
- '<section class="panel"><h2>新牌局</h2><div class="setup-fields"><label class="wide">主题模组<select id="module"><option>西方童话 · 测试结局</option></select></label><label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newSolo','单机试玩','primary')+btn('newTable','同桌开局')+'</div><p class="help">单机可切换座位；同桌时每人用自己的手机扫码领牌。试玩使用原创结局。</p></section>';
+ '<section class="panel"><h2>新牌局</h2><div class="setup-fields"><label class="wide">主题模组<select id="module">'+modules.entries.map(e=>'<option value="'+esc(e.id)+'" '+(e.id===selected?'selected':'')+'>'+esc(e.name)+'</option>').join('')+'</select><small id="moduleInfo">'+esc(selectedEntry().description)+'</small></label><label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newSolo','单机试玩','primary')+btn('newTable','同桌开局')+'</div><p class="help">单机可切换座位；同桌时每人用自己的手机扫码领牌。</p></section>';
 }
 function heading(){
  const ctrl=table.solo?'<label class="playerswitch">试玩座位<select id="seatChoice" aria-label="切换试玩座位">'+options(table.seats,seat,' 号')+'</select></label>':'<span class="small">'+seat+' 号 · '+(table.host?'房主':'玩家')+'</span>';
- return top(ctrl)+'<div class="row between back-row"><span class="small">西方童话 / '+(table.solo?'单机试玩':'同桌牌局')+'</span>'+btn('home','牌局首页','ghost')+'</div>';
+ return top(ctrl)+'<div class="row between back-row"><span class="small">'+esc(deck.entry.name)+' / '+(table.solo?'单机试玩':'同桌牌局')+'</span>'+btn('home','牌局首页','ghost')+'</div>';
 }
 function inbox(player){
  const batch=player.inbox[0];
@@ -83,7 +100,8 @@ function overlay(player){
 }
 function render(){
  app.removeAttribute('aria-busy');
- if(page==='home'||!table){app.innerHTML=home();return;}
+ if(page==='home'||!table){app.innerHTML=home();homeTheme();return;}
+ applyArt(deck.entry);
  const player=current();
  let body;
  if(page==='slip')body=issueSlip();
@@ -106,18 +124,20 @@ function playerChange(fn){
 function remember(){localStorage.setItem(latest,JSON.stringify({id:table.id,seat}));}
 async function create(solo) {
  const config=Object.fromEntries(['seats','stories','endings'].map(id=>[id,+document.getElementById(id).value]));
- const host=g.startGame(deck,config);
+ const activeDeck=await modules.open(selected);
+ const host=g.startGame(activeDeck,config);
  seat=1;target=2;
- const t={id:host.game,host,solo,seats:host.seats,players:{1:g.receive(null,host.history[0],deck)},mySeat:1};
- table=await g.updateSaved(key(t.id),()=>t);remember();page='hand';
+ const t={id:host.game,host,solo,seats:host.seats,players:{1:g.receive(null,host.history[0],activeDeck)},mySeat:1};
+ table=await g.updateSaved(key(t.id),()=>t);deck=activeDeck;remember();page='hand';
 }
 async function receiveRemote(packet){
+ const activeDeck=await modules.open(packet.module);
  const t=await g.updateSaved(key(packet.game),old=>{
    if(old?.host||old&&old.mySeat!==packet.seat)throw Error('该牌局在此浏览器已有座位，请用对应玩家的手机扫码');
-   const player=g.receive(old?.players[packet.seat],packet,deck);
+   const player=g.receive(old?.players[packet.seat],packet,activeDeck);
    return {...(old??{id:packet.game,host:null,solo:false,seats:null,mySeat:packet.seat}),players:{[packet.seat]:player}};
  });
- table=t;seat=t.mySeat;remember();page='hand';
+ table=t;deck=activeDeck;seat=t.mySeat;remember();page='hand';
 }
 async function act(a,v){
  if(a==='newSolo'||a==='newTable'){await create(a==='newSolo');return;}
@@ -169,16 +189,17 @@ async function perform(a,v){
  finally{busy=false;render();}
 }
 app.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);});
-app.addEventListener('change',e=>{if(e.target.id==='seatChoice')perform('switch',e.target.value);});
+app.addEventListener('change',e=>{if(e.target.id==='module'){selected=e.target.value;homeTheme();}
+ if(e.target.id==='seatChoice')perform('switch',e.target.value);});
 async function openPacket(){
  try{await receiveRemote(g.readLink(location.href));history.replaceState(null,'',location.pathname+location.search);}
  catch(err){tell(err.message);}
 }
 async function init(){
  try{
-   deck=await (await fetch('./deck.json')).json();lookup=new Map(deck.cards.map(c=>[c.id,c]));
+   modules=catalog(await readJSON('./modules.json'));selected=modules.entries[0].id;
    const prev=JSON.parse(localStorage.getItem(latest)||'null');
-   if(prev){table=await g.updateSaved(key(prev.id));if(table){seat=prev.seat;page='hand';}}
+   if(prev){table=await g.updateSaved(key(prev.id));if(table){deck=await modules.open(savedModule(table));seat=prev.seat;page='hand';}}
    if(location.hash.startsWith('#deal='))await openPacket();
    render();
  }catch(err){app.textContent='牌桌未能打开：'+err.message;}
