@@ -104,9 +104,13 @@ function handHeader(player) {
  const reserve = player.reserve;
  const draw = reserve ? '<button class="hand-reserve" data-action="drawMenu"><strong>个人补牌堆 <span aria-hidden="true">›</span></strong>'+
    '<small>故事 '+reserve.story.length+' · 结局 '+reserve.ending.length+'</small></button>' : '';
- return '<header class="game-head hand-head">'+tableNav(btn('home',backArrow+'牌局首页','ghost'))+
-   '<div class="hand-summary"><div class="hand-context"><h1>'+esc(deck.entry.name)+'</h1>'+
-   '<div class="hand-details"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+viewModuleButton+'</div></div>'+draw+'</div></header>';
+ return playerHeader(btn('home',backArrow+'牌局首页','ghost'),'',draw);
+}
+function playerHeader(backControl, subtitle='', action='') {
+ const title=esc(deck.entry.name)+(subtitle?' <span class="page-subtitle">· '+esc(subtitle)+'</span>':'');
+ return '<header class="game-head hand-head">'+tableNav(backControl)+
+   '<div class="hand-summary"><div class="hand-context"><h1>'+title+'</h1>'+
+   '<div class="hand-details"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+viewModuleButton+'</div></div>'+action+'</div></header>';
 }
 // Both sides use the module's card artwork. The outer button owns the interaction.
 function cardSides(id) {
@@ -226,13 +230,14 @@ function drawMenu(player) {
  function pile(kind, label) {
    const isStory = kind === 'story';
    const remaining = player.reserve[kind].length;
-   const buttons = [1, 2].map(count => drawButton(isStory ? count : 0, isStory ? 0 : count, '+'+count, '补 '+count+' 张'+label));
+   const buttons = [[1,'补一张'], [2,'补两张']].map(([count,text]) => drawButton(isStory ? count : 0, isStory ? 0 : count, text, text+label));
    return '<section class="reserve-pile" aria-label="'+label+'">'+renderCard({kind}, deck, {back:true})+
      '<small>剩余 '+remaining+' 张</small><div class="reserve-counts">'+buttons.join('')+'</div></section>';
  }
- return '<section class="panel reserve-panel"><div class="row between"><h2>个人补牌堆</h2>'+btn('tab','返回手牌','soft','hand')+'</div>'+
+ return playerHeader(btn('tab',backArrow+'返回我的手牌','ghost','hand'),'个人补牌堆')+
+   '<section class="panel reserve-panel" aria-label="补牌">'+
    '<div class="reserve-piles">'+pile('story','故事牌')+pile('ending','结局牌')+'</div>'+
-   '<div class="reserve-mixed">'+drawButton(1,1,'各补 1 张','故事牌、结局牌各补 1 张')+'</div></section>';
+   '<div class="reserve-mixed">'+drawButton(1,1,'各补一张','故事牌、结局牌各补一张')+'</div></section>';
 }
 function dealer(){
  const host=table.host, history=host.history.filter(p=>p.seat===target), opening=history[0], last=history.at(-1);
@@ -299,7 +304,7 @@ function renderArtPreview() {
   const backLabel = hasTableReferrer() && Object.hasOwn(galleryBackLabels,originPage) ? galleryBackLabels[originPage] : '牌桌';
   const back = '<a class="gallery-back" href="./" data-return-table>'+backArrow+'返回'+backLabel+'</a>';
   app.innerHTML='<header class="game-head hand-head gallery-head">'+tableNav(back)+
-    '<h1>'+esc(previewDeck.entry.name)+' <span>· 完整牌组</span></h1></header>'+
+    '<h1>'+esc(previewDeck.entry.name)+' <span class="page-subtitle">· 完整牌组</span></h1></header>'+
     '<section class="hand-section"><nav class="toolbar gallery-filters" aria-label="卡牌筛选">'+filters+
     '</nav><div class="hand-grid">'+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
   if (returnToCard) {
@@ -324,7 +329,7 @@ function render(){
    return;
  }
  else if(player.inbox.length){renderDraw(player);return;}
- else if(page==='draw' && player.reserve && !player.wonWith)body=drawMenu(player);
+ else if(page==='draw' && player.reserve && !player.wonWith){app.innerHTML=drawMenu(player);return;}
  else if(page==='discard'){
    body=discardView(player);
    if(selectedDiscard){
