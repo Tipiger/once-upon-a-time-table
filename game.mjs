@@ -65,7 +65,7 @@ export function transferLink(pageUrl, packet) {
     const ids = list => list.map(encodeURIComponent).join(',');
     const fields = ['2', encodeURIComponent(packet.game), encodeURIComponent(packet.module),
       packet.seat, ids(packet.cards), ids(packet.reserve.story), ids(packet.reserve.ending)];
-    url.searchParams.set('v', 'reserve-1');
+    url.searchParams.set('v', 'table-flip-1');
     url.hash = 'deal=' + fields.join('/');
   } else {
     url.hash = 'deal=' + encodeURIComponent(JSON.stringify(packet));
@@ -113,7 +113,7 @@ export function receive(player, packet, module) {
   const owned = new Set([...state.hand, ...state.discard, ...state.inbox.flatMap(batch => batch.cards)]);
   requireState(packet.cards.every(id => !owned.has(id)), '这批牌含有已领取的牌');
   return { ...state, ...(packet.v === 2 ? { reserve: structuredClone(packet.reserve) } : {}), received: [...state.received, packet.serial], shown: null, confirming: false,
-    inbox: [...state.inbox, { cards: [...packet.cards], revealed: false }] };
+    inbox: [...state.inbox, { cards: [...packet.cards], opening: packet.opening, revealed: false }] };
 }
 
 export function drawLocal(state, stories, endings = 0) {
@@ -124,7 +124,7 @@ export function drawLocal(state, stories, endings = 0) {
   return {
     ...state,
     reserve: { story: story.slice(stories), ending: ending.slice(endings) },
-    inbox: [{ cards: [...story.slice(0, stories), ...ending.slice(0, endings)], revealed: false }]
+    inbox: [{ cards: [...story.slice(0, stories), ...ending.slice(0, endings)], opening: false, revealed: false }]
   };
 }
 

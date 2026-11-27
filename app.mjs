@@ -1,4 +1,4 @@
-import * as g from './game.mjs?v=reserve-1';
+import * as g from './game.mjs?v=table-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import QRCode from './vendor/index.js';
 
@@ -95,16 +95,55 @@ function heading(){
  return '<header class="game-head"><div class="row between"><h1>'+esc(deck.entry.name)+'</h1><div class="module-links">'+viewModuleButton+btn('home','牌局首页','ghost')+'</div></div>'+
  '<div class="row between"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+appearance+'</div></header>';
 }
-function inbox(player){
- const batch=player.inbox[0];
- return '<section class="sectionhead"><h2>'+ (batch.revealed?'本次领到的牌':'收到 '+batch.cards.length+' 张牌')+'</h2></section><p class="help">'+(batch.revealed?'收起后加入你的手牌。':'点任意一张牌背，一起翻开。')+'</p><div class="grid">'+batch.cards.map(id=>card(id,{back:!batch.revealed,action:batch.revealed?'':'reveal',flip:batch.revealed})).join('')+'</div>'+(batch.revealed?'<div class="actions">'+btn('collect','收起','primary')+'</div>':'');
+// Both sides use the module's card artwork. The outer button owns the interaction.
+function cardSides(id, large = false) {
+ return '<span class="card-turn" aria-hidden="true">'+card(id,{large})+card(id,{large,back:true})+'</span>';
+}
+
+function drawDialog(batch) {
+ const title = batch.opening === undefined ? '领牌' : batch.opening ? '起手牌' : '补牌';
+ const cards = batch.cards.map(id => {
+   const label = get(id).kind === 'ending' ? '结局牌' : '故事牌';
+   return '<button type="button" class="turnable draw-card" data-action="reveal" aria-label="翻开本批卡牌（'+label+'）">'+
+     cardSides(id)+'</button>';
+ }).join('');
+ return '<dialog class="draw-dialog" aria-labelledby="draw-title" aria-describedby="draw-hint">'+
+   '<h2 id="draw-title">'+title+' · '+batch.cards.length+' 张</h2>'+
+   '<p id="draw-hint"></p>'+
+   '<div class="draw-tray">'+cards+'</div>'+
+   '<div class="draw-footer">'+btn('collect','收起到手牌','primary')+'</div></dialog>';
+}
+
+function renderDraw(player) {
+ const batch = player.inbox[0];
+ const batchKey = JSON.stringify([table.id, seat, batch.cards]);
+ let dialog = app.querySelector('.draw-dialog');
+ if (!dialog || dialog.dataset.batch !== batchKey) {
+   app.innerHTML = heading()+tabs()+hand(player)+drawDialog(batch);
+   dialog = app.querySelector('.draw-dialog');
+   dialog.dataset.batch = batchKey;
+   dialog.dataset.revealed = String(batch.revealed);
+   dialog.addEventListener('cancel', event => event.preventDefault());
+ }
+ const revealed = batch.revealed;
+ dialog.dataset.revealed = String(revealed);
+ dialog.querySelector('#draw-hint').textContent = revealed ? '收起后加入你的手牌' : '轻点任意牌背，一起翻开';
+ const collect = dialog.querySelector('[data-action="collect"]');
+ collect.hidden = !revealed;
+ dialog.querySelectorAll('.draw-card').forEach((button, index) => {
+   const c = get(batch.cards[index]);
+   button.disabled = revealed;
+   if (revealed) button.setAttribute('aria-label', c.textZh || c.labelZh);
+ });
+ if (!dialog.open) dialog.showModal();
+ if (revealed) collect.focus({preventScroll:true});
 }
 function hand(player) {
  const section = (kind, title) => {
    const ids = player.hand.filter(id => get(id).kind === kind);
    const content = ids.length
      ? '<div class="hand-grid">' + ids.map(id => card(id, {action:'show'})).join('') + '</div>'
-     : '<p class="empty">故事牌已出完，可以选择一张结局收尾。</p>';
+     : '<p class="empty">'+(player.inbox.length ? '等待收牌' : kind === 'ending' ? '暂无结局牌' : '故事牌已出完，可以选择一张结局收尾。')+'</p>';
    return '<section class="hand-section hand-' + kind + '" aria-label="' + title + '">' +
      '<h2 class="hand-heading"><span>' + title + '</span></h2>' + content + '</section>';
  };
@@ -158,7 +197,11 @@ function discardView(player) {
 }
 function overlay(player){
  if(player.confirming)return '<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
- return '<section class="overlay" role="dialog" aria-modal="true" aria-label="展示卡牌">'+card(player.shown,{large:true})+'<div class="actions">'+btn('withdraw','撤回','soft')+btn('play','出牌','primary')+'</div></section>';
+ const shown = get(player.shown);
+ return '<section class="overlay" role="dialog" aria-modal="true" aria-label="展示卡牌">'+
+   '<button type="button" class="turnable display-card" data-action="flipShown" aria-label="'+esc(shown.textZh || shown.labelZh)+'，翻到牌背">'+
+   cardSides(shown.id,true)+'</button><p class="flip-hint">轻点牌面，翻看正反面</p>'+
+   '<div class="actions">'+btn('withdraw','撤回','soft')+btn('play','出牌','primary')+'</div></section>';
 }
 let previewDeck, previewCard, returnToCard, galleryKind='all';
 function renderArtPreview() {
@@ -196,7 +239,7 @@ function render(){
  else if(page==='dealer'&&table.host&&seat===1)body=tabs()+dealer();
  else if(!player)body='<p>请先领取起手牌。</p>';
  else if(player.shown){app.innerHTML=overlay(player);return;}
- else if(player.inbox.length)body=inbox(player);
+ else if(player.inbox.length){renderDraw(player);return;}
  else if(page==='draw' && player.reserve && !player.wonWith)body=drawMenu(player);
  else if(page==='discard'){
    body=discardView(player);
@@ -264,7 +307,16 @@ async function act(a,v){
  }
  if(a==='target'){target=+v;return;}
  if(a==='reveal')return playerChange(g.revealBatch);
- if(a==='collect'){page='hand';return playerChange(g.collectBatch);}
+ if(a==='collect'){
+   const dialog=app.querySelector('.draw-dialog');
+   if(dialog && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+     const leaving=dialog.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(1.25rem) scale(.95)'}],
+       {duration:190,easing:'ease-in',fill:'forwards'});
+     try { await leaving.finished; } finally { leaving.cancel(); }
+   }
+   await playerChange(g.collectBatch);
+   page='hand';return;
+ }
  if(a==='show')return playerChange(s=>g.showCard(s,v));
  if(a==='withdraw')return playerChange(g.withdraw);
  if(a==='play')return playerChange(s=>g.playShown(s,deck));
@@ -290,6 +342,13 @@ async function perform(a,v){
  finally{busy=false;render();}
 }
 app.addEventListener('click',e=>{
+ const displayed = e.target.closest('[data-action="flipShown"]');
+ if(displayed){
+   const back = displayed.dataset.back !== 'true';
+   displayed.dataset.back = String(back);
+   displayed.setAttribute('aria-label',back ? '牌背，翻回牌面' : (get(current().shown).textZh || get(current().shown).labelZh)+'，翻到牌背');
+   return;
+ }
  if(e.target.closest('[data-view-module]')){
    const url=new URL(location.pathname,location.href);
    url.searchParams.set('preview','module');
