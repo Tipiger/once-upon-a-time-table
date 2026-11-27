@@ -43,17 +43,12 @@ function applyArt(entry) {
    else root.style.removeProperty(cssName);
  }
  root.classList.toggle('printed-deck', Boolean(art.storyFrame));
- const defaultFont = entry.theme?.defaultFont || 'song';
- const defaultLabel = picker.querySelector('[value="module"]').closest('label');
- defaultLabel.dataset.font = defaultFont;
- const fontName = [...picker.querySelectorAll('input')].find(i => i.value === defaultFont)?.closest('label').querySelector('small').textContent;
- defaultLabel.querySelector('small').textContent = fontName ? '跟随模组 · ' + fontName : '跟随模组';
  let choice;
  try {
    choice = localStorage.getItem(moduleFontKey());
    if (!choice && entry.id === 'once-upon-a-time-3e-core') choice = localStorage.getItem('story-table.font');
  } catch {}
- setFont(choice || 'module');
+ setFont(choice);
 }
 function selectedEntry() { return modules.entries.find(e => e.id === selected); }
 function homeTheme() {
@@ -222,10 +217,10 @@ const picker = document.getElementById('font-picker');
 let activeTheme;
 const moduleFontKey = () => 'story-table.font.' + activeTheme.id;
 function setFont(value) {
-  const choice = [...picker.querySelectorAll('input')].find(input => input.value === value) || picker.querySelector('[value="module"]');
-  choice.checked = true;
-  document.documentElement.dataset.font = choice.value === 'module'
-    ? (activeTheme.theme?.defaultFont || 'song') : choice.value;
+  const preferred = ['wenkai', 'hei'].includes(value) ? value : activeTheme.theme?.defaultFont;
+  const font = preferred === 'hei' ? 'hei' : 'wenkai';
+  picker.querySelector('input[value="' + font + '"]').checked = true;
+  document.documentElement.dataset.font = font;
 }
 async function openFontPicker() {
   const entry = activeTheme;
