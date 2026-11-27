@@ -76,6 +76,11 @@ button.primary,.toolbar button[aria-pressed=true],.seat-grid button[aria-pressed
 button.primary:hover,.toolbar button[aria-pressed=true]:hover { background:var(--primary); }
 :focus-visible { outline:2px solid var(--text); outline-offset:2px; }
 button.card { cursor:pointer; }
+button.card, button.turnable {
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;
+  user-select:none;
+}
 .small,small,.help,.empty { color:var(--muted); font-size:.9rem; }
 .help,.empty { margin-block:.75rem; }
 .hero { padding:2rem 0 1rem; }
