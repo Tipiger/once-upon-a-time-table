@@ -95,6 +95,7 @@ export async function enableCoverRelief(button,art) {
       return canvas.getContext('2d',{alpha:false});
     });
     let paintSurface,signature='',previous='',pending=0,until=0,lastTime=0;
+    let detailScale=1;
     function paint(time) {
       pending=0;
       if(!button.isConnected)return;
@@ -102,7 +103,9 @@ export async function enableCoverRelief(button,art) {
       if(time-lastTime<30 && pending)return;
       const width=button.clientWidth,height=button.clientHeight;
       if(!width||!height)return;
-      const ratio=Math.min(devicePixelRatio,1.65,490/width);
+      // Increase detail once fingers lift, without rebuilding the relief map on every pinch move.
+      if (!button.classList.contains('is-pinching')) detailScale=Math.max(1,Number(button.style.getPropertyValue('--card-zoom'))||1);
+      const ratio=Math.min(devicePixelRatio*detailScale,1.65*detailScale,Math.min(800,490*detailScale)/width,picture.width/width);
       const w=Math.round(width*ratio),h=Math.round(height*ratio);
       const size=[w,h,width,height].join('/');
       if(size!==signature){

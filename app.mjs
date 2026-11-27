@@ -1,7 +1,7 @@
-import { enableCoverRelief } from './cover-relief.mjs?v=continuous-1';
+import { enableCoverRelief } from './cover-relief.mjs?v=center-zoom-1';
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
-import { enableDisplayGesture } from './display-gesture.mjs?v=moon-relief-1';
+import { enableDisplayGesture } from './display-gesture.mjs?v=center-zoom-1';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');
@@ -145,10 +145,10 @@ function showCardDisplay(c, module, title, back, actions='', note='') {
  app.inert=true;
  inspection.hidden=false;
  inspection.innerHTML='<section class="card-inspection" aria-label="'+esc(title)+'">'+pageHeader(back)+
-   '<div class="inspection-body">'+
+   '<div class="inspection-body"><div class="inspection-stage">'+
    '<button type="button" class="turnable display-card" aria-describedby="display-hint" aria-label="'+esc(c.textZh || c.labelZh)+'，翻到牌背">'+
    '<span class="display-tilt" aria-hidden="true"><span class="card-turn">'+inspectionFaces(c,module)+
-   '</span></span></button><p class="flip-hint" id="display-hint">轻点翻面 · 按住拖动看反光</p>'+
+   '</span></span></button></div><p class="flip-hint" id="display-hint">轻点翻面 · 拖动看反光 · 双指缩放</p>'+
    (note?'<p class="inspection-note">'+esc(note)+'</p>':'')+
    (actions?'<div class="actions">'+actions+'</div>':'')+'</div></section>';
  const display=inspection.querySelector('.display-card');

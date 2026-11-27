@@ -377,11 +377,15 @@ button.gallery-cover, button.gallery-cover:hover {
 .card-inspection { min-height:100%; display:flex; flex-direction:column; }
 .card-inspection .game-head { width:100%; }
 .inspection-body { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:.7rem; padding:.8rem 0; }
+.inspection-stage { display:grid; place-items:center; align-self:stretch; padding-block:.5rem; touch-action:none; }
+.inspection-stage.is-zoomed { overflow:clip; }
+.inspection-stage .display-card { transform:scale(var(--card-zoom,1)); transform-origin:50% 50%; }
 .inspection-body .display-card { width:min(78vw,350px,calc((100dvh - 245px)*.6437)); }
 .inspection-body .actions { width:min(90vw,380px); margin:0; }
 .inspection-note { text-align:center; color:var(--muted); }
 @media(max-height:480px) and (orientation:landscape) {
   .inspection-body { display:grid; grid-template-columns:auto minmax(9rem,14rem); justify-content:center; align-content:center; }
-  .inspection-body .display-card { grid-row:1 / span 3; width:min(38vw,calc((100dvh - 100px)*.6437)); }
+  .inspection-stage { grid-row:1 / span 3; align-self:center; }
+  .inspection-body .display-card { width:min(38vw,calc((100dvh - 100px)*.6437)); }
   .inspection-body .actions { width:100%; }
 }
