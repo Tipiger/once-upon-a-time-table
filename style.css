@@ -181,3 +181,80 @@ body:has(.draw-dialog[open]) { overflow:hidden; }
   .card-turn { transition:none; }
   .draw-dialog[open] { animation:none; }
 }
+
+/* The fixed button holds three independent planes: inlaid art, face and reverse. */
+@property --foil-at {
+  syntax:"<percentage>"; inherits:true; initial-value:125%;
+}
+.display-card { touch-action:none; -webkit-touch-callout:none; --foil-at:125%; transition:--foil-at .32s ease-out; }
+button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,650px); }
+.display-card.is-tilting { transition:none; }
+.display-card * { pointer-events:none; }
+.display-tilt {
+  position:absolute; inset:0; transform-style:preserve-3d;
+  transform:rotateX(var(--pitch,0deg)) rotateY(var(--yaw,0deg));
+  transition:transform .34s cubic-bezier(.16,.8,.22,1);
+}
+.is-tilting .display-tilt { transition:none; }
+.display-card .card-turn > .card { width:100%; }
+.display-card .card-turn > .card:not(.back) { transform:translateZ(1px); }
+.display-card .card-turn > .back { transform:rotateY(180deg) translateZ(4px); }
+.display-card .card-turn > .card {
+  box-shadow:0 1px 0 #a28550, 0 2px 0 #665038, 0 3px 0 #4c392c, 0 14px 26px #110b0a70;
+}
+.inset-illustration, .ending-rim {
+  display:block; position:absolute; inset:0; border-radius:9px; overflow:hidden;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+}
+.inset-illustration { transform:translateZ(-3px); background:#5a412a; }
+.inset-illustration .story-art {
+  position:absolute; left:8%; top:13%; width:84%; height:69%;
+  object-fit:cover; transform:scale(1.12); border-radius:0;
+}
+/* The lip casts its shadow onto the recessed plane, behind the opening. */
+.inset-illustration::after {
+  content:""; position:absolute; left:8%; top:13%; width:84%; height:69%; border-radius:50%;
+  box-shadow:inset 2px 5px 8px 1px #39220ec7, inset 0 0 2px 2px #50321cdc,
+    0 0 0 55px #654a2e;
+}
+.display-card .inset-illustration + .storyface {
+  --window:radial-gradient(ellipse 42% 34.5% at 50% 47.5%, transparent 98.7%, #000 99.5%);
+  -webkit-mask-image:var(--window); mask-image:var(--window);
+  background-image:radial-gradient(ellipse 42% 34.5% at 50% 47.5%, transparent 98%, #4a311c 99.8%, #b18c51 100.9%, #ead29a 101.4%, transparent 102%),var(--story-frame);
+}
+.ending-rim {
+  transform:translateZ(5px); background:var(--ending-frame) center / 100% 100%;
+  --rim:linear-gradient(#000 0 0) top / 100% 9% no-repeat,
+    linear-gradient(#000 0 0) bottom / 100% 6% no-repeat,
+    linear-gradient(#000 0 0) left / 5% 100% no-repeat,
+    linear-gradient(#000 0 0) right / 5% 100% no-repeat;
+  -webkit-mask:var(--rim); mask:var(--rim);
+}
+.printed-deck .display-card .endface::before {
+  content:""; display:block; position:absolute; inset:8% 4% 5%; border:0; border-radius:4px; opacity:1;
+  box-shadow:inset 2px 5px 8px 1px #512c1885, inset 0 0 2px #79552c;
+}
+@supports ((background-clip:text) or (-webkit-background-clip:text)) {
+  .printed-deck .display-card :is(.storyface > strong,.interrupt,.endface .sentence,.endface .kind) {
+    background-image:linear-gradient(106deg,#49311d calc(var(--foil-at) - 25%),#86552a calc(var(--foil-at) - 10%),
+      #c9974a calc(var(--foil-at) - 4%),#ffefb7 var(--foil-at),#a4753d calc(var(--foil-at) + 5%),#49311d calc(var(--foil-at) + 18%));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-fill-color:transparent;
+  }
+}
+.printed-deck .display-card .back::after {
+  content:""; display:block; position:absolute; inset:0; border:0; border-radius:inherit;
+  background:linear-gradient(115deg,transparent calc(var(--foil-at) - 31%),#e5ab5b88 calc(var(--foil-at) - 12%),
+    #fff0c8 var(--foil-at),#d49b5299 calc(var(--foil-at) + 9%),transparent calc(var(--foil-at) + 27%));
+  -webkit-mask-image:var(--story-back); mask-image:var(--story-back);
+  mask-mode:luminance; -webkit-mask-size:100% 100%; mask-size:100% 100%;
+  mix-blend-mode:screen; opacity:0; transition:opacity .22s;
+}
+.printed-deck .display-card .endback::after { -webkit-mask-image:var(--ending-back); mask-image:var(--ending-back); }
+.printed-deck .display-card.is-tilting .back::after { opacity:.92; }
+.display-card .back strong { z-index:1; }
+@media(prefers-reduced-motion:reduce) {
+  .display-tilt { transform:none; transition:none; }
+  .display-card { transition:none; }
+  .printed-deck .display-card .back::after { transition:none; }
+}
