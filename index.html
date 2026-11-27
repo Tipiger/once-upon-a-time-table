@@ -1,1 +1,20 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#152e29"><title>故事牌桌 · 很久很久以前</title><link rel="stylesheet" href="./style.css?v=module-1"></head><body><main id="app" aria-busy="true">正在摆好牌桌…</main><div id="notice" role="status"></div><script src="./app.mjs?v=module-1" type="module"></script></body></html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#152e29"><title>故事牌桌 · 很久很久以前</title><link rel="stylesheet" href="./style.css?v=fonts-1"></head><body><main id="app" aria-busy="true">正在摆好牌桌…</main><div id="notice" role="status"></div><dialog id="font-picker" aria-labelledby="font-title">
+  <form method="dialog">
+    <h2 id="font-title">牌桌字体</h2>
+    <fieldset aria-label="选择中文字体">
+      <label class="font-option" data-font="song">
+        <input type="radio" name="typeface" value="song" checked>
+        <span><small>宋体 · Noto Serif</small><strong>月光下的森林</strong><span>她沿着小路，终于找到了回家的方向。</span></span>
+      </label>
+      <label class="font-option" data-font="kai">
+        <input type="radio" name="typeface" value="kai" >
+        <span><small>楷书 · 马善政</small><strong>月光下的森林</strong><span>她沿着小路，终于找到了回家的方向。</span></span>
+      </label>
+      <label class="font-option" data-font="hei">
+        <input type="radio" name="typeface" value="hei" >
+        <span><small>黑体 · Noto Sans</small><strong>月光下的森林</strong><span>她沿着小路，终于找到了回家的方向。</span></span>
+      </label>
+    </fieldset>
+    <button class="primary" value="close">完成</button>
+  </form>
+</dialog><script src="./app.mjs?v=fonts-1" type="module"></script></body></html>

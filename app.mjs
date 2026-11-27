@@ -1,5 +1,5 @@
 import * as g from './game.mjs';
-import { catalog, readJSON, savedModule } from './catalog.mjs';
+import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');
@@ -16,25 +16,16 @@ function tell(message) {
   clearTimeout(noticeTimer); notice.textContent = message;
   noticeTimer = setTimeout(()=>notice.textContent='',3200);
 }
-const stampPaths = {
-  '角色':'<path d="m19 35 6 15h30l6-15-14 8-7-15-7 15zM25 55h30M29 60h22"/><circle cx="40" cy="24" r="2"/>',
-  '地点':'<path d="M18 58h44M23 57V36l7-11 7 11v19m6 0V31l7-13 7 13v26M20 36h19m1-5h19M34 46h12M28 40v5m21-9v6M38 57v-5a3 3 0 0 1 6 0v5"/>',
-  '事件':'<path d="M30 20h20m-20 40h20M32 22c0 12 2 12 8 18-6 6-8 6-8 18m16-36c0 12-2 12-8 18 6 6 8 6 8 18m-13-4 5-7 5 7zM34 29h12"/>',
-  '物品':'<circle cx="31" cy="31" r="10"/><circle cx="31" cy="31" r="5"/><path d="m38 39 18 18 5-5-4-4-3 3-4-4 3-3-5-5-3 3"/>',
-  '特征':'<path d="m40 17 5 15 16 7-16 7-5 16-6-16-15-7 15-7zM40 29v19m-9-9h18"/>'
-};
-const inks = {'角色':'#785033','地点':'#3f6149','事件':'#805147','物品':'#5e5471','特征':'#54626d'};
-function emblem(category) {
-  return '<svg aria-hidden="true" class="emblem" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="40" cy="40" rx="32" ry="34" stroke-width=".75"/><ellipse cx="40" cy="40" rx="29" ry="31" stroke-dasharray="1 4" opacity=".6"/>'+stampPaths[category]+'</svg>';
-}
 function card(id, {back=false,action='',large=false,flip=false}={}) {
   const c=get(id), end=c.kind==='ending', tag=action?'button':'div';
-  const cls='card '+(back?'back '+(end?'endback':''):end?'endface':'')+(large?' large':'')+(flip?' flip':'');
+  const cls='card '+(back?'back '+(end?'endback':''):end?'endface':c.image?'storyface illustrated':'storyface')+(large?' large':'')+(flip?' flip':'');
   const attr=action?' data-action="'+action+'" data-value="'+id+'"':'';
   const body=back?'<span>✧</span><span class="seal">'+(end?'☾':'✥')+'</span><strong>'+(end?'结局牌':'故事牌')+'</strong>':
     end?'<span class="kind">✧ '+esc(deck.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
-    '<span class="kind">'+esc(c.categoryZh)+(c.interrupt?' · 打断':'')+'</span>'+(c.image?'<img class="story-art" src="'+esc(c.image)+'" alt="">':emblem(c.categoryZh))+'<strong>'+esc(c.labelZh)+'</strong>';
-  return '<'+tag+' class="'+cls+'"'+attr+(back?'':' style="--tone:'+ (inks[c.categoryZh]||'#784535')+'"')+'>'+body+'</'+tag+'>';
+    (c.interrupt?'<span class="interrupt">打断</span>':'')+
+    (c.image?'<img class="story-art" src="'+esc(c.image)+'" alt="">':'')+
+    '<strong>'+esc(c.labelZh)+'</strong>';
+  return '<'+tag+' class="'+cls+'"'+attr+'>'+body+'</'+tag+'>';
 }
 function applyArt(entry) {
  const art = entry?.art || {};
@@ -52,7 +43,7 @@ function homeTheme() {
  const hint = document.getElementById('moduleInfo');
  if (hint) hint.textContent = entry.description;
 }
-function top(aux='') {return '<header class="between"><span class="brand"><i>✥</i>故事牌桌</span>'+aux+'</header>';}
+function top(aux='') {return '<header class="between"><span class="brand"><i>✥</i>故事牌桌</span>'+ '<div class="head-actions">'+aux+'<button class="font-trigger soft" type="button" aria-haspopup="dialog">字体</button></div></header>' ;}
 const tabs = () => '<nav class="toolbar" aria-label="牌桌功能">'+[['hand','我的手牌'],['discard','弃牌堆'],...(table.host&&seat===1?[['dealer','发牌台']]:[])].map(([a,t])=>'<button data-action="tab" data-value="'+a+'" aria-pressed="'+(page===a)+'">'+t+'</button>').join('')+'</nav>';
 function home(){
  return top()+'<section class="hero"><div><h1>很久很久以前</h1><p>抽一手牌，和同桌的人讲一个故事。</p></div><div aria-hidden="true" class="deckfan"><div class="mini">✧</div><div class="mini">✥</div></div></section>'+
@@ -188,7 +179,7 @@ async function perform(a,v){
  try{await act(a,v);}catch(err){tell(err.message);}
  finally{busy=false;render();}
 }
-app.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);});
+app.addEventListener('click',e=>{if(e.target.closest('.font-trigger')){openFontPicker();return;}const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);});
 app.addEventListener('change',e=>{if(e.target.id==='module'){selected=e.target.value;homeTheme();}
  if(e.target.id==='seatChoice')perform('switch',e.target.value);});
 async function openPacket(){
@@ -202,9 +193,27 @@ async function init(){
    if(prev){table=await g.updateSaved(key(prev.id));if(table){deck=await modules.open(savedModule(table));seat=prev.seat;page='hand';}}
    if(location.hash.startsWith('#deal='))await openPacket();
    render();
+   if(new URLSearchParams(location.search).get('preview')==='fonts')openFontPicker();
  }catch(err){app.textContent='牌桌未能打开：'+err.message;}
 }
 window.addEventListener('hashchange',async()=>{if(location.hash.startsWith('#deal=')){await openPacket();render();}});
 window.addEventListener('pageshow',async e=>{if(e.persisted&&table){table=await g.updateSaved(key(table.id));render();}});
 document.addEventListener('visibilitychange',async()=>{if(!document.hidden&&table&&!busy){table=await g.updateSaved(key(table.id));render();}});
+const picker = document.getElementById('font-picker');
+const fontKey = 'story-table.font';
+function setFont(value) {
+  const choice = [...picker.querySelectorAll('input')].find(input => input.value === value);
+  if (choice) {
+    document.documentElement.dataset.font = value;
+    choice.checked = true;
+  }
+}
+function openFontPicker() {
+  picker.showModal();
+}
+try { setFont(localStorage.getItem(fontKey) || 'song'); } catch { setFont('song'); }
+picker.addEventListener('change', event => {
+  setFont(event.target.value);
+  try { localStorage.setItem(fontKey, event.target.value); } catch {}
+});
 init();

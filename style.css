@@ -53,3 +53,46 @@
 .printed-deck .card:not(.back):not(.endface) { display:grid; grid-template-rows:15% minmax(0,1fr) 16%; justify-items:center; align-items:center; padding:0 7%; }
 .printed-deck .card:not(.back):not(.endface) .emblem { width:68%; height:70%; }
 .printed-deck .card:not(.back):not(.endface) .story-art { width:93%; height:93%; object-fit:contain; }
+
+@font-face { font-family:TaleSong; src:url('./tale-song.woff') format('woff'); font-display:swap; }
+@font-face { font-family:TaleKai; src:url('./tale-kai.woff') format('woff'); font-display:swap; }
+@font-face { font-family:TaleHei; src:url('./tale-hei.woff') format('woff'); font-display:swap; }
+:root, [data-font=song] { --table-font:TaleSong,"Songti SC",serif; }
+[data-font=kai] { --table-font:TaleKai,KaiTi,serif; }
+[data-font=hei] { --table-font:TaleHei,"PingFang SC",sans-serif; }
+:root, .brand, h1, h2, h3, .card, .card .kind, blockquote { font-family:var(--table-font); }
+.head-actions { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:.5rem; }
+.font-trigger { padding:.35rem .65rem; font-size:.875rem; }
+.card.storyface, .printed-deck .card.storyface:not(.back):not(.endface) {
+  display:grid; grid-template:18% minmax(0,1fr) 20% / minmax(0,1fr); align-items:center;
+  justify-items:center; padding:0 9%; color:#493923;
+}
+.storyface strong { grid-area:2/1; max-width:100%; text-wrap:balance; }
+.storyface.illustrated strong { grid-row:3; }
+.storyface .story-art { grid-area:2/1; }
+.interrupt {
+  grid-area:1/1; align-self:end; font:bold clamp(.72rem,2.5vw,.92rem)/1.25 var(--table-font);
+  color:#fff5d8; background:#763b32; border:1px solid #d7ba80; border-radius:3px;
+  padding:.08em .42em; letter-spacing:.08em;
+}
+.large .interrupt { font-size:1.15rem; }
+#font-picker {
+  width:min(92vw,27rem); max-height:90dvh; overflow:auto; margin:auto;
+  color:var(--cream); background:#1b362e; border:1px solid #b79e6f; border-radius:15px;
+  padding:1.15rem; box-shadow:0 16px 60px #0b1919aa;
+}
+#font-picker::backdrop { background:#182520ce; }
+#font-title { margin:0 0 .7rem; font-size:1.4rem; }
+#font-picker fieldset { display:grid; gap:.55rem; border:0; margin:0; padding:0; }
+.font-option {
+  cursor:pointer; border:2px solid transparent; border-radius:7px;
+  grid-template-columns:1.1rem minmax(0,1fr); align-items:center; gap:.7rem;
+  padding:.7rem .8rem; color:#392f23; background:#f0e4c7;
+}
+.font-option:has(:checked) { border-color:#bfa163; box-shadow:0 0 0 1px #f0d894; }
+.font-option input { width:1rem; height:1rem; min-height:0; margin:0; padding:0; accent-color:#36533f; }
+.font-option > span { display:grid; gap:.12rem; font:1rem/1.5 var(--table-font); }
+.font-option strong { font-size:1.45rem; font-weight:400; }
+.font-option small { font: .75rem/1.4 TaleHei,sans-serif; color:#635340; }
+#font-picker .primary { width:100%; margin-top:.9rem; }
+@media(max-width:390px){.head-actions{gap:.25rem}.playerswitch{gap:.25rem}.font-trigger{padding:.3rem .45rem}}

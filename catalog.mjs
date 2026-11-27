@@ -18,7 +18,7 @@ export function catalog(entries, load = readJSON) {
         const byId = new Map(data.cards.map(card => [card.id, card]));
         if (byId.size !== data.cards.length || data.cards.some(card =>
           !card.id || (card.kind === 'ending' ? !card.textZh?.trim() :
-            card.kind !== 'story' || !card.labelZh?.trim() || !card.categoryZh)))
+            card.kind !== 'story' || !card.labelZh?.trim())))
           throw Error('牌库存在重复编号或缺少卡牌文字');
         return { ...data, entry, byId };
       }).catch(error => { cache.delete(id); throw error; });
