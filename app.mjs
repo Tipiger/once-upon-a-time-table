@@ -1,4 +1,4 @@
-import * as g from './game.mjs?v=table-flip-1';
+import * as g from './game.mjs?v=draw-art-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import QRCode from './vendor/index.js';
 
@@ -109,9 +109,44 @@ function drawDialog(batch) {
  }).join('');
  return '<dialog class="draw-dialog" aria-labelledby="draw-title" aria-describedby="draw-hint">'+
    '<h2 id="draw-title">'+title+' · '+batch.cards.length+' 张</h2>'+
-   '<p id="draw-hint"></p>'+
+   '<p id="draw-hint" role="status"></p>'+
    '<div class="draw-tray">'+cards+'</div>'+
    '<div class="draw-footer">'+btn('collect','收起到手牌','primary')+'</div></dialog>';
+}
+
+// Decode the actual face elements and the shared backgrounds used by this draw.
+async function prepareDrawArt(dialog, batch) {
+ const images = [...dialog.querySelectorAll('.draw-card img')];
+ const kinds = new Set(batch.cards.map(id => get(id).kind));
+ const art = deck.entry.art || {};
+ const urls = new Set([...kinds].flatMap(kind => [art[kind+'Back'], art[kind+'Frame']]).filter(Boolean));
+ for (const url of urls) {
+   const image = new Image();
+   image.src = url;
+   images.push(image);
+ }
+ function allowReveal(hint) {
+   if (!dialog.isConnected || dialog.dataset.revealed === 'true') return;
+   dialog.dataset.preparing = 'false';
+   dialog.querySelector('#draw-hint').textContent = hint;
+   dialog.querySelectorAll('.draw-card').forEach(button => { button.disabled = false; });
+ }
+ // A slow or missing image must never prevent playing the batch.
+ const timer = setTimeout(() => allowReveal('图片仍在加载，可以先翻牌'), 5000);
+ try {
+   const results = await Promise.allSettled(images.map(image => {
+     if (image.decode) return image.decode();
+     if (image.complete) return image.naturalWidth ? Promise.resolve() : Promise.reject();
+     return new Promise((resolve, reject) => {
+       image.addEventListener('load', resolve, {once:true});
+       image.addEventListener('error', reject, {once:true});
+     });
+   }));
+   allowReveal(results.some(result => result.status === 'rejected')
+     ? '部分图片未加载，可以先翻牌' : '轻点任意牌背，一起翻开');
+ } finally {
+   clearTimeout(timer);
+ }
 }
 
 function renderDraw(player) {
@@ -124,15 +159,20 @@ function renderDraw(player) {
    dialog.dataset.batch = batchKey;
    dialog.dataset.revealed = String(batch.revealed);
    dialog.addEventListener('cancel', event => event.preventDefault());
+   if (!batch.revealed) {
+     dialog.dataset.preparing = 'true';
+     dialog.querySelector('#draw-hint').textContent = '正在加载本次卡图…';
+     prepareDrawArt(dialog, batch);
+   }
  }
  const revealed = batch.revealed;
  dialog.dataset.revealed = String(revealed);
- dialog.querySelector('#draw-hint').textContent = revealed ? '收起后加入你的手牌' : '轻点任意牌背，一起翻开';
+ if (revealed) dialog.querySelector('#draw-hint').textContent = '收起后加入你的手牌';
  const collect = dialog.querySelector('[data-action="collect"]');
  collect.hidden = !revealed;
  dialog.querySelectorAll('.draw-card').forEach((button, index) => {
    const c = get(batch.cards[index]);
-   button.disabled = revealed;
+   button.disabled = revealed || dialog.dataset.preparing === 'true';
    if (revealed) button.setAttribute('aria-label', c.textZh || c.labelZh);
  });
  if (!dialog.open) dialog.showModal();
