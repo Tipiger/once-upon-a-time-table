@@ -3,6 +3,7 @@
     "id": "once-upon-a-time-3e-core",
     "name": "西方童话",
     "file": "western-core.json?v=full-art-1",
+    "synopsis": "从森林深处的小屋，到藏着秘密的城堡。用手中的牌接着讲，让童话走向你的结局。",
     "description": "结局牌给出故事目标，请用自己的话收尾。",
     "art": {
       "cover": "western-cover.webp",

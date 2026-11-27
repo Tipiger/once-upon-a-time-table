@@ -305,12 +305,27 @@ button.deck-entry:not(.card) {
 .entry-ending { background-color:#72483b; background-image:var(--ending-back); transform:translateX(43%) rotate(17deg); }
 .entry-story { background-color:#3f5a45; background-image:var(--story-back); transform:translateX(-43%) rotate(-17deg); }
 .deck-entry-fan .entry-cover { background-color:#d9c9a2; background-image:var(--cover,var(--story-back)); }
-button.gallery-cover, button.gallery-cover:hover {
- grid-column:1 / -1; justify-self:center; width:calc((100% - 2 * var(--card-gap)) / 3);
- aspect-ratio:56/87; padding:0; border:0; border-radius:9px;
- background:var(--cover) center / 100% 100%;
- box-shadow:0 1px 0 #a28550,0 3px 0 #4c392c,0 5px 12px #110b0a55;
+.gallery-intro {
+ display:flex; align-items:center; justify-content:space-between; gap:clamp(1rem,4vw,2rem);
+ padding-block:clamp(.9rem,3vw,1.45rem) .25rem;
 }
+.gallery-copy { flex:1; min-width:0; overflow-wrap:anywhere; }
+.gallery-copy p { max-width:32em; margin-top:.45rem; color:var(--muted); line-height:1.6; }
+button.gallery-cover, button.gallery-cover:hover {
+ display:grid; justify-items:center; gap:.38rem; flex:0 0 clamp(5rem,23vw,7rem);
+ padding:0; border:0; border-radius:7px; background:transparent;
+}
+.gallery-cover-art {
+ width:100%; aspect-ratio:56/87; border-radius:6%; background:var(--cover) center / 100% 100%;
+ box-shadow:0 1px 0 #a28550,0 2px 0 #4c392c,0 3px 9px #110b0a40;
+}
+.gallery-cover-label {
+ display:inline-flex; align-items:center; justify-content:center; gap:.25em; padding:.25em .55em;
+ border:1px solid var(--line); border-radius:5px; background:var(--field); color:var(--text);
+ font-size:.875rem; font-weight:600; line-height:1.4;
+}
+.gallery-cover-label svg { width:1em; height:1em; fill:none; stroke:currentColor; stroke-width:1.65; stroke-linecap:round; }
+.gallery-cover:is(:hover,:focus-visible,:active) .gallery-cover-label { background:var(--primary); color:var(--on-primary); border-color:var(--primary); }
 .book-face, .cover-bed, .cover-layer, .cover-layer i {
  position:absolute; inset:0; border-radius:9px; backface-visibility:hidden;
 }
@@ -332,12 +347,12 @@ button.gallery-cover, button.gallery-cover:hover {
  --foil-texture:var(--cover);
 }
 .cover-inlay {
- --rise:1.15px; --relief:var(--cover-inlay); --glint-shift:3%;
- --cast:.4px .85px .55px #100a20b8;
+ --rise:1.7px; --relief:var(--cover-inlay); --glint-shift:4.5%;
+ --cast:.6px 1.28px .82px #100a20b8;
 }
 .cover-gilt {
- --rise:2.65px; --relief:var(--cover-gilt); --glint-shift:-5%;
- --cast:.65px 1.25px .7px #3c2341bd;
+ --rise:2.95px; --relief:var(--cover-gilt); --glint-shift:-7.5%;
+ --cast:.98px 1.88px 1.05px #3c2341bd;
 }
 .deck-entry-copy { display:grid; justify-items:start; gap:.25rem; min-width:0; }
 .deck-entry-copy strong { font:700 clamp(1.15rem,5vw,1.5rem)/1.25 var(--table-font); overflow-wrap:anywhere; }
@@ -350,8 +365,6 @@ button.gallery-cover, button.gallery-cover:hover {
 }
 .wide-head { max-width:none; }
 .gallery-back { display:inline-flex; align-items:center; gap:.3rem; min-height:44px; color:var(--text); text-decoration:none; }
-.gallery-head h1 { padding-top:.85rem; }
-.game-head .page-subtitle { font-size:.8em; font-weight:500; color:var(--muted); }
 .gallery-filters { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
 .gallery-filters button { white-space:nowrap; padding-inline:.2rem; }
 

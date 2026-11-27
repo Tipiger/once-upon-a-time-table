@@ -332,13 +332,17 @@ function renderArtPreview() {
   }).join('');
   const visible=galleryKind==='all' ? cards : cards.filter(c=>c.kind===galleryKind);
   const entry = previewDeck.entry;
-  const cover = entry.art?.cover ? '<button type="button" class="gallery-cover" data-action="zoomCover" data-value="'+esc(entry.id)+'" aria-label="检视'+esc(entry.name)+'牌组封面"></button>' : '';
+  const cover = entry.art?.cover ? '<button type="button" class="gallery-cover" data-action="zoomCover" data-value="'+esc(entry.id)+'" aria-label="检视'+esc(entry.name)+'牌组封面">'+
+    '<span class="gallery-cover-art" aria-hidden="true"></span><span class="gallery-cover-label"><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8" cy="8" r="5.5"/><path d="m12 12 5 5"/></svg>检视封面</span></button>' : '';
+  const synopsis = entry.synopsis || entry.description;
+  const intro = '<div class="gallery-intro"><div class="gallery-copy"><h1>'+esc(entry.name)+'</h1>'+
+    (synopsis ? '<p>'+esc(synopsis)+'</p>' : '')+'</div>'+cover+'</div>';
   const originPage = new URLSearchParams(location.search).get('from');
   const backLabel = hasTableReferrer() && Object.hasOwn(galleryBackLabels,originPage) ? galleryBackLabels[originPage] : '牌桌';
   const back = '<a class="gallery-back" href="./" data-return-table>'+backArrow+'返回'+backLabel+'</a>';
-  app.innerHTML=pageHeader(back,'<h1>'+esc(previewDeck.entry.name)+' <span class="page-subtitle">· 完整牌组</span></h1>','wide-head gallery-head')+
-    '<section class="hand-section"><nav class="toolbar gallery-filters" aria-label="卡牌筛选">'+filters+
-    '</nav><div class="hand-grid">'+cover+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
+  app.innerHTML=pageHeader(back,intro,'wide-head gallery-head')+
+    '<section class="hand-section" aria-label="完整牌组"><nav class="toolbar gallery-filters" aria-label="卡牌筛选">'+filters+
+    '</nav><div class="hand-grid">'+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
   restoreCard();
 }
 function render(){
@@ -500,7 +504,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=moon-relief-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=gallery-intro-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');
