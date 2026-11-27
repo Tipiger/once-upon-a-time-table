@@ -110,9 +110,15 @@ function pageHeader(backControl, content='', width='') {
  return '<header class="game-head hand-head '+width+'">'+tableNav(backControl)+content+'</header>';
 }
 function homeBack() { return btn('home',backArrow+'牌局首页','ghost'); }
-function playerHeader(backControl, title='我的手牌', showDeck=true) {
+function playerSeat() {
+ return '<small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>';
+}
+function handHeader() {
+ return pageHeader(homeBack(),deckEntry(deck.entry,deck.cards)+playerSeat(),'hand-overview');
+}
+function playerHeader(backControl, title, showDeck=true) {
  const context='<div class="player-context"><h1>'+esc(title)+'</h1>'+
-   '<small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small></div>';
+   playerSeat()+'</div>';
  return pageHeader(backControl,context+(showDeck?deckEntry(deck.entry,deck.cards):''));
 }
 // Both sides use the module's card artwork. The outer button owns the interaction.
@@ -191,7 +197,7 @@ function renderDraw(player) {
  const batchKey = JSON.stringify([table.id, seat, batch.cards]);
  let dialog = app.querySelector('.draw-dialog');
  if (!dialog || dialog.dataset.batch !== batchKey) {
-   app.innerHTML = playerHeader(homeBack())+tabs()+hand(player)+drawDialog(batch);
+   app.innerHTML = handHeader()+tabs()+hand(player)+drawDialog(batch);
    dialog = app.querySelector('.draw-dialog');
    dialog.dataset.batch = batchKey;
    dialog.dataset.revealed = String(batch.revealed);
@@ -332,7 +338,7 @@ function render(){
  if(page==='slip'){
    app.innerHTML=playerHeader(btn('closeSlip',backArrow+'返回发牌台','ghost'),'领牌码')+issueSlip();
  } else if(page==='dealer'&&table.host&&seat===1){
-   app.innerHTML=playerHeader(homeBack(),'发牌台')+tabs()+dealer();
+   app.innerHTML=playerHeader(homeBack(),'发牌台',false)+tabs()+dealer();
  } else if(!player){
    app.innerHTML=playerHeader(homeBack(),'领牌')+'<p>请先领取起手牌。</p>';
  } else if(player.shown){
@@ -346,12 +352,12 @@ function render(){
      showDiscardDisplay(player,selectedDiscard);
    } else {
      selectedDiscard=null;
-     app.innerHTML=playerHeader(homeBack(),'弃牌堆')+tabs()+discardView(player);
+     app.innerHTML=playerHeader(homeBack(),'弃牌堆',false)+tabs()+discardView(player);
    }
  } else if(player.wonWith){
    app.innerHTML=playerHeader(homeBack(),'牌局结果')+tabs()+'<section class="result"><span class="seal" aria-hidden="true">♛</span><h2>'+seat+' 号玩家获胜</h2><blockquote>'+esc(get(player.wonWith).textZh)+'</blockquote></section>';
  } else {
-   app.innerHTML=playerHeader(homeBack())+tabs()+hand(player);
+   app.innerHTML=handHeader()+tabs()+hand(player);
  }
  paintQR();
  restoreCard();
