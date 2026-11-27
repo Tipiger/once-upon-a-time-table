@@ -186,9 +186,23 @@ body:has(.draw-dialog[open]) { overflow:hidden; }
 @property --foil-at {
   syntax:"<percentage>"; inherits:true; initial-value:125%;
 }
-.display-card { touch-action:none; -webkit-touch-callout:none; --foil-at:125%; transition:--foil-at .32s ease-out; }
+@property --drag-shine {
+  syntax:"<number>"; inherits:true; initial-value:0;
+}
+/* The light follows the same eased progress as the rotating face, including reversals. */
+@property --turn-progress {
+  syntax:"<number>"; inherits:true; initial-value:0;
+}
+.display-card .card-turn {
+  --turn-progress:0;
+  --edge-on:min(var(--turn-progress), calc(1 - var(--turn-progress)));
+  --light-at:calc(var(--foil-at) - var(--edge-on) * 242%);
+  transition-property:transform, --turn-progress;
+}
+.display-card[data-back=true] .card-turn { --turn-progress:1; }
+.display-card { touch-action:none; -webkit-touch-callout:none; --foil-at:125%; transition:--foil-at .32s ease-out, --drag-shine .22s; }
 button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,650px); }
-.display-card.is-tilting { transition:none; }
+.display-card.is-tilting { --drag-shine:.92; transition:none; }
 .display-card * { pointer-events:none; }
 .display-tilt {
   position:absolute; inset:0; transform-style:preserve-3d;
@@ -241,18 +255,18 @@ button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,6
 .display-card .endback { --foil-texture:var(--ending-back); }
 .printed-deck .display-card :is(.inset-illustration + .storyface, .ending-rim, .back)::after {
   content:""; display:block; position:absolute; inset:0; border:0; border-radius:inherit;
-  background:linear-gradient(115deg,transparent calc(var(--foil-at) - 31%),#e5ab5b88 calc(var(--foil-at) - 12%),
-    #fff0c8 var(--foil-at),#d49b5299 calc(var(--foil-at) + 9%),transparent calc(var(--foil-at) + 27%));
+  background:linear-gradient(115deg,transparent calc(var(--light-at) - 31%),#e5ab5b88 calc(var(--light-at) - 12%),
+    #fff0c8 var(--light-at),#d49b5299 calc(var(--light-at) + 9%),transparent calc(var(--light-at) + 27%));
   -webkit-mask-image:var(--foil-texture); mask-image:var(--foil-texture);
   mask-mode:luminance; -webkit-mask-size:100% 100%; mask-size:100% 100%;
-  mix-blend-mode:screen; opacity:0; transition:opacity .22s;
+  mix-blend-mode:screen;
+  opacity:clamp(0, max(var(--drag-shine,0), calc(var(--edge-on) * 9)), .92);
 }
-.printed-deck .display-card.is-tilting :is(.inset-illustration + .storyface, .ending-rim, .back)::after { opacity:.92; }
 .display-card .storyface > :is(strong,.interrupt), .display-card .back strong { z-index:1; }
 @media(prefers-reduced-motion:reduce) {
   .display-tilt { transform:none; transition:none; }
   .display-card { transition:none; }
-  .printed-deck .display-card :is(.inset-illustration + .storyface, .ending-rim, .back)::after { transition:none; }
+  .display-card .card-turn { transition:none; }
 }
 .printed-deck .card, .printed-deck .mini {
   background-size:100% 100%; background-position:center; background-repeat:no-repeat;

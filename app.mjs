@@ -1,4 +1,4 @@
-import * as g from './game.mjs?v=frame-foil-1';
+import * as g from './game.mjs?v=turn-foil-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import { enableDisplayGesture } from './display-gesture.mjs?v=frame-foil-1';
 import QRCode from './vendor/index.js';

@@ -65,7 +65,7 @@ export function transferLink(pageUrl, packet) {
     const ids = list => list.map(encodeURIComponent).join(',');
     const fields = ['2', encodeURIComponent(packet.game), encodeURIComponent(packet.module),
       packet.seat, ids(packet.cards), ids(packet.reserve.story), ids(packet.reserve.ending)];
-    url.searchParams.set('v', 'frame-foil-1');
+    url.searchParams.set('v', 'turn-foil-1');
     url.hash = 'deal=' + fields.join('/');
   } else {
     url.hash = 'deal=' + encodeURIComponent(JSON.stringify(packet));
