@@ -7,12 +7,16 @@
     "description": "结局牌给出故事目标，请用自己的话收尾。",
     "art": {
       "cover": "western-cover.webp",
-      "coverInlay": "western-cover-inlay.png",
-      "coverGilt": "western-cover-gilt.png",
       "storyBack": "western-story-back.webp",
       "endingBack": "western-ending-back.webp",
       "storyFrame": "western-story-frame.webp",
-      "endingFrame": "western-ending-frame.webp"
+      "endingFrame": "western-ending-frame.webp",
+      "coverRelief": [
+        "western-cover-inlay.png",
+        "western-cover-castle.png",
+        "western-cover-gilt.png",
+        "western-cover-tracery.png"
+      ]
     },
     "theme": {
       "stylesheet": "western-print.css?v=oval-1",

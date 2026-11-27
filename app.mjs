@@ -4,6 +4,9 @@ import { enableDisplayGesture } from './display-gesture.mjs?v=moon-relief-1';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');
+const inspection = document.querySelector('#inspection');
+const topbar = document.querySelector('#topbar');
+const inspectIcon = '<svg class="inspect-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="5.5"/><path d="m12 12 5 5"/></svg>';
 const notice = document.querySelector('#notice');
 const latest = 'story-table.demo.latest';
 let setup = { seats:2, stories:3, endings:2 };
@@ -33,7 +36,7 @@ function renderCard(c, module, {back=false,action='',large=false,flip=false,inse
     (c.interrupt?'<span class="interrupt">打断</span>':'')+
     (insetArt?'':illustration(c, module, action === 'zoomArt'))+
     '<strong>'+esc(c.labelZh)+'</strong>';
-  return '<'+tag+' class="'+cls+'"'+attr+'>'+body+'</'+tag+'>';
+  return '<'+tag+' class="'+cls+'"'+attr+'>'+body+(action?inspectIcon:'')+'</'+tag+'>';
 }
 function applyArt(entry) {
  if (activeTheme?.id === entry.id) return;
@@ -44,10 +47,16 @@ function applyArt(entry) {
  if (entry.theme?.stylesheet) sheet.href = entry.theme.stylesheet;
  else sheet.removeAttribute('href');
  const art = entry.art || {};
- for (const type of ['cover','coverInlay','coverGilt','storyBack','endingBack','storyFrame','endingFrame']) {
+ for (const type of ['cover','storyBack','endingBack','storyFrame','endingFrame']) {
    const cssName = '--' + type.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
    if (art[type]) root.style.setProperty(cssName, 'url(' + JSON.stringify(art[type]) + ')');
    else root.style.removeProperty(cssName);
+ }
+ for (let i=0; i<4; i++) {
+   const mask = art.coverRelief?.[i];
+   const variable = '--relief-mask-'+(i+1);
+   if (mask) root.style.setProperty(variable, 'url('+JSON.stringify(mask)+')');
+   else root.style.removeProperty(variable);
  }
  root.classList.toggle('printed-deck', Boolean(art.storyFrame));
  let choice;
@@ -107,7 +116,8 @@ function tableNav(backControl) {
  return '<nav class="hand-nav" aria-label="牌桌导航">'+backControl+appearance+'</nav>';
 }
 function pageHeader(backControl, content='', width='') {
- return '<header class="game-head hand-head '+width+'">'+tableNav(backControl)+content+'</header>';
+ topbar.innerHTML = tableNav(backControl);
+ return content ? '<header class="game-head hand-head '+width+'">'+content+'</header>' : '';
 }
 function homeBack() { return btn('home',backArrow+'牌局首页','ghost'); }
 function playerSeat() {
@@ -129,9 +139,8 @@ function cardSides(id) {
 function inspectionFaces(c, module) {
  if (c.kind === 'cover') {
    const art = module.entry.art;
-   const layers = '<span class="cover-bed"></span>'+
-     (art.coverInlay ? '<span class="cover-layer cover-inlay"><i></i></span>' : '')+
-     (art.coverGilt ? '<span class="cover-layer cover-gilt"><i></i></span>' : '');
+   const layers = '<span class="cover-bed"></span>'+(art.coverRelief || []).slice(0,4).map((_,i)=>
+     '<span class="cover-layer relief-'+(i+1)+'"><i></i></span>').join('');
    return '<span class="book-face">'+layers+'</span><span class="book-face book-reverse">'+layers+'</span>';
  }
  const layered = c.kind === 'story' && c.image && module.entry.art?.storyFrame;
@@ -141,14 +150,16 @@ function inspectionFaces(c, module) {
 }
 
 function showCardDisplay(c, module, title, back, actions='', note='') {
- app.innerHTML='<section class="card-inspection" aria-label="'+esc(title)+'">'+pageHeader(back)+
+ app.inert=true;
+ inspection.hidden=false;
+ inspection.innerHTML='<section class="card-inspection" aria-label="'+esc(title)+'">'+pageHeader(back)+
    '<div class="inspection-body">'+
    '<button type="button" class="turnable display-card" aria-describedby="display-hint" aria-label="'+esc(c.textZh || c.labelZh)+'，翻到牌背">'+
    '<span class="display-tilt" aria-hidden="true"><span class="card-turn">'+inspectionFaces(c,module)+
    '</span></span></button><p class="flip-hint" id="display-hint">轻点翻面 · 按住拖动看反光</p>'+
    (note?'<p class="inspection-note">'+esc(note)+'</p>':'')+
    (actions?'<div class="actions">'+actions+'</div>':'')+'</div></section>';
- const display=app.querySelector('.display-card');
+ const display=inspection.querySelector('.display-card');
  enableDisplayGesture(display);
  display.focus({preventScroll:true});
 }
@@ -293,22 +304,26 @@ function discardView(player) {
      '<p class="empty">你打出的牌会留在这里。</p>')+'</section>';
 }
 function showHandDisplay(player) {
+ showCardDisplay(get(player.shown),deck,'展示卡牌',btn('withdraw',backArrow+'返回我的手牌','ghost'),
+   btn('withdraw','返回')+btn('play','出牌','primary'));
  if(player.confirming){
-   app.innerHTML='<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
-   return;
+   inspection.insertAdjacentHTML('beforeend','<dialog class="win-dialog" aria-labelledby="win-question"><h2 id="win-question">用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></dialog>');
+   const dialog=inspection.querySelector('.win-dialog');
+   dialog.addEventListener('cancel',e=>{e.preventDefault();perform('cancelWin');});
+   dialog.showModal();
  }
- showCardDisplay(get(player.shown),deck,'展示卡牌',btn('withdraw',backArrow+'返回我的手牌','ghost'),btn('play','出牌','primary'));
+
 }
 let previewDeck, previewCard, returnToCard, galleryKind='all';
 function rememberCard(id, action) {
- returnToCard={id, action, scrollY:window.scrollY};
+ returnToCard={id, action, scrollY:app.scrollTop};
 }
 function restoreCard() {
- if(!returnToCard)return;
+ if(!returnToCard || !inspection.hidden)return;
  const {id,action,scrollY}=returnToCard;
  const trigger=app.querySelector('[data-action="'+action+'"][data-value="'+CSS.escape(id)+'"]');
  if(!trigger)return;
- window.scrollTo(0,scrollY);
+ app.scrollTop=scrollY;
  trigger.focus({preventScroll:true});
  returnToCard=null;
 }
@@ -333,7 +348,7 @@ function renderArtPreview() {
   const visible=galleryKind==='all' ? cards : cards.filter(c=>c.kind===galleryKind);
   const entry = previewDeck.entry;
   const cover = entry.art?.cover ? '<button type="button" class="gallery-cover" data-action="zoomCover" data-value="'+esc(entry.id)+'" aria-label="检视'+esc(entry.name)+'牌组封面">'+
-    '<span class="gallery-cover-art" aria-hidden="true"></span><span class="gallery-cover-label"><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8" cy="8" r="5.5"/><path d="m12 12 5 5"/></svg>检视封面</span></button>' : '';
+    '<span class="gallery-cover-art" aria-hidden="true"></span>'+inspectIcon+'</button>' : '';
   const synopsis = entry.synopsis || entry.description;
   const intro = '<div class="gallery-intro"><div class="gallery-copy"><h1>'+esc(entry.name)+'</h1>'+
     (synopsis ? '<p>'+esc(synopsis)+'</p>' : '')+'</div>'+cover+'</div>';
@@ -346,6 +361,9 @@ function renderArtPreview() {
   restoreCard();
 }
 function render(){
+ inspection.hidden=true;
+ inspection.replaceChildren();
+ app.inert=false;
  app.removeAttribute('aria-busy');
  if(page==='art'){renderArtPreview();return;}
  if(page==='home'||!table){app.innerHTML=home();homeTheme();return;}
@@ -469,8 +487,9 @@ async function perform(a,v){
  if(busy)return;busy=true;
  try{await act(a,v);}catch(err){tell(err.message);}
  finally{busy=false;render();}
+
 }
-app.addEventListener('click',e=>{
+function handleTableClick(e){
  if(e.target.closest('[data-view-module]')){
    const url=new URL(location.pathname,location.href);
    const source={page, game:table?.id, target, serial:slip?.serial};
@@ -493,7 +512,8 @@ app.addEventListener('click',e=>{
    return;
  }
  const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);
-});
+}
+for (const surface of [app,inspection,topbar]) surface.addEventListener('click',handleTableClick);
 app.addEventListener('change',e=>{
  if(e.target.id==='module'){selected=e.target.value;render();app.querySelector('#module')?.focus();}
  if(page==='home' && Object.hasOwn(setup,e.target.id))setup[e.target.id]=Number(e.target.value);
@@ -504,7 +524,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=gallery-intro-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=relief-nav-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');

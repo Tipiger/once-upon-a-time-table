@@ -14,7 +14,7 @@
   line-height: 1.45; text-align: start; overflow-wrap: anywhere;
 }
 @media (max-width: 480px) {
-  .hand-ending .endface > span:last-child { display: none; }
+  .hand-ending .endface > span:nth-child(3) { display: none; }
 }
 
 .story-art { width:76%; height:53%; object-fit:contain; }
@@ -47,8 +47,29 @@
   --primary:#343638; --on-primary:#fff; --privacy:#d2d3d3;
 }
 * { box-sizing:border-box; }
-body { margin:0; min-height:100vh; }
-#app { max-width:760px; margin:auto; padding:1rem clamp(.8rem,4vw,2rem) 2rem; }
+/* The first grid row always reserves the bar's actual height (including the safe area).
+   The list and the inspection share the second row, each with its own scroll position. */
+body {
+ margin:0; height:100vh; height:100dvh; overflow:hidden;
+ display:grid; grid-template-rows:auto minmax(0,1fr);
+}
+#topbar {
+ grid-row:1; grid-column:1; z-index:5; display:block;
+ padding:env(safe-area-inset-top) 0 0; border:0; border-bottom:1px solid var(--line);
+ background:var(--bar); box-shadow:0 2px 6px #1111;
+}
+#topbar .hand-nav {
+ min-height:3rem; max-width:760px; margin:auto; border:0;
+ padding-inline:max(clamp(.8rem,4vw,2rem),env(safe-area-inset-left)) max(clamp(.8rem,4vw,2rem),env(safe-area-inset-right));
+}
+#topbar button { color:var(--text); }
+#topbar .head-actions button { color:var(--muted); }
+#app,#inspection {
+ grid-area:2 / 1; min-height:0; min-width:0; overflow:auto; overscroll-behavior:contain;
+ padding:1rem max(clamp(.8rem,4vw,2rem),calc((100% - 760px) / 2 + 2rem)) 2rem;
+}
+#inspection { z-index:3; background:var(--desk); }
+body:has(#inspection:not([hidden])) .game-nav { visibility:hidden; }
 #app:has(.game-nav) { padding-bottom:calc(5.5rem + env(safe-area-inset-bottom)); }
 h1,h2,h3,p { margin:0; }
 h1,h2,h3 { line-height:1.25; }
@@ -312,6 +333,7 @@ button.deck-entry:not(.card) {
 .gallery-copy { flex:1; min-width:0; overflow-wrap:anywhere; }
 .gallery-copy p { max-width:32em; margin-top:.45rem; color:var(--muted); line-height:1.6; }
 button.gallery-cover, button.gallery-cover:hover {
+ position:relative;
  display:grid; justify-items:center; gap:.38rem; flex:0 0 clamp(5rem,23vw,7rem);
  padding:0; border:0; border-radius:7px; background:transparent;
 }
@@ -319,13 +341,12 @@ button.gallery-cover, button.gallery-cover:hover {
  width:100%; aspect-ratio:56/87; border-radius:6%; background:var(--cover) center / 100% 100%;
  box-shadow:0 1px 0 #a28550,0 2px 0 #4c392c,0 3px 9px #110b0a40;
 }
-.gallery-cover-label {
- display:inline-flex; align-items:center; justify-content:center; gap:.25em; padding:.25em .55em;
- border:1px solid var(--line); border-radius:5px; background:var(--field); color:var(--text);
- font-size:.875rem; font-weight:600; line-height:1.4;
+.inspect-icon {
+ position:absolute; z-index:1; right:3%; bottom:2.5%; box-sizing:border-box;
+ width:clamp(15px,4.3vw,21px); height:clamp(15px,4.3vw,21px); padding:3px;
+ color:#fff; background:#292721ed; border-radius:50%; box-shadow:0 0 0 1px #fff9;
+ fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; pointer-events:none;
 }
-.gallery-cover-label svg { width:1em; height:1em; fill:none; stroke:currentColor; stroke-width:1.65; stroke-linecap:round; }
-.gallery-cover:is(:hover,:focus-visible,:active) .gallery-cover-label { background:var(--primary); color:var(--on-primary); border-color:var(--primary); }
 .book-face, .cover-bed, .cover-layer, .cover-layer i {
  position:absolute; inset:0; border-radius:9px; backface-visibility:hidden;
 }
@@ -346,13 +367,12 @@ button.gallery-cover, button.gallery-cover:hover {
  --light-at:calc(var(--foil-at) - var(--edge-on) * 242% + var(--glint-shift));
  --foil-texture:var(--cover);
 }
-.cover-inlay {
- --rise:1.7px; --relief:var(--cover-inlay); --glint-shift:4.5%;
- --cast:.6px 1.28px .82px #100a20b8;
-}
-.cover-gilt {
- --rise:2.95px; --relief:var(--cover-gilt); --glint-shift:-7.5%;
- --cast:.98px 1.88px 1.05px #3c2341bd;
+.relief-1 { --rise:1px; --relief:var(--relief-mask-1); --glint-shift:6%; --cast:.4px .8px .6px #211727a8; }
+.relief-2 { --rise:2.5px; --relief:var(--relief-mask-2); --glint-shift:2%; --cast:.65px 1.35px .85px #100a20bf; }
+.relief-3 { --rise:4.5px; --relief:var(--relief-mask-3); --glint-shift:-5%; --cast:.9px 1.8px 1.1px #352032c7; }
+.relief-4 { --rise:6px; --relief:var(--relief-mask-4); --glint-shift:-11%; --cast:.5px 1px .55px #493319c7; }
+.relief-3 i::after {
+ background:radial-gradient(ellipse 34% 63% at var(--light-at) 48%, #fff6df 0%,#f5db9b80 36%,transparent 80%);
 }
 .deck-entry-copy { display:grid; justify-items:start; gap:.25rem; min-width:0; }
 .deck-entry-copy strong { font:700 clamp(1.15rem,5vw,1.5rem)/1.25 var(--table-font); overflow-wrap:anywhere; }
@@ -370,7 +390,7 @@ button.gallery-cover, button.gallery-cover:hover {
 
 .hand-nav .brand { padding-block:.55rem; }
 .discard-board > small { display:block; margin:.75rem 0; }
-.card-inspection { min-height:calc(100dvh - 3rem); display:flex; flex-direction:column; }
+.card-inspection { min-height:100%; display:flex; flex-direction:column; }
 .card-inspection .game-head { width:100%; }
 .inspection-body { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:.7rem; padding:.8rem 0; }
 .inspection-body .display-card { width:min(78vw,350px,calc((100dvh - 245px)*.6437)); }
