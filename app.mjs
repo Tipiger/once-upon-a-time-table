@@ -208,14 +208,20 @@ function hand(player) {
 }
 function drawMenu(player) {
  const { story, ending } = player.reserve;
- const choices = [
-   [1,0,'补 1 张故事牌'], [2,0,'补 2 张故事牌'], [0,1,'补 1 张结局牌'], [1,1,'故事、结局各 1 张']
- ];
- const buttons = choices.map(([s,e,label]) =>
-   '<button data-action="draw" data-value="'+s+','+e+'"'+(story.length<s || ending.length<e?' disabled':'')+'>'+label+'</button>'
- ).join('');
- return '<section class="panel"><div class="row between"><h2>个人补牌堆</h2>'+btn('tab','返回手牌','soft','hand')+'</div>'+
-   '<p class="help">剩余 '+story.length+' 张故事牌 · '+ending.length+' 张结局牌</p><div class="actions">'+buttons+'</div></section>';
+ function drawButton(stories, endings, label, description) {
+   const disabled = story.length < stories || ending.length < endings;
+   return '<button type="button" data-action="draw" data-value="'+stories+','+endings+'" aria-label="'+description+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
+ }
+ function pile(kind, label) {
+   const isStory = kind === 'story';
+   const remaining = player.reserve[kind].length;
+   const buttons = [1, 2].map(count => drawButton(isStory ? count : 0, isStory ? 0 : count, '+'+count, '补 '+count+' 张'+label));
+   return '<section class="reserve-pile" aria-label="'+label+'">'+renderCard({kind}, deck, {back:true})+
+     '<small>剩余 '+remaining+' 张</small><div class="reserve-counts">'+buttons.join('')+'</div></section>';
+ }
+ return '<section class="panel reserve-panel"><div class="row between"><h2>个人补牌堆</h2>'+btn('tab','返回手牌','soft','hand')+'</div>'+
+   '<div class="reserve-piles">'+pile('story','故事牌')+pile('ending','结局牌')+'</div>'+
+   '<div class="reserve-mixed">'+drawButton(1,1,'各补 1 张','故事牌、结局牌各补 1 张')+'</div></section>';
 }
 function dealer(){
  const host=table.host, history=host.history.filter(p=>p.seat===target), opening=history[0], last=history.at(-1);
