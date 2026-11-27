@@ -81,3 +81,9 @@
 .font-option strong { font-size:1.08rem; }
 
 .table-link { color:var(--cream); text-underline-offset:.2em; }
+
+.module-choice { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.4rem .8rem; align-items:center; }
+.module-choice > div { display:grid; gap:.2rem; }
+.module-choice > div strong { font-size:1.25rem; }
+.module-choice > small { grid-column:1/-1; }
+.module-links { display:flex; flex-wrap:wrap; gap:.35rem; align-items:center; }

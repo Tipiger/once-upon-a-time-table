@@ -56,22 +56,31 @@ function applyArt(entry) {
  setFont(choice);
 }
 function selectedEntry() { return modules.entries.find(e => e.id === selected); }
+const viewModuleButton = '<button type="button" class="soft" data-view-module>查看模组</button>';
+function moduleSetup() {
+ const entry=selectedEntry();
+ const name=modules.entries.length===1
+   ? '<strong>'+esc(entry.name)+'</strong>'
+   : '<select id="module" aria-label="主题模组">'+modules.entries.map(e=>'<option value="'+esc(e.id)+'" '+(e.id===selected?'selected':'')+'>'+esc(e.name)+'</option>').join('')+'</select>';
+ return '<div class="wide module-choice"><div><small>主题模组</small>'+name+'</div>'+viewModuleButton+
+   '<small id="moduleInfo">'+esc(entry.description)+'</small></div>';
+}
 function homeTheme() {
- const entry = selectedEntry();
+ const entry=selectedEntry();
  applyArt(entry);
- const hint = document.getElementById('moduleInfo');
- if (hint) hint.textContent = entry.description;
+ const hint=document.getElementById('moduleInfo');
+ if(hint) hint.textContent=entry.description;
 }
 function top(aux='') {return '<header class="between"><span class="brand"><i>✥</i>故事牌桌</span>'+ '<div class="head-actions">'+aux+'<button class="font-trigger soft" type="button" aria-haspopup="dialog">字体</button></div></header>' ;}
 const tabs = () => '<nav class="toolbar" aria-label="牌桌功能">'+[['hand','我的手牌'],['discard','弃牌堆'],...(table.host&&seat===1?[['dealer','发牌台']]:[])].map(([a,t])=>'<button data-action="tab" data-value="'+a+'" aria-pressed="'+(page===a)+'">'+t+'</button>').join('')+'</nav>';
 function home(){
  return top()+'<section class="hero"><div><h1>很久很久以前</h1><p>抽一手牌，和同桌的人讲一个故事。</p></div><div aria-hidden="true" class="deckfan"><div class="mini">✧</div><div class="mini">✥</div></div></section>'+
  (table?'<section class="panel row between"><div><b>上次的牌局</b><br><small>'+(table.seats?table.seats+' 人 · ':'')+(table.solo?'单机试玩':'同桌牌局')+'</small></div>'+btn('resume','继续牌局','primary')+'</section>':'')+
- '<section class="panel"><h2>新牌局</h2><div class="setup-fields"><label class="wide">主题模组<select id="module">'+modules.entries.map(e=>'<option value="'+esc(e.id)+'" '+(e.id===selected?'selected':'')+'>'+esc(e.name)+'</option>').join('')+'</select><small id="moduleInfo">'+esc(selectedEntry().description)+'</small></label><label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newSolo','单机试玩','primary')+btn('newTable','同桌开局')+'</div><p class="help">单机可切换座位；同桌时每人用自己的手机扫码领牌。</p></section>';
+ '<section class="panel"><h2>新牌局</h2><div class="setup-fields">'+moduleSetup()+'<label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newSolo','单机试玩','primary')+btn('newTable','同桌开局')+'</div><p class="help">单机可切换座位；同桌时每人用自己的手机扫码领牌。</p></section>';
 }
 function heading(){
  const ctrl=table.solo?'<label class="playerswitch">试玩座位<select id="seatChoice" aria-label="切换试玩座位">'+options(table.seats,seat,' 号')+'</select></label>':'<span class="small">'+seat+' 号 · '+(table.host?'房主':'玩家')+'</span>';
- return top(ctrl)+'<div class="row between back-row"><span class="small">'+esc(deck.entry.name)+' / '+(table.solo?'单机试玩':'同桌牌局')+'</span>'+btn('home','牌局首页','ghost')+'</div>';
+ return top(ctrl)+'<div class="row between back-row"><span class="small">'+esc(deck.entry.name)+' / '+(table.solo?'单机试玩':'同桌牌局')+'</span>'+ '<div class="module-links">'+viewModuleButton+btn('home','牌局首页','ghost')+'</div></div>';
 }
 function inbox(player){
  const batch=player.inbox[0];
@@ -108,16 +117,24 @@ function overlay(player){
  if(player.confirming)return '<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
  return '<section class="overlay" role="dialog" aria-modal="true" aria-label="展示卡牌">'+card(player.shown,{large:true})+'<div class="actions">'+btn('withdraw','撤回','soft')+btn('play','出牌','primary')+'</div></section>';
 }
-let previewDeck, previewCard, returnToCard;
+let previewDeck, previewCard, returnToCard, galleryKind='all';
 function renderArtPreview() {
   applyArt(previewDeck.entry);
   if (previewCard) {
-    app.innerHTML='<section class="overlay" role="dialog" aria-modal="true" aria-label="插画大图">'+renderCard(previewCard, previewDeck, {large:true})+btn('closeArt','返回预览','soft')+'</section>';
+    app.innerHTML='<section class="overlay" role="dialog" aria-modal="true" aria-label="卡牌大图">'+renderCard(previewCard, previewDeck, {large:true})+btn('closeArt','返回预览','soft')+'</section>';
     app.querySelector('button').focus();
     return;
   }
-  const examples=previewDeck.cards.filter(c=>c.kind==='story' && c.image);
-  app.innerHTML=top()+'<section class="hand-section"><div class="sectionhead"><h2>西方童话 · 故事牌</h2><a class="table-link" href="./">进入牌桌</a></div><div class="hand-grid">'+examples.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
+  const cards=previewDeck.cards;
+  const options=[['all','全部'],['story','故事牌'],['ending','结局牌']];
+  const filters=options.map(([kind,label])=>{
+    const count=kind==='all' ? cards.length : cards.filter(c=>c.kind===kind).length;
+    return '<button data-action="filterGallery" data-value="'+kind+'" aria-pressed="'+(galleryKind===kind)+'">'+label+' '+count+'</button>';
+  }).join('');
+  const visible=galleryKind==='all' ? cards : cards.filter(c=>c.kind===galleryKind);
+  app.innerHTML=top()+'<section class="hand-section"><div class="sectionhead"><h2>'+esc(previewDeck.entry.name)+'</h2>'+
+    '<a class="table-link" href="./" data-return-table>返回牌桌</a></div><nav class="toolbar" aria-label="卡牌筛选">'+filters+
+    '</nav><div class="hand-grid">'+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
   if (returnToCard) {
     window.scrollTo(0, returnToCard.scrollY);
     const trigger=app.querySelector('[data-action="zoomArt"][data-value="'+CSS.escape(returnToCard.id)+'"]');
@@ -169,6 +186,7 @@ async function receiveRemote(packet){
 }
 async function act(a,v){
  if(page==='art'){
+   if(a==='filterGallery') { galleryKind=v; return; }
    if(a==='zoomArt') returnToCard={id:v,scrollY:window.scrollY};
    previewCard=a==='zoomArt' ? previewDeck.byId.get(v) : null;
    return;
@@ -221,7 +239,19 @@ async function perform(a,v){
  try{await act(a,v);}catch(err){tell(err.message);}
  finally{busy=false;render();}
 }
-app.addEventListener('click',e=>{if(e.target.closest('.font-trigger')){openFontPicker();return;}const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);});
+app.addEventListener('click',e=>{
+ if(e.target.closest('[data-view-module]')){
+   const url=new URL(location.pathname,location.href);
+   url.searchParams.set('preview','module');
+   url.searchParams.set('module',page==='home'?selected:deck.entry.id);
+   location.assign(url);
+   return;
+ }
+ if(e.target.closest('[data-return-table]') && document.referrer){
+   const from=new URL(document.referrer);
+   if(from.origin===location.origin && from.pathname===location.pathname && history.length>1){e.preventDefault();history.back();return;}
+ }
+ if(e.target.closest('.font-trigger')){openFontPicker();return;}const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);});
 app.addEventListener('change',e=>{if(e.target.id==='module'){selected=e.target.value;homeTheme();}
  if(e.target.id==='seatChoice')perform('switch',e.target.value);});
 async function openPacket(){
@@ -230,13 +260,21 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=full-art-1'));selected=modules.entries[0].id;
-   if(new URLSearchParams(location.search).get('preview')==='art' && !location.hash.startsWith('#deal=')){
-     previewDeck=await modules.open('once-upon-a-time-3e-core');
+   modules=catalog(await readJSON('./modules.json?v=catalog-1'));selected=modules.entries[0].id;
+   const params=new URLSearchParams(location.search);
+   if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
+     const requested=params.get('module');
+     previewDeck=await modules.open(modules.entries.some(e=>e.id===requested)?requested:selected);
      page='art';render();return;
    }
    const prev=JSON.parse(localStorage.getItem(latest)||'null');
-   if(prev){table=await g.updateSaved(key(prev.id));if(table){deck=await modules.open(savedModule(table));seat=prev.seat;page='hand';}}
+   if(prev){
+     const saved=await g.updateSaved(key(prev.id));
+     const id=saved && savedModule(saved);
+     if(modules.entries.some(e=>e.id===id)){
+       deck=await modules.open(id);table=saved;seat=prev.seat;page='hand';
+     }
+   }
    if(location.hash.startsWith('#deal='))await openPacket();
    render();
    if(new URLSearchParams(location.search).get('preview')==='fonts')openFontPicker();
