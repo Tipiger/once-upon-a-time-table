@@ -309,9 +309,23 @@ button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,6
   .hand-head button.hand-reserve { padding-inline:.5rem; }
 }
 
-.gallery-head { max-width:none; }
+.wide-head { max-width:none; }
 .gallery-back { display:inline-flex; align-items:center; gap:.3rem; min-height:44px; color:var(--text); text-decoration:none; }
 .gallery-head h1 { padding-top:.85rem; }
 .game-head .page-subtitle { font-size:.8em; font-weight:500; color:var(--muted); }
 .gallery-filters { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
 .gallery-filters button { white-space:nowrap; padding-inline:.2rem; }
+
+.hand-nav .brand { padding-block:.55rem; }
+.discard-board > small { display:block; margin:.75rem 0; }
+.card-inspection { min-height:calc(100dvh - 3rem); display:flex; flex-direction:column; }
+.card-inspection .game-head { width:100%; }
+.inspection-body { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:.7rem; padding:.8rem 0; }
+.inspection-body .display-card { width:min(78vw,350px,calc((100dvh - 245px)*.6437)); }
+.inspection-body .actions { width:min(90vw,380px); margin:0; }
+.inspection-note { text-align:center; color:var(--muted); }
+@media(max-height:480px) and (orientation:landscape) {
+  .inspection-body { display:grid; grid-template-columns:auto minmax(9rem,14rem); justify-content:center; align-content:center; }
+  .inspection-body .display-card { grid-row:1 / span 3; width:min(38vw,calc((100dvh - 100px)*.6437)); }
+  .inspection-body .actions { width:100%; }
+}
