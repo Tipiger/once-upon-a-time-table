@@ -308,3 +308,10 @@ button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,6
   .hand-details { column-gap:.35rem; }
   .hand-head button.hand-reserve { padding-inline:.5rem; }
 }
+
+.gallery-head { max-width:none; }
+.gallery-back { display:inline-flex; align-items:center; gap:.3rem; min-height:44px; color:var(--text); text-decoration:none; }
+.gallery-head h1 { padding-top:.85rem; }
+.gallery-head h1 span { font-size:.8em; font-weight:500; color:var(--muted); }
+.gallery-filters { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+.gallery-filters button { white-space:nowrap; padding-inline:.2rem; }

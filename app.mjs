@@ -96,11 +96,15 @@ function heading(){
  return '<header class="game-head"><div class="row between"><h1>'+esc(deck.entry.name)+'</h1><div class="module-links">'+viewModuleButton+btn('home','牌局首页','ghost')+'</div></div>'+
  '<div class="row between"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+appearance+'</div></header>';
 }
+const backArrow = '<span aria-hidden="true">‹ </span>';
+function tableNav(backControl) {
+ return '<nav class="hand-nav" aria-label="牌桌导航">'+backControl+appearance+'</nav>';
+}
 function handHeader(player) {
  const reserve = player.reserve;
  const draw = reserve ? '<button class="hand-reserve" data-action="drawMenu"><strong>个人补牌堆 <span aria-hidden="true">›</span></strong>'+
    '<small>故事 '+reserve.story.length+' · 结局 '+reserve.ending.length+'</small></button>' : '';
- return '<header class="game-head hand-head"><div class="hand-nav">'+btn('home','<span aria-hidden="true">‹ </span>牌局首页','ghost')+appearance+'</div>'+
+ return '<header class="game-head hand-head">'+tableNav(btn('home',backArrow+'牌局首页','ghost'))+
    '<div class="hand-summary"><div class="hand-context"><h1>'+esc(deck.entry.name)+'</h1>'+
    '<div class="hand-details"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+viewModuleButton+'</div></div>'+draw+'</div></header>';
 }
@@ -272,10 +276,16 @@ function showHandDisplay(player) {
  showCardDisplay(get(player.shown),deck,'展示卡牌',btn('withdraw','撤回','soft')+btn('play','出牌','primary'));
 }
 let previewDeck, previewCard, returnToCard, galleryKind='all';
+const galleryBackLabels = {home:'牌局首页',hand:'我的手牌',draw:'个人补牌堆',discard:'弃牌堆',dealer:'发牌台',slip:'领牌码'};
+function hasTableReferrer() {
+  if (!document.referrer || history.length < 2) return false;
+  const from = new URL(document.referrer);
+  return from.origin === location.origin && from.pathname === location.pathname && !from.searchParams.has('preview');
+}
 function renderArtPreview() {
   applyArt(previewDeck.entry);
   if (previewCard) {
-    showCardDisplay(previewCard,previewDeck,'卡牌大图',btn('closeArt','返回预览','soft'));
+    showCardDisplay(previewCard,previewDeck,'卡牌大图',btn('closeArt','返回完整牌组','soft'));
     return;
   }
   const cards=previewDeck.cards;
@@ -285,8 +295,12 @@ function renderArtPreview() {
     return '<button data-action="filterGallery" data-value="'+kind+'" aria-pressed="'+(galleryKind===kind)+'">'+label+' '+count+'</button>';
   }).join('');
   const visible=galleryKind==='all' ? cards : cards.filter(c=>c.kind===galleryKind);
-  app.innerHTML=top()+'<section class="hand-section"><div class="sectionhead"><h2>'+esc(previewDeck.entry.name)+'</h2>'+
-    '<a class="table-link" href="./" data-return-table>返回牌桌</a></div><nav class="toolbar" aria-label="卡牌筛选">'+filters+
+  const originPage = new URLSearchParams(location.search).get('from');
+  const backLabel = hasTableReferrer() && Object.hasOwn(galleryBackLabels,originPage) ? galleryBackLabels[originPage] : '牌桌';
+  const back = '<a class="gallery-back" href="./" data-return-table>'+backArrow+'返回'+backLabel+'</a>';
+  app.innerHTML='<header class="game-head hand-head gallery-head">'+tableNav(back)+
+    '<h1>'+esc(previewDeck.entry.name)+' <span>· 完整牌组</span></h1></header>'+
+    '<section class="hand-section"><nav class="toolbar gallery-filters" aria-label="卡牌筛选">'+filters+
     '</nav><div class="hand-grid">'+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
   if (returnToCard) {
     window.scrollTo(0, returnToCard.scrollY);
@@ -417,15 +431,16 @@ async function perform(a,v){
 app.addEventListener('click',e=>{
  if(e.target.closest('[data-view-module]')){
    const url=new URL(location.pathname,location.href);
+   history.replaceState({...history.state, gallerySource:{page, game:table?.id, target, serial:slip?.serial}},'');
+   url.searchParams.set('from',page);
    url.searchParams.set('preview','module');
    url.searchParams.set('v',g.releaseVersion);
    url.searchParams.set('module',page==='home'?selected:deck.entry.id);
    location.assign(url);
    return;
  }
- if(e.target.closest('[data-return-table]') && document.referrer){
-   const from=new URL(document.referrer);
-   if(from.origin===location.origin && from.pathname===location.pathname && history.length>1){e.preventDefault();history.back();return;}
+ if(e.target.closest('[data-return-table]') && hasTableReferrer()){
+   e.preventDefault();history.back();return;
  }
  const trigger=e.target.closest('button[data-dialog]');
  if(trigger){
@@ -456,6 +471,16 @@ async function init(){
      const id=saved && savedModule(saved);
      if(modules.entries.some(e=>e.id===id)){
        deck=await modules.open(id);table=saved;seat=saved.host ? 1 : saved.mySeat;page='hand';
+     }
+   }
+   // Browsers may rebuild the previous document instead of restoring it from cache.
+   const source = history.state?.gallerySource;
+   if (source && performance.getEntriesByType('navigation')[0]?.type === 'back_forward') {
+     if (source.page === 'home') page='home';
+     else if (table && source.game === table.id && Object.hasOwn(galleryBackLabels,source.page)) {
+       target=source.target;
+       slip=table.host?.history.find(packet=>packet.serial===source.serial);
+       page=source.page==='slip' && !slip ? 'hand' : source.page;
      }
    }
    if(location.hash.startsWith('#deal='))await openPacket();
