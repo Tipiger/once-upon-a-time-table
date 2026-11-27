@@ -226,7 +226,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=inlay-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=inlay-2'));selected=modules.entries[0].id;
    if(new URLSearchParams(location.search).get('preview')==='art' && !location.hash.startsWith('#deal=')){
      previewDeck=await modules.open('once-upon-a-time-3e-core');
      page='art';render();return;

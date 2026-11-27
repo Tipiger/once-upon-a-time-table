@@ -24,4 +24,7 @@
 .portrait-inlay { display:block; overflow:hidden; isolation:isolate; }
 .portrait-inlay img { position:absolute; inset:0; width:100%; height:100%; }
 .portrait-inlay .art-bleed { object-fit:cover; filter:blur(5cqi); transform:scale(1.15); }
-.portrait-inlay .art-subject { object-fit:contain; mask-image:linear-gradient(90deg, transparent 15%, #000 24% 76%, transparent 85%); }
+.portrait-inlay .art-subject {
+  left:50%; right:auto; width:auto; max-width:none; transform:translateX(-50%);
+  mask-image:linear-gradient(90deg, transparent, #000 13% 87%, transparent);
+}
