@@ -51,10 +51,15 @@ function inbox(player){
  return '<section class="sectionhead"><h2>'+ (batch.revealed?'本次领到的牌':'收到 '+batch.cards.length+' 张牌')+'</h2></section><p class="help">'+(batch.revealed?'收起后加入你的手牌。':'点任意一张牌背，一起翻开。')+'</p><div class="grid">'+batch.cards.map(id=>card(id,{back:!batch.revealed,action:batch.revealed?'':'reveal',flip:batch.revealed})).join('')+'</div>'+(batch.revealed?'<div class="actions">'+btn('collect','收起','primary')+'</div>':'');
 }
 function hand(player) {
- const stories=player.hand.filter(id=>get(id).kind==='story'), endings=player.hand.filter(id=>get(id).kind==='ending');
- return '<div class="sectionhead"><h2>故事手牌</h2><small>'+stories.length+' 张</small></div>'+
- (stories.length?'<div class="grid">'+stories.map(id=>card(id,{action:'show'})).join('')+'</div>':'<p class="panel">故事牌已出完，可以选择一张结局收尾。</p>')+
- '<div class="sectionhead"><h2>秘密结局</h2><small>'+endings.length+' 张</small></div><div class="grid">'+endings.map(id=>card(id,{back:true,action:'show'})).join('')+'</div>';
+ const section = (kind, title) => {
+   const ids = player.hand.filter(id => get(id).kind === kind);
+   const content = ids.length
+     ? '<div class="hand-grid">' + ids.map(id => card(id, {action:'show'})).join('') + '</div>'
+     : '<p class="empty">故事牌已出完，可以选择一张结局收尾。</p>';
+   return '<section class="hand-section hand-' + kind + '" aria-label="' + title + '">' +
+     '<h2 class="hand-heading"><span>' + title + '</span></h2>' + content + '</section>';
+ };
+ return '<div class="hand-board">' + section('ending', '结局牌') + section('story', '故事牌') + '</div>';
 }
 function dealer(){
  const host=table.host, history=host.history.filter(p=>p.seat===target), opening=history[0], last=history.at(-1);
