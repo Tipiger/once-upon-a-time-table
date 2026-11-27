@@ -1,4 +1,4 @@
-import { enableCoverRelief } from './cover-relief.mjs?v=worker-tilt-1';
+import { enableCoverRelief } from './cover-relief.mjs?v=native-relief-1';
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import { enableDisplayGesture } from './display-gesture.mjs?v=center-zoom-1';
@@ -518,7 +518,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=continuous-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=native-relief-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');
