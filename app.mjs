@@ -57,7 +57,7 @@ function applyArt(entry) {
  setFont(choice);
 }
 function selectedEntry() { return modules.entries.find(e => e.id === selected); }
-const viewModuleButton = '<button type="button" class="soft" data-view-module>查看模组</button>';
+const viewModuleButton = '<button type="button" class="soft" data-view-module>查看完整牌组</button>';
 function moduleSetup() {
  const entry=selectedEntry();
  const name=modules.entries.length===1
@@ -95,6 +95,14 @@ function home(){
 function heading(){
  return '<header class="game-head"><div class="row between"><h1>'+esc(deck.entry.name)+'</h1><div class="module-links">'+viewModuleButton+btn('home','牌局首页','ghost')+'</div></div>'+
  '<div class="row between"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+appearance+'</div></header>';
+}
+function handHeader(player) {
+ const reserve = player.reserve;
+ const draw = reserve ? '<button class="hand-reserve" data-action="drawMenu"><strong>个人补牌堆 <span aria-hidden="true">›</span></strong>'+
+   '<small>故事 '+reserve.story.length+' · 结局 '+reserve.ending.length+'</small></button>' : '';
+ return '<header class="game-head hand-head"><div class="hand-nav">'+btn('home','<span aria-hidden="true">‹ </span>牌局首页','ghost')+appearance+'</div>'+
+   '<div class="hand-summary"><div class="hand-context"><h1>'+esc(deck.entry.name)+'</h1>'+
+   '<div class="hand-details"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+viewModuleButton+'</div></div>'+draw+'</div></header>';
 }
 // Both sides use the module's card artwork. The outer button owns the interaction.
 function cardSides(id) {
@@ -170,7 +178,7 @@ function renderDraw(player) {
  const batchKey = JSON.stringify([table.id, seat, batch.cards]);
  let dialog = app.querySelector('.draw-dialog');
  if (!dialog || dialog.dataset.batch !== batchKey) {
-   app.innerHTML = heading()+tabs()+hand(player)+drawDialog(batch);
+   app.innerHTML = handHeader(player)+tabs()+hand(player)+drawDialog(batch);
    dialog = app.querySelector('.draw-dialog');
    dialog.dataset.batch = batchKey;
    dialog.dataset.revealed = String(batch.revealed);
@@ -203,8 +211,7 @@ function hand(player) {
    return '<section class="hand-section hand-' + kind + '" aria-label="' + title + '">' +
      '<h2 class="hand-heading"><span>' + title + '</span></h2>' + content + '</section>';
  };
- const drawButton = player.reserve ? '<div class="row between"><small>个人补牌堆 · 故事 '+player.reserve.story.length+' / 结局 '+player.reserve.ending.length+'</small>'+btn('drawMenu','补牌','soft')+'</div>' : '';
- return '<div class="hand-board">' + drawButton + section('ending', '结局牌') + section('story', '故事牌') + '</div>';
+ return '<div class="hand-board">' + section('ending', '结局牌') + section('story', '故事牌') + '</div>';
 }
 function drawMenu(player) {
  const { story, ending } = player.reserve;
@@ -313,7 +320,10 @@ function render(){
    }
  }
  else if(player.wonWith)body=tabs()+'<div class="result"><span class="seal">♛</span><h1>故事圆满落幕</h1><p>'+seat+' 号玩家获胜</p><blockquote>'+esc(get(player.wonWith).textZh)+'</blockquote>'+btn('home','回到牌局首页','primary')+'</div>';
- else body=tabs()+hand(player);
+ else {
+   app.innerHTML=handHeader(player)+tabs()+hand(player);
+   return;
+ }
  app.innerHTML=heading()+body;
  paintQR();
 }
