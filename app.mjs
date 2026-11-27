@@ -17,10 +17,10 @@ function tell(message) {
   noticeTimer = setTimeout(()=>notice.textContent='',3200);
 }
 function card(id, options) { return renderCard(get(id), deck, options); }
-function illustration(c, module) {
+function illustration(c, module, lazy) {
   if (!c.image) return '';
   const src = esc(new URL(c.image, new URL(module.entry.file, document.baseURI)).href);
-  return '<img class="story-art" src="'+src+'" alt="">';
+  return '<img class="story-art" src="'+src+'" alt=""'+(lazy?' loading="lazy"':'')+'>';
 }
 function renderCard(c, module, {back=false,action='',large=false,flip=false}={}) {
   const end=c.kind==='ending', tag=action?'button':'div';
@@ -29,7 +29,7 @@ function renderCard(c, module, {back=false,action='',large=false,flip=false}={})
   const body=back?'<span>✧</span><span class="seal">'+(end?'☾':'✥')+'</span><strong>'+(end?'结局牌':'故事牌')+'</strong>':
     end?'<span class="kind">✧ '+esc(module.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
     (c.interrupt?'<span class="interrupt">打断</span>':'')+
-    illustration(c, module)+
+    illustration(c, module, action === 'zoomArt')+
     '<strong>'+esc(c.labelZh)+'</strong>';
   return '<'+tag+' class="'+cls+'"'+attr+'>'+body+'</'+tag+'>';
 }
@@ -108,7 +108,7 @@ function overlay(player){
  if(player.confirming)return '<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
  return '<section class="overlay" role="dialog" aria-modal="true" aria-label="展示卡牌">'+card(player.shown,{large:true})+'<div class="actions">'+btn('withdraw','撤回','soft')+btn('play','出牌','primary')+'</div></section>';
 }
-let previewDeck, previewCard;
+let previewDeck, previewCard, returnToCard;
 function renderArtPreview() {
   applyArt(previewDeck.entry);
   if (previewCard) {
@@ -117,7 +117,13 @@ function renderArtPreview() {
     return;
   }
   const examples=previewDeck.cards.filter(c=>c.kind==='story' && c.image);
-  app.innerHTML=top()+'<section class="hand-section"><div class="sectionhead"><h2>西方童话 · 插画试样</h2><a class="table-link" href="./">进入牌桌</a></div><div class="hand-grid">'+examples.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
+  app.innerHTML=top()+'<section class="hand-section"><div class="sectionhead"><h2>西方童话 · 故事牌</h2><a class="table-link" href="./">进入牌桌</a></div><div class="hand-grid">'+examples.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
+  if (returnToCard) {
+    window.scrollTo(0, returnToCard.scrollY);
+    const trigger=app.querySelector('[data-action="zoomArt"][data-value="'+CSS.escape(returnToCard.id)+'"]');
+    trigger?.focus({preventScroll:true});
+    returnToCard=null;
+  }
 }
 function render(){
  app.removeAttribute('aria-busy');
@@ -163,6 +169,7 @@ async function receiveRemote(packet){
 }
 async function act(a,v){
  if(page==='art'){
+   if(a==='zoomArt') returnToCard={id:v,scrollY:window.scrollY};
    previewCard=a==='zoomArt' ? previewDeck.byId.get(v) : null;
    return;
  }
@@ -223,7 +230,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=oval-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=full-art-1'));selected=modules.entries[0].id;
    if(new URLSearchParams(location.search).get('preview')==='art' && !location.hash.startsWith('#deal=')){
      previewDeck=await modules.open('once-upon-a-time-3e-core');
      page='art';render();return;

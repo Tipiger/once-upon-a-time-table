@@ -13,84 +13,96 @@
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "竞赛"
+      "labelZh": "竞赛",
+      "image": "western-a01.webp"
     },
     {
       "id": "A02",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "逃脱"
+      "labelZh": "逃脱",
+      "image": "western-a02.webp"
     },
     {
       "id": "A03",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "打斗"
+      "labelZh": "打斗",
+      "image": "western-a03.webp"
     },
     {
       "id": "A04",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "追逐"
+      "labelZh": "追逐",
+      "image": "western-a04.webp"
     },
     {
       "id": "A05",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "有人受伤"
+      "labelZh": "有人受伤",
+      "image": "western-a05.webp"
     },
     {
       "id": "A06",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "遭到囚禁"
+      "labelZh": "遭到囚禁",
+      "image": "western-a06.webp"
     },
     {
       "id": "A07",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "东西坏了"
+      "labelZh": "东西坏了",
+      "image": "western-a07.webp"
     },
     {
       "id": "A08",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": true,
-      "labelZh": "获救"
+      "labelZh": "获救",
+      "image": "western-a08.webp"
     },
     {
       "id": "A09",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "食物"
+      "labelZh": "食物",
+      "image": "western-a09.webp"
     },
     {
       "id": "A10",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "戒指"
+      "labelZh": "戒指",
+      "image": "western-a10.webp"
     },
     {
       "id": "A11",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "宝剑"
+      "labelZh": "宝剑",
+      "image": "western-a11.webp"
     },
     {
       "id": "A12",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "陷阱"
+      "labelZh": "陷阱",
+      "image": "western-a12.webp"
     },
     {
       "id": "A13",
@@ -105,105 +117,120 @@
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": true,
-      "labelZh": "王冠"
+      "labelZh": "王冠",
+      "image": "western-a14.webp"
     },
     {
       "id": "A15",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": true,
-      "labelZh": "财宝"
+      "labelZh": "财宝",
+      "image": "western-a15.webp"
     },
     {
       "id": "A16",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "美丽"
+      "labelZh": "美丽",
+      "image": "western-a16.webp"
     },
     {
       "id": "A17",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "勇敢"
+      "labelZh": "勇敢",
+      "image": "western-a17.webp"
     },
     {
       "id": "A18",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "乔装"
+      "labelZh": "乔装",
+      "image": "western-a18.webp"
     },
     {
       "id": "A19",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "隐藏"
+      "labelZh": "隐藏",
+      "image": "western-a19.webp"
     },
     {
       "id": "A20",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "痊愈"
+      "labelZh": "痊愈",
+      "image": "western-a20.webp"
     },
     {
       "id": "A21",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "被盗"
+      "labelZh": "被盗",
+      "image": "western-a21.webp"
     },
     {
       "id": "A22",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "睿智"
+      "labelZh": "睿智",
+      "image": "western-a22.webp"
     },
     {
       "id": "A23",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": true,
-      "labelZh": "秘密"
+      "labelZh": "秘密",
+      "image": "western-a23.webp"
     },
     {
       "id": "A24",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "城市"
+      "labelZh": "城市",
+      "image": "western-a24.webp"
     },
     {
       "id": "A25",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "地牢"
+      "labelZh": "地牢",
+      "image": "western-a25.webp"
     },
     {
       "id": "A26",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "花园"
+      "labelZh": "花园",
+      "image": "western-a26.webp"
     },
     {
       "id": "A27",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "宫殿"
+      "labelZh": "宫殿",
+      "image": "western-a27.webp"
     },
     {
       "id": "A28",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "道路"
+      "labelZh": "道路",
+      "image": "western-a28.webp"
     },
     {
       "id": "A29",
@@ -218,21 +245,24 @@
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": true,
-      "labelZh": "教堂"
+      "labelZh": "教堂",
+      "image": "western-a30.webp"
     },
     {
       "id": "A31",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "国王"
+      "labelZh": "国王",
+      "image": "western-a31.webp"
     },
     {
       "id": "A32",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "王子"
+      "labelZh": "王子",
+      "image": "western-a32.webp"
     },
     {
       "id": "A33",
@@ -247,35 +277,40 @@
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "王后"
+      "labelZh": "王后",
+      "image": "western-a34.webp"
     },
     {
       "id": "A35",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "卫兵"
+      "labelZh": "卫兵",
+      "image": "western-a35.webp"
     },
     {
       "id": "A36",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "厨师"
+      "labelZh": "厨师",
+      "image": "western-a36.webp"
     },
     {
       "id": "A37",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": true,
-      "labelZh": "敌人"
+      "labelZh": "敌人",
+      "image": "western-a37.webp"
     },
     {
       "id": "A38",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": true,
-      "labelZh": "小偷"
+      "labelZh": "小偷",
+      "image": "western-a38.webp"
     },
     {
       "id": "A39",
@@ -384,266 +419,304 @@
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "争吵"
+      "labelZh": "争吵",
+      "image": "western-b01.webp"
     },
     {
       "id": "B02",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "入睡"
+      "labelZh": "入睡",
+      "image": "western-b02.webp"
     },
     {
       "id": "B03",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "坠入爱河"
+      "labelZh": "坠入爱河",
+      "image": "western-b03.webp"
     },
     {
       "id": "B04",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "恶作剧"
+      "labelZh": "恶作剧",
+      "image": "western-b04.webp"
     },
     {
       "id": "B05",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "相遇"
+      "labelZh": "相遇",
+      "image": "western-b05.webp"
     },
     {
       "id": "B06",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "谋划"
+      "labelZh": "谋划",
+      "image": "western-b06.webp"
     },
     {
       "id": "B07",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": true,
-      "labelZh": "分道扬镳"
+      "labelZh": "分道扬镳",
+      "image": "western-b07.webp"
     },
     {
       "id": "B08",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": true,
-      "labelZh": "秘密揭晓"
+      "labelZh": "秘密揭晓",
+      "image": "western-b08.webp"
     },
     {
       "id": "B09",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "斧头"
+      "labelZh": "斧头",
+      "image": "western-b09.webp"
     },
     {
       "id": "B10",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "衣服"
+      "labelZh": "衣服",
+      "image": "western-b10.webp"
     },
     {
       "id": "B11",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "门"
+      "labelZh": "门",
+      "image": "western-b11.webp"
     },
     {
       "id": "B12",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "楼梯"
+      "labelZh": "楼梯",
+      "image": "western-b12.webp"
     },
     {
       "id": "B13",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "树"
+      "labelZh": "树",
+      "image": "western-b13.webp"
     },
     {
       "id": "B14",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "墙"
+      "labelZh": "墙",
+      "image": "western-b14.webp"
     },
     {
       "id": "B15",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "窗户"
+      "labelZh": "窗户",
+      "image": "western-b15.webp"
     },
     {
       "id": "B16",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "愚蠢"
+      "labelZh": "愚蠢",
+      "image": "western-b16.webp"
     },
     {
       "id": "B17",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "害怕"
+      "labelZh": "害怕",
+      "image": "western-b17.webp"
     },
     {
       "id": "B18",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "快乐"
+      "labelZh": "快乐",
+      "image": "western-b18.webp"
     },
     {
       "id": "B19",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "幸运"
+      "labelZh": "幸运",
+      "image": "western-b19.webp"
     },
     {
       "id": "B20",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "悲伤"
+      "labelZh": "悲伤",
+      "image": "western-b20.webp"
     },
     {
       "id": "B21",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "丑陋"
+      "labelZh": "丑陋",
+      "image": "western-b21.webp"
     },
     {
       "id": "B22",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "力大无穷"
+      "labelZh": "力大无穷",
+      "image": "western-b22.webp"
     },
     {
       "id": "B23",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": true,
-      "labelZh": "失明"
+      "labelZh": "失明",
+      "image": "western-b23.webp"
     },
     {
       "id": "B24",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": true,
-      "labelZh": "疯癫"
+      "labelZh": "疯癫",
+      "image": "western-b24.webp"
     },
     {
       "id": "B25",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "小屋"
+      "labelZh": "小屋",
+      "image": "western-b25.webp"
     },
     {
       "id": "B26",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "森林"
+      "labelZh": "森林",
+      "image": "western-b26.webp"
     },
     {
       "id": "B27",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "厨房"
+      "labelZh": "厨房",
+      "image": "western-b27.webp"
     },
     {
       "id": "B28",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "河流"
+      "labelZh": "河流",
+      "image": "western-b28.webp"
     },
     {
       "id": "B29",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "村庄"
+      "labelZh": "村庄",
+      "image": "western-b29.webp"
     },
     {
       "id": "B30",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": true,
-      "labelZh": "家"
+      "labelZh": "家",
+      "image": "western-b30.webp"
     },
     {
       "id": "B31",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "乞丐"
+      "labelZh": "乞丐",
+      "image": "western-b31.webp"
     },
     {
       "id": "B32",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "兄弟或姐妹"
+      "labelZh": "兄弟或姐妹",
+      "image": "western-b32.webp"
     },
     {
       "id": "B33",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "孩子"
+      "labelZh": "孩子",
+      "image": "western-b33.webp"
     },
     {
       "id": "B34",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "继母"
+      "labelZh": "继母",
+      "image": "western-b34.webp"
     },
     {
       "id": "B35",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "父亲或母亲"
+      "labelZh": "父亲或母亲",
+      "image": "western-b35.webp"
     },
     {
       "id": "B36",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": true,
-      "labelZh": "丈夫或妻子"
+      "labelZh": "丈夫或妻子",
+      "image": "western-b36.webp"
     },
     {
       "id": "B37",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": true,
-      "labelZh": "老人"
+      "labelZh": "老人",
+      "image": "western-b37.webp"
     },
     {
       "id": "B38",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": true,
-      "labelZh": "孤儿"
+      "labelZh": "孤儿",
+      "image": "western-b38.webp"
     },
     {
       "id": "B39",
@@ -752,266 +825,304 @@
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "迷失"
+      "labelZh": "迷失",
+      "image": "western-c01.webp"
     },
     {
       "id": "C02",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "被找到"
+      "labelZh": "被找到",
+      "image": "western-c02.webp"
     },
     {
       "id": "C03",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "旅程"
+      "labelZh": "旅程",
+      "image": "western-c03.webp"
     },
     {
       "id": "C04",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "活了过来"
+      "labelZh": "活了过来",
+      "image": "western-c04.webp"
     },
     {
       "id": "C05",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "风暴"
+      "labelZh": "风暴",
+      "image": "western-c05.webp"
     },
     {
       "id": "C06",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "时光流逝"
+      "labelZh": "时光流逝",
+      "image": "western-c06.webp"
     },
     {
       "id": "C07",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": false,
-      "labelZh": "变形"
+      "labelZh": "变形",
+      "image": "western-c07.webp"
     },
     {
       "id": "C08",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": true,
-      "labelZh": "死去"
+      "labelZh": "死去",
+      "image": "western-c08.webp"
     },
     {
       "id": "C09",
       "kind": "story",
       "categoryZh": "事件",
       "interrupt": true,
-      "labelZh": "归来"
+      "labelZh": "归来",
+      "image": "western-c09.webp"
     },
     {
       "id": "C10",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "书"
+      "labelZh": "书",
+      "image": "western-c10.webp"
     },
     {
       "id": "C11",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "大锅"
+      "labelZh": "大锅",
+      "image": "western-c11.webp"
     },
     {
       "id": "C12",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "火"
+      "labelZh": "火",
+      "image": "western-c12.webp"
     },
     {
       "id": "C13",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "咒语"
+      "labelZh": "咒语",
+      "image": "western-c13.webp"
     },
     {
       "id": "C14",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": false,
-      "labelZh": "水井"
+      "labelZh": "水井",
+      "image": "western-c14.webp"
     },
     {
       "id": "C15",
       "kind": "story",
       "categoryZh": "物品",
       "interrupt": true,
-      "labelZh": "礼物"
+      "labelZh": "礼物",
+      "image": "western-c15.webp"
     },
     {
       "id": "C16",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "受到诅咒"
+      "labelZh": "受到诅咒",
+      "image": "western-c16.webp"
     },
     {
       "id": "C17",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "中毒"
+      "labelZh": "中毒",
+      "image": "western-c17.webp"
     },
     {
       "id": "C18",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "会飞"
+      "labelZh": "会飞",
+      "image": "western-c18.webp"
     },
     {
       "id": "C19",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "会说话"
+      "labelZh": "会说话",
+      "image": "western-c19.webp"
     },
     {
       "id": "C20",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "微小"
+      "labelZh": "微小",
+      "image": "western-c20.webp"
     },
     {
       "id": "C21",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": false,
-      "labelZh": "邪恶"
+      "labelZh": "邪恶",
+      "image": "western-c21.webp"
     },
     {
       "id": "C22",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": true,
-      "labelZh": "遥远"
+      "labelZh": "遥远",
+      "image": "western-c22.webp"
     },
     {
       "id": "C23",
       "kind": "story",
       "categoryZh": "特征",
       "interrupt": true,
-      "labelZh": "失散已久"
+      "labelZh": "失散已久",
+      "image": "western-c23.webp"
     },
     {
       "id": "C24",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "洞穴"
+      "labelZh": "洞穴",
+      "image": "western-c24.webp"
     },
     {
       "id": "C25",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "天空"
+      "labelZh": "天空",
+      "image": "western-c25.webp"
     },
     {
       "id": "C26",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "山"
+      "labelZh": "山",
+      "image": "western-c26.webp"
     },
     {
       "id": "C27",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "夜晚"
+      "labelZh": "夜晚",
+      "image": "western-c27.webp"
     },
     {
       "id": "C28",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": false,
-      "labelZh": "沼泽"
+      "labelZh": "沼泽",
+      "image": "western-c28.webp"
     },
     {
       "id": "C29",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": true,
-      "labelZh": "王国"
+      "labelZh": "王国",
+      "image": "western-c29.webp"
     },
     {
       "id": "C30",
       "kind": "story",
       "categoryZh": "地点",
       "interrupt": true,
-      "labelZh": "废墟"
+      "labelZh": "废墟",
+      "image": "western-c30.webp"
     },
     {
       "id": "C31",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "仙子"
+      "labelZh": "仙子",
+      "image": "western-c31.webp"
     },
     {
       "id": "C32",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "巨人"
+      "labelZh": "巨人",
+      "image": "western-c32.webp"
     },
     {
       "id": "C33",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "狼"
+      "labelZh": "狼",
+      "image": "western-c33.webp"
     },
     {
       "id": "C34",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "青蛙"
+      "labelZh": "青蛙",
+      "image": "western-c34.webp"
     },
     {
       "id": "C35",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "马"
+      "labelZh": "马",
+      "image": "western-c35.webp"
     },
     {
       "id": "C36",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "怪物"
+      "labelZh": "怪物",
+      "image": "western-c36.webp"
     },
     {
       "id": "C37",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "龙"
+      "labelZh": "龙",
+      "image": "western-c37.webp"
     },
     {
       "id": "C38",
       "kind": "story",
       "categoryZh": "角色",
       "interrupt": false,
-      "labelZh": "女巫"
+      "labelZh": "女巫",
+      "image": "western-c38.webp"
     },
     {
       "id": "C39",
