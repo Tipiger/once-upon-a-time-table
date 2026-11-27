@@ -12,7 +12,7 @@
       "storyFrame": "western-story-frame.webp",
       "endingFrame": "western-ending-frame.webp",
       "coverSurface": {
-        "map": "western-cover-relief.png",
+        "map": "western-cover-relief.png?v=contours-2",
         "encodingDepth": 8,
         "artwork": "western-cover-detail.webp"
       }
