@@ -1,6 +1,6 @@
-import * as g from './game.mjs?v=display-foil-4px';
+import * as g from './game.mjs?v=frame-foil-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
-import { enableDisplayGesture } from './display-gesture.mjs?v=display-foil-4px';
+import { enableDisplayGesture } from './display-gesture.mjs?v=frame-foil-1';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');

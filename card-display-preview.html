@@ -234,29 +234,25 @@ button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,6
   content:""; display:block; position:absolute; inset:8% 4% 5%; border:0; border-radius:4px; opacity:1;
   box-shadow:inset 2px 5px 8px 1px #512c1885, inset 0 0 2px #79552c;
 }
-@supports ((background-clip:text) or (-webkit-background-clip:text)) {
-  .printed-deck .display-card :is(.storyface > strong,.interrupt,.endface .sentence,.endface .kind) {
-    background-image:linear-gradient(106deg,#49311d calc(var(--foil-at) - 25%),#86552a calc(var(--foil-at) - 10%),
-      #c9974a calc(var(--foil-at) - 4%),#ffefb7 var(--foil-at),#a4753d calc(var(--foil-at) + 5%),#49311d calc(var(--foil-at) + 18%));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    -webkit-text-fill-color:transparent;
-  }
-}
-.printed-deck .display-card .back::after {
+/* Each reflective surface clips the same light band to its own printed texture. */
+.display-card .storyface { --foil-texture:var(--story-frame); }
+.display-card .ending-rim { --foil-texture:var(--ending-frame); }
+.display-card .back { --foil-texture:var(--story-back); }
+.display-card .endback { --foil-texture:var(--ending-back); }
+.printed-deck .display-card :is(.inset-illustration + .storyface, .ending-rim, .back)::after {
   content:""; display:block; position:absolute; inset:0; border:0; border-radius:inherit;
   background:linear-gradient(115deg,transparent calc(var(--foil-at) - 31%),#e5ab5b88 calc(var(--foil-at) - 12%),
     #fff0c8 var(--foil-at),#d49b5299 calc(var(--foil-at) + 9%),transparent calc(var(--foil-at) + 27%));
-  -webkit-mask-image:var(--story-back); mask-image:var(--story-back);
+  -webkit-mask-image:var(--foil-texture); mask-image:var(--foil-texture);
   mask-mode:luminance; -webkit-mask-size:100% 100%; mask-size:100% 100%;
   mix-blend-mode:screen; opacity:0; transition:opacity .22s;
 }
-.printed-deck .display-card .endback::after { -webkit-mask-image:var(--ending-back); mask-image:var(--ending-back); }
-.printed-deck .display-card.is-tilting .back::after { opacity:.92; }
-.display-card .back strong { z-index:1; }
+.printed-deck .display-card.is-tilting :is(.inset-illustration + .storyface, .ending-rim, .back)::after { opacity:.92; }
+.display-card .storyface > :is(strong,.interrupt), .display-card .back strong { z-index:1; }
 @media(prefers-reduced-motion:reduce) {
   .display-tilt { transform:none; transition:none; }
   .display-card { transition:none; }
-  .printed-deck .display-card .back::after { transition:none; }
+  .printed-deck .display-card :is(.inset-illustration + .storyface, .ending-rim, .back)::after { transition:none; }
 }
 .printed-deck .card, .printed-deck .mini {
   background-size:100% 100%; background-position:center; background-repeat:no-repeat;
@@ -298,7 +294,7 @@ function enableDisplayGesture(button) {
     const {x, y} = grip;
     button.style.setProperty('--yaw', (x * 37).toFixed(2) + 'deg');
     button.style.setProperty('--pitch', (-y * 27).toFixed(2) + 'deg');
-    // A warm reflection passes across the letters as the normal changes.
+    // Move the reflection across the printed surface as the card tilts.
     const angle = Math.min(1, Math.abs(x + y * .48));
     button.style.setProperty('--foil-at', (125 - angle * 121).toFixed(1) + '%');
   }

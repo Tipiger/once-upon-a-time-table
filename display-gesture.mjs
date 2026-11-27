@@ -11,7 +11,7 @@ export function enableDisplayGesture(button) {
     const {x, y} = grip;
     button.style.setProperty('--yaw', (x * 37).toFixed(2) + 'deg');
     button.style.setProperty('--pitch', (-y * 27).toFixed(2) + 'deg');
-    // A warm reflection passes across the letters as the normal changes.
+    // Move the reflection across the printed surface as the card tilts.
     const angle = Math.min(1, Math.abs(x + y * .48));
     button.style.setProperty('--foil-at', (125 - angle * 121).toFixed(1) + '%');
   }
