@@ -79,3 +79,5 @@
 #font-picker .primary { display:block; width:auto; margin-top:.55rem; }
 .font-option { padding:.45rem .7rem; }
 .font-option strong { font-size:1.08rem; }
+
+.table-link { color:var(--cream); text-underline-offset:.2em; }

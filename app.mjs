@@ -17,6 +17,14 @@ function tell(message) {
   noticeTimer = setTimeout(()=>notice.textContent='',3200);
 }
 function card(id, options) { return renderCard(get(id), deck, options); }
+function illustration(c, module) {
+  if (!c.image) return '';
+  const src = esc(new URL(c.image, new URL(module.entry.file, document.baseURI)).href);
+  if (c.imageFit === 'portrait') {
+    return '<span class="story-art portrait-inlay" aria-hidden="true"><img class="art-bleed" src="'+src+'" alt=""><img class="art-subject" src="'+src+'" alt=""></span>';
+  }
+  return '<img class="story-art" src="'+src+'" alt="">';
+}
 function renderCard(c, module, {back=false,action='',large=false,flip=false}={}) {
   const end=c.kind==='ending', tag=action?'button':'div';
   const cls='card '+(back?'back '+(end?'endback':''):end?'endface':c.image?'storyface illustrated':'storyface')+(large?' large':'')+(flip?' flip':'');
@@ -24,7 +32,7 @@ function renderCard(c, module, {back=false,action='',large=false,flip=false}={})
   const body=back?'<span>✧</span><span class="seal">'+(end?'☾':'✥')+'</span><strong>'+(end?'结局牌':'故事牌')+'</strong>':
     end?'<span class="kind">✧ '+esc(module.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
     (c.interrupt?'<span class="interrupt">打断</span>':'')+
-    (c.image?'<img class="story-art" src="'+esc(new URL(c.image, new URL(module.entry.file, document.baseURI)).href)+'" alt="">':'')+
+    illustration(c, module)+
     '<strong>'+esc(c.labelZh)+'</strong>';
   return '<'+tag+' class="'+cls+'"'+attr+'>'+body+'</'+tag+'>';
 }
@@ -103,8 +111,20 @@ function overlay(player){
  if(player.confirming)return '<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
  return '<section class="overlay" role="dialog" aria-modal="true" aria-label="展示卡牌">'+card(player.shown,{large:true})+'<div class="actions">'+btn('withdraw','撤回','soft')+btn('play','出牌','primary')+'</div></section>';
 }
+let previewDeck, previewCard;
+function renderArtPreview() {
+  applyArt(previewDeck.entry);
+  if (previewCard) {
+    app.innerHTML='<section class="overlay" role="dialog" aria-modal="true" aria-label="插画大图">'+renderCard(previewCard, previewDeck, {large:true})+btn('closeArt','返回预览','soft')+'</section>';
+    app.querySelector('button').focus();
+    return;
+  }
+  const examples=previewDeck.cards.filter(c=>c.kind==='story' && c.image);
+  app.innerHTML=top()+'<section class="hand-section"><div class="sectionhead"><h2>西方童话 · 插画试样</h2><a class="table-link" href="./">进入牌桌</a></div><div class="hand-grid">'+examples.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
+}
 function render(){
  app.removeAttribute('aria-busy');
+ if(page==='art'){renderArtPreview();return;}
  if(page==='home'||!table){app.innerHTML=home();homeTheme();return;}
  applyArt(deck.entry);
  const player=current();
@@ -145,6 +165,10 @@ async function receiveRemote(packet){
  table=t;deck=activeDeck;seat=t.mySeat;remember();page='hand';
 }
 async function act(a,v){
+ if(page==='art'){
+   previewCard=a==='zoomArt' ? previewDeck.byId.get(v) : null;
+   return;
+ }
  if(a==='newSolo'||a==='newTable'){await create(a==='newSolo');return;}
  if(a==='home'){page='home';return;}
  if(a==='resume'){page='hand';return;}
@@ -202,7 +226,11 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=themes-2'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=inlay-1'));selected=modules.entries[0].id;
+   if(new URLSearchParams(location.search).get('preview')==='art' && !location.hash.startsWith('#deal=')){
+     previewDeck=await modules.open('once-upon-a-time-3e-core');
+     page='art';render();return;
+   }
    const prev=JSON.parse(localStorage.getItem(latest)||'null');
    if(prev){table=await g.updateSaved(key(prev.id));if(table){deck=await modules.open(savedModule(table));seat=prev.seat;page='hand';}}
    if(location.hash.startsWith('#deal='))await openPacket();
@@ -210,6 +238,9 @@ async function init(){
    if(new URLSearchParams(location.search).get('preview')==='fonts')openFontPicker();
  }catch(err){app.textContent='牌桌未能打开：'+err.message;}
 }
+document.addEventListener('keydown',event=>{
+  if(page==='art' && previewCard && event.key==='Escape')perform('closeArt');
+});
 window.addEventListener('hashchange',async()=>{if(location.hash.startsWith('#deal=')){await openPacket();render();}});
 window.addEventListener('pageshow',async e=>{if(e.persisted&&table){table=await g.updateSaved(key(table.id));render();}});
 document.addEventListener('visibilitychange',async()=>{if(!document.hidden&&table&&!busy){table=await g.updateSaved(key(table.id));render();}});

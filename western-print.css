@@ -19,3 +19,9 @@
 .printed-deck .storyface > strong { inset-inline:12%; width:76%; top:90.4%; font-size:min(14cqi,2.4rem); }
 .printed-deck .storyface .interrupt { top:7.25%; color:#49301c; letter-spacing:.12em; text-indent:.12em; }
 .printed-deck .storyface .story-art { inset:13% 8% auto; width:84%; height:69%; object-fit:cover; border-radius:50%; }
+
+/* The tall reference plates retain their silhouettes inside the oval opening. */
+.portrait-inlay { display:block; overflow:hidden; isolation:isolate; }
+.portrait-inlay img { position:absolute; inset:0; width:100%; height:100%; }
+.portrait-inlay .art-bleed { object-fit:cover; filter:blur(5cqi); transform:scale(1.15); }
+.portrait-inlay .art-subject { object-fit:contain; mask-image:linear-gradient(90deg, transparent 15%, #000 24% 76%, transparent 85%); }
