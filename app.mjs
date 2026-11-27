@@ -1,4 +1,4 @@
-import * as g from './game.mjs?v=turn-foil-1';
+import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import { enableDisplayGesture } from './display-gesture.mjs?v=frame-foil-1';
 import QRCode from './vendor/index.js';
@@ -101,12 +101,19 @@ function cardSides(id) {
  return '<span class="card-turn" aria-hidden="true">'+card(id)+card(id,{back:true})+'</span>';
 }
 
-function displaySides(c) {
- const layered = c.kind === 'story' && c.image && deck.entry.art?.storyFrame;
- const inset = layered ? '<span class="inset-illustration">'+illustration(c, deck, false)+'</span>' : '';
- const rim = c.kind === 'ending' && deck.entry.art?.endingFrame ? '<span class="ending-rim"></span>' : '';
- return '<span class="display-tilt" aria-hidden="true"><span class="card-turn">'+
-   inset+card(c.id,{large:true,insetArt:layered})+rim+card(c.id,{large:true,back:true})+'</span></span>';
+function showCardDisplay(c, module, title, actions) {
+ const layered = c.kind === 'story' && c.image && module.entry.art?.storyFrame;
+ const inset = layered ? '<span class="inset-illustration">'+illustration(c, module, false)+'</span>' : '';
+ const rim = c.kind === 'ending' && module.entry.art?.endingFrame ? '<span class="ending-rim"></span>' : '';
+ app.innerHTML='<section class="overlay" role="dialog" aria-modal="true" aria-label="'+esc(title)+'">'+
+   '<button type="button" class="turnable display-card" aria-describedby="display-hint" aria-label="'+esc(c.textZh || c.labelZh)+'，翻到牌背">'+
+   '<span class="display-tilt" aria-hidden="true"><span class="card-turn">'+inset+
+   renderCard(c,module,{large:true,insetArt:layered})+rim+renderCard(c,module,{large:true,back:true})+
+   '</span></span></button><p class="flip-hint" id="display-hint">轻点翻面 · 按住拖动看反光</p>'+
+   '<div class="actions">'+actions+'</div></section>';
+ const display=app.querySelector('.display-card');
+ enableDisplayGesture(display);
+ display.focus({preventScroll:true});
 }
 
 function drawDialog(batch) {
@@ -244,20 +251,18 @@ function discardView(player) {
    (player.discard.length ? '<div class="grid">'+[...player.discard].reverse().map(id=>card(id,{action:'inspectDiscard'})).join('')+'</div>' :
      '<p class="empty">你打出的牌会留在这里。</p>');
 }
-function overlay(player){
- if(player.confirming)return '<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
- const shown = get(player.shown);
- return '<section class="overlay" role="dialog" aria-modal="true" aria-label="展示卡牌">'+
-   '<button type="button" class="turnable display-card" aria-describedby="display-hint" aria-label="'+esc(shown.textZh || shown.labelZh)+'，翻到牌背">'+
-   displaySides(shown)+'</button><p class="flip-hint" id="display-hint">轻点翻面 · 按住拖动看反光</p>'+
-   '<div class="actions">'+btn('withdraw','撤回','soft')+btn('play','出牌','primary')+'</div></section>';
+function showHandDisplay(player) {
+ if(player.confirming){
+   app.innerHTML='<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
+   return;
+ }
+ showCardDisplay(get(player.shown),deck,'展示卡牌',btn('withdraw','撤回','soft')+btn('play','出牌','primary'));
 }
 let previewDeck, previewCard, returnToCard, galleryKind='all';
 function renderArtPreview() {
   applyArt(previewDeck.entry);
   if (previewCard) {
-    app.innerHTML='<section class="overlay" role="dialog" aria-modal="true" aria-label="卡牌大图">'+renderCard(previewCard, previewDeck, {large:true})+btn('closeArt','返回预览','soft')+'</section>';
-    app.querySelector('button').focus();
+    showCardDisplay(previewCard,previewDeck,'卡牌大图',btn('closeArt','返回预览','soft'));
     return;
   }
   const cards=previewDeck.cards;
@@ -288,9 +293,7 @@ function render(){
  else if(page==='dealer'&&table.host&&seat===1)body=tabs()+dealer();
  else if(!player)body='<p>请先领取起手牌。</p>';
  else if(player.shown){
-   app.innerHTML=overlay(player);
-   const display=app.querySelector('.display-card');
-   if(display) enableDisplayGesture(display);
+   showHandDisplay(player);
    return;
  }
  else if(player.inbox.length){renderDraw(player);return;}
@@ -399,6 +402,7 @@ app.addEventListener('click',e=>{
  if(e.target.closest('[data-view-module]')){
    const url=new URL(location.pathname,location.href);
    url.searchParams.set('preview','module');
+   url.searchParams.set('v',g.releaseVersion);
    url.searchParams.set('module',page==='home'?selected:deck.entry.id);
    location.assign(url);
    return;
