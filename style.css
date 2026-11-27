@@ -35,25 +35,6 @@
 
 /* Individually printed faces and backs; card copy stays selectable by the UI. */
 .story-art { width:76%; height:53%; object-fit:contain; }
-.printed-deck .card, .printed-deck .mini {
-  background-size:100% 100%; background-position:center; background-repeat:no-repeat;
-}
-.printed-deck .card { background-image:var(--story-frame); color:var(--tone,#394b39); }
-.printed-deck .card.endface { background-image:var(--ending-frame); color:#59332a; }
-.printed-deck .card.back, .printed-deck .deckfan .mini:first-child { background-image:var(--story-back); }
-.printed-deck .card.endback, .printed-deck .deckfan .mini:last-child { background-image:var(--ending-back); }
-.printed-deck .mini { color:transparent; }
-.printed-deck .card:before, .printed-deck .card:after { display:none; }
-.printed-deck .back { justify-content:flex-end; }
-.printed-deck .back>span { visibility:hidden; }
-.printed-deck .back strong { padding:.16em .5em; color:#fff0c4; background:#20291ef2; border:1px solid #d3bb80; border-radius:.2em; }
-.printed-deck .endback strong { background:#4d2224f2; }
-.printed-deck .card.endface .sentence { text-align:center; padding-inline:5%; }
-.printed-deck .large.endface .sentence { padding:7%; }
-.printed-deck .card:not(.back):not(.endface) { display:grid; grid-template-rows:15% minmax(0,1fr) 16%; justify-items:center; align-items:center; padding:0 7%; }
-.printed-deck .card:not(.back):not(.endface) .emblem { width:68%; height:70%; }
-.printed-deck .card:not(.back):not(.endface) .story-art { width:93%; height:93%; object-fit:contain; }
-
 @font-face { font-family:TaleSong; src:url('./tale-song.woff') format('woff'); font-display:swap; }
 @font-face { font-family:TaleKai; src:url('./tale-kai.woff') format('woff'); font-display:swap; }
 @font-face { font-family:TaleHei; src:url('./tale-hei.woff') format('woff'); font-display:swap; }
@@ -63,19 +44,14 @@
 :root, .brand, h1, h2, h3, .card, .card .kind, blockquote { font-family:var(--table-font); }
 .head-actions { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:.5rem; }
 .font-trigger { padding:.35rem .65rem; font-size:.875rem; }
-.card.storyface, .printed-deck .card.storyface:not(.back):not(.endface) {
-  display:grid; grid-template:18% minmax(0,1fr) 20% / minmax(0,1fr); align-items:center;
-  justify-items:center; padding:0 9%; color:#493923;
+/* Stable face slots. Each module may replace their layout in its own stylesheet. */
+.card.storyface { display:block; container-type:inline-size; padding:0; }
+.storyface > strong, .storyface .interrupt, .storyface .story-art {
+  position:absolute; inset-inline:10%; width:80%; margin:0; text-align:center;
 }
-.storyface strong { grid-area:2/1; max-width:100%; text-wrap:balance; }
-.storyface.illustrated strong { grid-row:3; }
-.storyface .story-art { grid-area:2/1; }
-.interrupt {
-  grid-area:1/1; align-self:end; font:bold clamp(.72rem,2.5vw,.92rem)/1.25 var(--table-font);
-  color:#fff5d8; background:#763b32; border:1px solid #d7ba80; border-radius:3px;
-  padding:.08em .42em; letter-spacing:.08em;
-}
-.large .interrupt { font-size:1.15rem; }
+.card.storyface > strong { top:90%; transform:translateY(-50%); font-size:min(14cqi,2.4rem); line-height:1.1; }
+.storyface .interrupt { top:8%; transform:translateY(-50%); font-size:min(11cqi,1.7rem); line-height:1.1; font-weight:600; }
+.storyface .story-art { top:16%; height:66%; object-fit:contain; }
 #font-picker {
   width:min(92vw,27rem); max-height:90dvh; overflow:auto; margin:auto;
   color:var(--cream); background:#1b362e; border:1px solid #b79e6f; border-radius:15px;
@@ -96,3 +72,18 @@
 .font-option small { font: .75rem/1.4 TaleHei,sans-serif; color:#635340; }
 #font-picker .primary { width:100%; margin-top:.9rem; }
 @media(max-width:390px){.head-actions{gap:.25rem}.playerswitch{gap:.25rem}.font-trigger{padding:.3rem .45rem}}
+
+@font-face { font-family:TaleWenkai; src:url('./tale-wenkai.woff') format('woff'); font-display:swap; }
+@font-face { font-family:TaleXiaowei; src:url('./tale-xiaowei.woff') format('woff'); font-display:swap; }
+@font-face { font-family:TaleHuangyou; src:url('./tale-huangyou.woff') format('woff'); font-display:swap; }
+[data-font=wenkai] { --table-font:TaleWenkai,KaiTi,serif; }
+[data-font=xiaowei] { --table-font:TaleXiaowei,serif; }
+[data-font=huangyou] { --table-font:TaleHuangyou,sans-serif; }
+#font-picker { padding:0; }
+#font-picker form { display:flex; flex-direction:column; max-height:min(88dvh,47rem); }
+.picker-head { display:flex; gap:1rem; align-items:center; flex:none; padding:.8rem 1rem; border-bottom:1px solid #b79e6f66; }
+#font-sample { width:clamp(74px,19vw,103px); flex:none; }
+#font-picker fieldset { overflow-y:auto; padding:.8rem 1rem 1rem; gap:.45rem; }
+#font-picker .primary { display:block; width:auto; margin-top:.55rem; }
+.font-option { padding:.45rem .7rem; }
+.font-option strong { font-size:1.08rem; }

@@ -1,0 +1,21 @@
+.printed-deck .card, .printed-deck .mini {
+  background-size:100% 100%; background-position:center; background-repeat:no-repeat;
+}
+.printed-deck .card { background-image:var(--story-frame); color:var(--tone,#394b39); }
+.printed-deck .card.endface { background-image:var(--ending-frame); color:#59332a; }
+.printed-deck .card.back, .printed-deck .deckfan .mini:first-child { background-image:var(--story-back); }
+.printed-deck .card.endback, .printed-deck .deckfan .mini:last-child { background-image:var(--ending-back); }
+.printed-deck .mini { color:transparent; }
+.printed-deck .card:before, .printed-deck .card:after { display:none; }
+.printed-deck .back { justify-content:flex-end; }
+.printed-deck .back>span { visibility:hidden; }
+.printed-deck .back strong { padding:.16em .5em; color:#fff0c4; background:#20291ef2; border:1px solid #d3bb80; border-radius:.2em; }
+.printed-deck .endback strong { background:#4d2224f2; }
+.printed-deck .card.endface .sentence { text-align:center; padding-inline:5%; }
+.printed-deck .large.endface .sentence { padding:7%; }
+
+/* Centers of the upper and lower cartouches on the painted frame. */
+.printed-deck .card.storyface { color:#3e2b19; border:0; }
+.printed-deck .storyface > strong { inset-inline:12%; width:76%; top:90.4%; font-size:min(14cqi,2.4rem); }
+.printed-deck .storyface .interrupt { top:7.25%; color:#49301c; letter-spacing:.12em; text-indent:.12em; }
+.printed-deck .storyface .story-art { inset:13% 8% auto; width:84%; height:69%; object-fit:cover; border-radius:50%; }

@@ -1,0 +1,6 @@
+/* The original deck uses a typeset border in place of the painted frame. */
+.card.storyface { color:#383c2d; }
+.card.storyface > strong { top:85%; letter-spacing:.035em; }
+.storyface .interrupt { top:11%; color:#374637; letter-spacing:.12em; text-indent:.12em; }
+.storyface .story-art { inset:20% 12% auto; width:76%; height:53%; object-fit:contain; }
+.storyface:has(.interrupt) .interrupt { border-block:1px solid #87794f; width:54%; inset-inline:23%; padding-block:.15em; }

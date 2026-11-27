@@ -9,12 +9,20 @@
       "endingBack": "western-ending-back.webp",
       "storyFrame": "western-story-frame.webp",
       "endingFrame": "western-ending-frame.webp"
+    },
+    "theme": {
+      "stylesheet": "western-print.css",
+      "defaultFont": "wenkai"
     }
   },
   {
     "id": "western-demo-v1",
     "name": "西方童话 · 原创结局",
     "file": "deck.json",
-    "description": "114 张故事牌，24 张原创结局。使用试玩版卡面。"
+    "description": "114 张故事牌，24 张原创结局。使用试玩版卡面。",
+    "theme": {
+      "stylesheet": "western-manuscript.css",
+      "defaultFont": "hei"
+    }
   }
 ]

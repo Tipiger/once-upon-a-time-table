@@ -3,6 +3,10 @@ Chinese fonts subset for Story Table
 Noto Serif CJK SC — © 2017-2024 Adobe (http://www.adobe.com/).
 Ma Shan Zheng — Copyright 2018 The MaShanZheng Project Authors (https://github.com/googlefonts/mashanzheng)
 Noto Sans CJK SC — © 2014-2021 Adobe (http://www.adobe.com/).
+LXGW WenKai — Copyright 2021-2026 LXGW (https://github.com/lxgw/LxgwWenKai), with Reserved Font Name '霞鹜', '霞鶩', '落霞孤鹜', '落霞孤鶩' and 'LXGW'.
+Copyright 2020 The Klee Project Authors (https://github.com/fontworks-fonts/Klee)
+ZCOOL XiaoWei — Copyright 2018 The ZCOOL XiaoWei Project Authors (https://www.github.com/googlefonts/xiaowei)
+ZCOOL QingKe HuangYou — Copyright 2018 The ZCOOL QingKe HuangYou Project Authors (https://www.github.com/googlefonts/zcool-qingke-huangyou)
  -----------------------------------------------------------
  SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
  -----------------------------------------------------------

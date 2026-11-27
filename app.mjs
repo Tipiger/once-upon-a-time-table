@@ -16,25 +16,44 @@ function tell(message) {
   clearTimeout(noticeTimer); notice.textContent = message;
   noticeTimer = setTimeout(()=>notice.textContent='',3200);
 }
-function card(id, {back=false,action='',large=false,flip=false}={}) {
-  const c=get(id), end=c.kind==='ending', tag=action?'button':'div';
+function card(id, options) { return renderCard(get(id), deck, options); }
+function renderCard(c, module, {back=false,action='',large=false,flip=false}={}) {
+  const end=c.kind==='ending', tag=action?'button':'div';
   const cls='card '+(back?'back '+(end?'endback':''):end?'endface':c.image?'storyface illustrated':'storyface')+(large?' large':'')+(flip?' flip':'');
-  const attr=action?' data-action="'+action+'" data-value="'+id+'"':'';
+  const attr=action?' data-action="'+action+'" data-value="'+esc(c.id)+'"':'';
   const body=back?'<span>✧</span><span class="seal">'+(end?'☾':'✥')+'</span><strong>'+(end?'结局牌':'故事牌')+'</strong>':
-    end?'<span class="kind">✧ '+esc(deck.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
+    end?'<span class="kind">✧ '+esc(module.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
     (c.interrupt?'<span class="interrupt">打断</span>':'')+
-    (c.image?'<img class="story-art" src="'+esc(c.image)+'" alt="">':'')+
+    (c.image?'<img class="story-art" src="'+esc(new URL(c.image, new URL(module.entry.file, document.baseURI)).href)+'" alt="">':'')+
     '<strong>'+esc(c.labelZh)+'</strong>';
   return '<'+tag+' class="'+cls+'"'+attr+'>'+body+'</'+tag+'>';
 }
 function applyArt(entry) {
- const art = entry?.art || {};
+ if (activeTheme?.id === entry.id) return;
+ activeTheme = entry;
+ const root = document.documentElement;
+ root.dataset.module = entry.id;
+ const sheet = document.getElementById('module-theme');
+ if (entry.theme?.stylesheet) sheet.href = entry.theme.stylesheet;
+ else sheet.removeAttribute('href');
+ const art = entry.art || {};
  for (const type of ['storyBack','endingBack','storyFrame','endingFrame']) {
    const cssName = '--' + type.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
-   if (art[type]) app.style.setProperty(cssName, 'url(' + JSON.stringify(art[type]) + ')');
-   else app.style.removeProperty(cssName);
+   if (art[type]) root.style.setProperty(cssName, 'url(' + JSON.stringify(art[type]) + ')');
+   else root.style.removeProperty(cssName);
  }
- app.classList.toggle('printed-deck', Boolean(art.storyFrame));
+ root.classList.toggle('printed-deck', Boolean(art.storyFrame));
+ const defaultFont = entry.theme?.defaultFont || 'song';
+ const defaultLabel = picker.querySelector('[value="module"]').closest('label');
+ defaultLabel.dataset.font = defaultFont;
+ const fontName = [...picker.querySelectorAll('input')].find(i => i.value === defaultFont)?.closest('label').querySelector('small').textContent;
+ defaultLabel.querySelector('small').textContent = fontName ? '跟随模组 · ' + fontName : '跟随模组';
+ let choice;
+ try {
+   choice = localStorage.getItem(moduleFontKey());
+   if (!choice && entry.id === 'once-upon-a-time-3e-core') choice = localStorage.getItem('story-table.font');
+ } catch {}
+ setFont(choice || 'module');
 }
 function selectedEntry() { return modules.entries.find(e => e.id === selected); }
 function homeTheme() {
@@ -188,7 +207,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=themes-2'));selected=modules.entries[0].id;
    const prev=JSON.parse(localStorage.getItem(latest)||'null');
    if(prev){table=await g.updateSaved(key(prev.id));if(table){deck=await modules.open(savedModule(table));seat=prev.seat;page='hand';}}
    if(location.hash.startsWith('#deal='))await openPacket();
@@ -200,20 +219,28 @@ window.addEventListener('hashchange',async()=>{if(location.hash.startsWith('#dea
 window.addEventListener('pageshow',async e=>{if(e.persisted&&table){table=await g.updateSaved(key(table.id));render();}});
 document.addEventListener('visibilitychange',async()=>{if(!document.hidden&&table&&!busy){table=await g.updateSaved(key(table.id));render();}});
 const picker = document.getElementById('font-picker');
-const fontKey = 'story-table.font';
+let activeTheme;
+const moduleFontKey = () => 'story-table.font.' + activeTheme.id;
 function setFont(value) {
-  const choice = [...picker.querySelectorAll('input')].find(input => input.value === value);
-  if (choice) {
-    document.documentElement.dataset.font = value;
-    choice.checked = true;
-  }
+  const choice = [...picker.querySelectorAll('input')].find(input => input.value === value) || picker.querySelector('[value="module"]');
+  choice.checked = true;
+  document.documentElement.dataset.font = choice.value === 'module'
+    ? (activeTheme.theme?.defaultFont || 'song') : choice.value;
 }
-function openFontPicker() {
+async function openFontPicker() {
+  const entry = activeTheme;
+  const sample = document.getElementById('font-sample');
+  sample.replaceChildren();
+  document.getElementById('sample-module').textContent = entry.name;
   picker.showModal();
+  try {
+    const module = await modules.open(entry.id);
+    const example = module.cards.find(c => c.kind === 'story' && c.interrupt) || module.cards.find(c => c.kind === 'story');
+    if (example && picker.open && activeTheme === entry) sample.innerHTML = renderCard(example, module);
+  } catch (err) { sample.textContent = err.message; }
 }
-try { setFont(localStorage.getItem(fontKey) || 'song'); } catch { setFont('song'); }
 picker.addEventListener('change', event => {
   setFont(event.target.value);
-  try { localStorage.setItem(fontKey, event.target.value); } catch {}
+  try { localStorage.setItem(moduleFontKey(), event.target.value); } catch {}
 });
 init();
