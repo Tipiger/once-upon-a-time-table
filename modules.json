@@ -11,12 +11,10 @@
       "endingBack": "western-ending-back.webp",
       "storyFrame": "western-story-frame.webp",
       "endingFrame": "western-ending-frame.webp",
-      "coverRelief": [
-        "western-cover-inlay.png",
-        "western-cover-castle.png",
-        "western-cover-gilt.png",
-        "western-cover-tracery.png"
-      ]
+      "coverSurface": {
+        "map": "western-cover-relief.png",
+        "encodingDepth": 8
+      }
     },
     "theme": {
       "stylesheet": "western-print.css?v=oval-1",

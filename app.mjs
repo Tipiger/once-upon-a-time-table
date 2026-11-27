@@ -1,3 +1,4 @@
+import { enableCoverRelief } from './cover-relief.mjs?v=continuous-1';
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import { enableDisplayGesture } from './display-gesture.mjs?v=moon-relief-1';
@@ -51,12 +52,6 @@ function applyArt(entry) {
    const cssName = '--' + type.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
    if (art[type]) root.style.setProperty(cssName, 'url(' + JSON.stringify(art[type]) + ')');
    else root.style.removeProperty(cssName);
- }
- for (let i=0; i<4; i++) {
-   const mask = art.coverRelief?.[i];
-   const variable = '--relief-mask-'+(i+1);
-   if (mask) root.style.setProperty(variable, 'url('+JSON.stringify(mask)+')');
-   else root.style.removeProperty(variable);
  }
  root.classList.toggle('printed-deck', Boolean(art.storyFrame));
  let choice;
@@ -138,10 +133,7 @@ function cardSides(id) {
 
 function inspectionFaces(c, module) {
  if (c.kind === 'cover') {
-   const art = module.entry.art;
-   const layers = '<span class="cover-bed"></span>'+(art.coverRelief || []).slice(0,4).map((_,i)=>
-     '<span class="cover-layer relief-'+(i+1)+'"><i></i></span>').join('');
-   return '<span class="book-face">'+layers+'</span><span class="book-face book-reverse">'+layers+'</span>';
+   return '<span class="book-face"></span><span class="book-face book-reverse"></span>';
  }
  const layered = c.kind === 'story' && c.image && module.entry.art?.storyFrame;
  const inset = layered ? '<span class="inset-illustration">'+illustration(c, module, false)+'</span>' : '';
@@ -161,6 +153,7 @@ function showCardDisplay(c, module, title, back, actions='', note='') {
    (actions?'<div class="actions">'+actions+'</div>':'')+'</div></section>';
  const display=inspection.querySelector('.display-card');
  enableDisplayGesture(display);
+ if(c.kind === 'cover') enableCoverRelief(display,module.entry.art);
  display.focus({preventScroll:true});
 }
 
@@ -524,7 +517,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=relief-nav-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=continuous-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');

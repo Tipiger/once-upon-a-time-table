@@ -287,7 +287,7 @@ button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,6
 .display-card .back { --foil-texture:var(--story-back); }
 .display-card .endback { --foil-texture:var(--ending-back); }
 .printed-deck .display-card :is(.inset-illustration + .storyface, .ending-rim, .back)::after,
-.cover-bed::after, .cover-layer i::after {
+.book-face::after {
   content:""; display:block; position:absolute; inset:0; border:0; border-radius:inherit;
   background:linear-gradient(115deg,transparent calc(var(--light-at) - 31%),#e5ab5b88 calc(var(--light-at) - 12%),
     #fff0c8 var(--light-at),#d49b5299 calc(var(--light-at) + 9%),transparent calc(var(--light-at) + 27%));
@@ -347,33 +347,17 @@ button.gallery-cover, button.gallery-cover:hover {
  color:#fff; background:#292721ed; border-radius:50%; box-shadow:0 0 0 1px #fff9;
  fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; pointer-events:none;
 }
-.book-face, .cover-bed, .cover-layer, .cover-layer i {
+.book-face {
  position:absolute; inset:0; border-radius:9px; backface-visibility:hidden;
+ transform:translateZ(.65px); background:var(--cover) center / 100% 100%;
+ --foil-texture:var(--cover); box-shadow:0 2px 3px #30243180,0 9px 18px #19131e45;
 }
-.book-face { transform-style:preserve-3d; transform:translateZ(.75px); }
-.book-reverse { transform:rotateY(180deg) translateZ(.75px); }
-.cover-bed, .cover-layer i { background:var(--cover) center / 100% 100%; }
-.cover-bed {
- --foil-texture:var(--cover);
- box-shadow:0 1px 0 #af9163,0 2px 0 #58452f,0 10px 20px #100c1259;
+.book-reverse { transform:rotateY(180deg) translateZ(.65px); }
+.relief-canvas {
+ position:absolute; inset:0; width:100%; height:100%; border-radius:inherit;
+ visibility:hidden;
 }
-.cover-bed::after { filter:brightness(.62); }
-.cover-layer { transform:translateZ(var(--rise)); filter:drop-shadow(var(--cast)); }
-.cover-layer i {
- display:block; mask:var(--relief) center / 100% 100% luminance;
- -webkit-mask-image:var(--relief); mask-mode:luminance;
-}
-.cover-layer i::after {
- --light-at:calc(var(--foil-at) - var(--edge-on) * 242% + var(--glint-shift));
- --foil-texture:var(--cover);
-}
-.relief-1 { --rise:1px; --relief:var(--relief-mask-1); --glint-shift:6%; --cast:.4px .8px .6px #211727a8; }
-.relief-2 { --rise:2.5px; --relief:var(--relief-mask-2); --glint-shift:2%; --cast:.65px 1.35px .85px #100a20bf; }
-.relief-3 { --rise:4.5px; --relief:var(--relief-mask-3); --glint-shift:-5%; --cast:.9px 1.8px 1.1px #352032c7; }
-.relief-4 { --rise:6px; --relief:var(--relief-mask-4); --glint-shift:-11%; --cast:.5px 1px .55px #493319c7; }
-.relief-3 i::after {
- background:radial-gradient(ellipse 34% 63% at var(--light-at) 48%, #fff6df 0%,#f5db9b80 36%,transparent 80%);
-}
+.book-face:has(.relief-canvas)::after { display:none; }
 .deck-entry-copy { display:grid; justify-items:start; gap:.25rem; min-width:0; }
 .deck-entry-copy strong { font:700 clamp(1.15rem,5vw,1.5rem)/1.25 var(--table-font); overflow-wrap:anywhere; }
 .deck-entry-copy small { font-size:.8rem; }
