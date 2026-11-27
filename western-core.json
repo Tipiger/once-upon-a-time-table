@@ -98,8 +98,7 @@
       "categoryZh": "物品",
       "interrupt": true,
       "labelZh": "钥匙",
-      "image": "western-key.webp",
-      "imageFit": "portrait"
+      "image": "western-key.webp?v=oval-1"
     },
     {
       "id": "A14",
@@ -212,8 +211,7 @@
       "categoryZh": "地点",
       "interrupt": false,
       "labelZh": "高塔",
-      "image": "western-tower.webp",
-      "imageFit": "portrait"
+      "image": "western-tower.webp?v=oval-1"
     },
     {
       "id": "A30",
@@ -242,8 +240,7 @@
       "categoryZh": "角色",
       "interrupt": false,
       "labelZh": "公主",
-      "image": "western-princess.webp",
-      "imageFit": "portrait"
+      "image": "western-princess.webp?v=oval-1"
     },
     {
       "id": "A34",

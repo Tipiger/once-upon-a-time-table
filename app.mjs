@@ -20,9 +20,6 @@ function card(id, options) { return renderCard(get(id), deck, options); }
 function illustration(c, module) {
   if (!c.image) return '';
   const src = esc(new URL(c.image, new URL(module.entry.file, document.baseURI)).href);
-  if (c.imageFit === 'portrait') {
-    return '<span class="story-art portrait-inlay" aria-hidden="true"><img class="art-bleed" src="'+src+'" alt=""><img class="art-subject" src="'+src+'" alt=""></span>';
-  }
   return '<img class="story-art" src="'+src+'" alt="">';
 }
 function renderCard(c, module, {back=false,action='',large=false,flip=false}={}) {
@@ -226,7 +223,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=inlay-2'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=oval-1'));selected=modules.entries[0].id;
    if(new URLSearchParams(location.search).get('preview')==='art' && !location.hash.startsWith('#deal=')){
      previewDeck=await modules.open('once-upon-a-time-3e-core');
      page='art';render();return;
