@@ -1,0 +1,1 @@
+QR Code for JavaScript by Kazuhiko Arase. Distributed under the MIT license.
