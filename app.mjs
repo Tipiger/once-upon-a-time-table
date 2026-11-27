@@ -1,4 +1,4 @@
-import { enableCoverRelief } from './cover-relief.mjs?v=center-zoom-1';
+import { enableCoverRelief } from './cover-relief.mjs?v=worker-tilt-1';
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import { enableDisplayGesture } from './display-gesture.mjs?v=center-zoom-1';
@@ -28,6 +28,7 @@ function illustration(c, module, lazy) {
   const src = esc(new URL(c.image, new URL(module.entry.file, document.baseURI)).href);
   return '<img class="story-art" src="'+src+'" alt=""'+(lazy?' loading="lazy"':'')+'>';
 }
+const inspectionFoil='<i class="inspection-foil" aria-hidden="true"></i>';
 function renderCard(c, module, {back=false,action='',large=false,flip=false,insetArt=false}={}) {
   const end=c.kind==='ending', tag=action?'button':'div';
   const cls='card '+(back?'back '+(end?'endback':''):end?'endface':c.image?'storyface illustrated':'storyface')+(large?' large':'')+(flip?' flip':'');
@@ -37,7 +38,7 @@ function renderCard(c, module, {back=false,action='',large=false,flip=false,inse
     (c.interrupt?'<span class="interrupt">打断</span>':'')+
     (insetArt?'':illustration(c, module, action === 'zoomArt'))+
     '<strong>'+esc(c.labelZh)+'</strong>';
-  return '<'+tag+' class="'+cls+'"'+attr+'>'+body+(action?inspectIcon:'')+'</'+tag+'>';
+  return '<'+tag+' class="'+cls+'"'+attr+'>'+body+(large && (back || insetArt)?inspectionFoil:'')+(action?inspectIcon:'')+'</'+tag+'>';
 }
 function applyArt(entry) {
  if (activeTheme?.id === entry.id) return;
@@ -137,7 +138,7 @@ function inspectionFaces(c, module) {
  }
  const layered = c.kind === 'story' && c.image && module.entry.art?.storyFrame;
  const inset = layered ? '<span class="inset-illustration">'+illustration(c, module, false)+'</span>' : '';
- const rim = c.kind === 'ending' && module.entry.art?.endingFrame ? '<span class="ending-rim"></span>' : '';
+ const rim = c.kind === 'ending' && module.entry.art?.endingFrame ? '<span class="ending-rim">'+inspectionFoil+'</span>' : '';
  return inset+renderCard(c,module,{large:true,insetArt:layered})+rim+renderCard(c,module,{large:true,back:true});
 }
 
