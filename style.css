@@ -265,7 +265,8 @@ button.display-card, button.display-card:hover { perspective:clamp(510px,135vw,6
 .display-card .ending-rim { --foil-texture:var(--ending-frame); }
 .display-card .back { --foil-texture:var(--story-back); }
 .display-card .endback { --foil-texture:var(--ending-back); }
-.printed-deck .display-card :is(.inset-illustration + .storyface, .ending-rim, .back)::after {
+.printed-deck .display-card :is(.inset-illustration + .storyface, .ending-rim, .back)::after,
+.cover-surface::after {
   content:""; display:block; position:absolute; inset:0; border:0; border-radius:inherit;
   background:linear-gradient(115deg,transparent calc(var(--light-at) - 31%),#e5ab5b88 calc(var(--light-at) - 12%),
     #fff0c8 var(--light-at),#d49b5299 calc(var(--light-at) + 9%),transparent calc(var(--light-at) + 27%));
@@ -303,8 +304,16 @@ button.deck-entry:not(.card) {
  box-shadow:0 3px 5px #18170e4d; transform-origin:50% 93%; transition:transform .2s; }
 .entry-ending { background-color:#72483b; background-image:var(--ending-back); transform:translateX(43%) rotate(17deg); }
 .entry-story { background-color:#3f5a45; background-image:var(--story-back); transform:translateX(-43%) rotate(-17deg); }
-.deck-entry-fan .entry-cover { display:grid; align-items:end; background-color:#d9c9a2; background-image:var(--cover,var(--story-back)); background-size:cover; }
-.entry-cover b { text-align:center; margin:0 3% 5%; padding:2%; background:#f1e6cbef; color:#402f1d; font:700 clamp(.45rem,2vw,.7rem)/1.2 var(--table-font); }
+.deck-entry-fan .entry-cover { background-color:#d9c9a2; background-image:var(--cover,var(--story-back)); }
+.gallery-cover {
+ grid-column:1 / -1; justify-self:center; position:relative; width:calc((100% - 2 * var(--card-gap)) / 3);
+ aspect-ratio:56/87; perspective:600px; touch-action:pan-y; user-select:none;
+}
+.cover-surface {
+ --foil-texture:var(--cover); --light-at:var(--foil-at); --edge-on:0;
+ background:var(--cover) center / 100% 100%; border-radius:9px; isolation:isolate;
+ box-shadow:0 1px 0 #a28550,0 3px 0 #4c392c,0 5px 12px #110b0a55;
+}
 .deck-entry-copy { display:grid; justify-items:start; gap:.25rem; min-width:0; }
 .deck-entry-copy strong { font:700 clamp(1.15rem,5vw,1.5rem)/1.25 var(--table-font); overflow-wrap:anywhere; }
 .deck-entry-copy small { font-size:.8rem; }

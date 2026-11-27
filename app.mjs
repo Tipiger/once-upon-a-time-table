@@ -1,6 +1,6 @@
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
-import { enableDisplayGesture } from './display-gesture.mjs?v=frame-foil-1';
+import { enableDisplayGesture } from './display-gesture.mjs?v=book-cover-1';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');
@@ -65,7 +65,7 @@ function deckCounts(cards) {
 function deckEntry(entry, cards) {
  const name=esc(entry.name);
  return '<button type="button" class="deck-entry" data-view-module aria-label="查看'+name+'完整牌组">'+
-   '<span class="deck-entry-fan" aria-hidden="true"><i class="entry-ending"></i><i class="entry-story"></i><i class="entry-cover"><b>'+name+'</b></i></span>'+
+   '<span class="deck-entry-fan" aria-hidden="true"><i class="entry-ending"></i><i class="entry-story"></i><i class="entry-cover"></i></span>'+
    '<span class="deck-entry-copy"><strong>'+name+'</strong><small class="entry-counts">'+(cards?deckCounts(cards):'')+'</small>'+
    '<span class="entry-cta">查看完整牌组 <i aria-hidden="true"></i></span></span></button>';
 }
@@ -321,12 +321,16 @@ function renderArtPreview() {
     return '<button data-action="filterGallery" data-value="'+kind+'" aria-pressed="'+(galleryKind===kind)+'">'+label+' '+count+'</button>';
   }).join('');
   const visible=galleryKind==='all' ? cards : cards.filter(c=>c.kind===galleryKind);
+  const entry = previewDeck.entry;
+  const cover = entry.art?.cover ? '<div class="display-card gallery-cover" role="img" aria-label="'+esc(entry.name)+'牌组封面"><span class="display-tilt cover-surface"></span></div>' : '';
   const originPage = new URLSearchParams(location.search).get('from');
   const backLabel = hasTableReferrer() && Object.hasOwn(galleryBackLabels,originPage) ? galleryBackLabels[originPage] : '牌桌';
   const back = '<a class="gallery-back" href="./" data-return-table>'+backArrow+'返回'+backLabel+'</a>';
   app.innerHTML=pageHeader(back,'<h1>'+esc(previewDeck.entry.name)+' <span class="page-subtitle">· 完整牌组</span></h1>','wide-head gallery-head')+
     '<section class="hand-section"><nav class="toolbar gallery-filters" aria-label="卡牌筛选">'+filters+
-    '</nav><div class="hand-grid">'+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
+    '</nav><div class="hand-grid">'+cover+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
+  const coverDisplay = app.querySelector('.gallery-cover');
+  if (coverDisplay) enableDisplayGesture(coverDisplay, { flippable:false });
   restoreCard();
 }
 function render(){
@@ -483,7 +487,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=deck-entry-a'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=book-cover-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');

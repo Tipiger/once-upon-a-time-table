@@ -5,7 +5,7 @@
     "file": "western-core.json?v=full-art-1",
     "description": "结局牌给出故事目标，请用自己的话收尾。",
     "art": {
-      "cover": "western-a27.webp",
+      "cover": "western-cover.webp",
       "storyBack": "western-story-back.webp",
       "endingBack": "western-ending-back.webp",
       "storyFrame": "western-story-frame.webp",
