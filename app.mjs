@@ -1,6 +1,6 @@
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
-import { enableDisplayGesture } from './display-gesture.mjs?v=book-cover-1';
+import { enableDisplayGesture } from './display-gesture.mjs?v=moon-relief-1';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');
@@ -44,7 +44,7 @@ function applyArt(entry) {
  if (entry.theme?.stylesheet) sheet.href = entry.theme.stylesheet;
  else sheet.removeAttribute('href');
  const art = entry.art || {};
- for (const type of ['cover','storyBack','endingBack','storyFrame','endingFrame']) {
+ for (const type of ['cover','coverInlay','coverGilt','storyBack','endingBack','storyFrame','endingFrame']) {
    const cssName = '--' + type.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
    if (art[type]) root.style.setProperty(cssName, 'url(' + JSON.stringify(art[type]) + ')');
    else root.style.removeProperty(cssName);
@@ -126,15 +126,25 @@ function cardSides(id) {
  return '<span class="card-turn" aria-hidden="true">'+card(id)+card(id,{back:true})+'</span>';
 }
 
-function showCardDisplay(c, module, title, back, actions='', note='') {
+function inspectionFaces(c, module) {
+ if (c.kind === 'cover') {
+   const art = module.entry.art;
+   const layers = '<span class="cover-bed"></span>'+
+     (art.coverInlay ? '<span class="cover-layer cover-inlay"><i></i></span>' : '')+
+     (art.coverGilt ? '<span class="cover-layer cover-gilt"><i></i></span>' : '');
+   return '<span class="book-face">'+layers+'</span><span class="book-face book-reverse">'+layers+'</span>';
+ }
  const layered = c.kind === 'story' && c.image && module.entry.art?.storyFrame;
  const inset = layered ? '<span class="inset-illustration">'+illustration(c, module, false)+'</span>' : '';
  const rim = c.kind === 'ending' && module.entry.art?.endingFrame ? '<span class="ending-rim"></span>' : '';
+ return inset+renderCard(c,module,{large:true,insetArt:layered})+rim+renderCard(c,module,{large:true,back:true});
+}
+
+function showCardDisplay(c, module, title, back, actions='', note='') {
  app.innerHTML='<section class="card-inspection" aria-label="'+esc(title)+'">'+pageHeader(back)+
    '<div class="inspection-body">'+
    '<button type="button" class="turnable display-card" aria-describedby="display-hint" aria-label="'+esc(c.textZh || c.labelZh)+'，翻到牌背">'+
-   '<span class="display-tilt" aria-hidden="true"><span class="card-turn">'+inset+
-   renderCard(c,module,{large:true,insetArt:layered})+rim+renderCard(c,module,{large:true,back:true})+
+   '<span class="display-tilt" aria-hidden="true"><span class="card-turn">'+inspectionFaces(c,module)+
    '</span></span></button><p class="flip-hint" id="display-hint">轻点翻面 · 按住拖动看反光</p>'+
    (note?'<p class="inspection-note">'+esc(note)+'</p>':'')+
    (actions?'<div class="actions">'+actions+'</div>':'')+'</div></section>';
@@ -322,15 +332,13 @@ function renderArtPreview() {
   }).join('');
   const visible=galleryKind==='all' ? cards : cards.filter(c=>c.kind===galleryKind);
   const entry = previewDeck.entry;
-  const cover = entry.art?.cover ? '<div class="display-card gallery-cover" role="img" aria-label="'+esc(entry.name)+'牌组封面"><span class="display-tilt cover-surface"></span></div>' : '';
+  const cover = entry.art?.cover ? '<button type="button" class="gallery-cover" data-action="zoomCover" data-value="'+esc(entry.id)+'" aria-label="检视'+esc(entry.name)+'牌组封面"></button>' : '';
   const originPage = new URLSearchParams(location.search).get('from');
   const backLabel = hasTableReferrer() && Object.hasOwn(galleryBackLabels,originPage) ? galleryBackLabels[originPage] : '牌桌';
   const back = '<a class="gallery-back" href="./" data-return-table>'+backArrow+'返回'+backLabel+'</a>';
   app.innerHTML=pageHeader(back,'<h1>'+esc(previewDeck.entry.name)+' <span class="page-subtitle">· 完整牌组</span></h1>','wide-head gallery-head')+
     '<section class="hand-section"><nav class="toolbar gallery-filters" aria-label="卡牌筛选">'+filters+
     '</nav><div class="hand-grid">'+cover+visible.map(c=>renderCard(c,previewDeck,{action:'zoomArt'})).join('')+'</div></section>';
-  const coverDisplay = app.querySelector('.gallery-cover');
-  if (coverDisplay) enableDisplayGesture(coverDisplay, { flippable:false });
   restoreCard();
 }
 function render(){
@@ -393,6 +401,11 @@ async function receiveRemote(packet){
 async function act(a,v){
  if(page==='art'){
    if(a==='filterGallery') { galleryKind=v; return; }
+   if(a==='zoomCover'){
+     rememberCard(v,a);
+     previewCard={kind:'cover',labelZh:previewDeck.entry.name+'牌组封面'};
+     return;
+   }
    if(a==='zoomArt') rememberCard(v,'zoomArt');
    previewCard=a==='zoomArt' ? previewDeck.byId.get(v) : null;
    return;
@@ -487,7 +500,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=book-cover-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=moon-relief-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');

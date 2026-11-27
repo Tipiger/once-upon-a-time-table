@@ -1,5 +1,5 @@
 // Keep the hit target stationary while the card inside it turns towards the finger.
-export function enableDisplayGesture(button, { flippable = true } = {}) {
+export function enableDisplayGesture(button) {
   const frontLabel = button.getAttribute('aria-label');
   let grip = null;
   let suppressClick = false;
@@ -48,7 +48,6 @@ export function enableDisplayGesture(button, { flippable = true } = {}) {
   for (const type of ['pointerup','pointercancel','lostpointercapture']) {
     button.addEventListener(type, release);
   }
-  if (!flippable) return;
   button.addEventListener('click', event => {
     if (event.detail && suppressClick) return;
     const back = button.dataset.back !== 'true';
