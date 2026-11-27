@@ -1,7 +1,7 @@
 import { enableCoverRelief } from './cover-relief.mjs?v=native-relief-1';
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
-import { enableDisplayGesture } from './display-gesture.mjs?v=center-zoom-1';
+import { enableDisplayGesture } from './display-gesture.mjs?v=zoom-4';
 import QRCode from './vendor/index.js';
 
 const app = document.querySelector('#app');
@@ -149,9 +149,9 @@ function showCardDisplay(c, module, title, back, actions='', note='') {
    '<div class="inspection-body"><div class="inspection-stage">'+
    '<button type="button" class="turnable display-card" aria-describedby="display-hint" aria-label="'+esc(c.textZh || c.labelZh)+'，翻到牌背">'+
    '<span class="display-tilt" aria-hidden="true"><span class="card-turn">'+inspectionFaces(c,module)+
-   '</span></span></button></div><p class="flip-hint" id="display-hint">轻点翻面 · 拖动看反光 · 双指缩放</p>'+
+   '</span></span></button></div><div class="inspection-controls"><p class="flip-hint" id="display-hint">轻点翻面 · 拖动看反光 · 双指缩放</p>'+
    (note?'<p class="inspection-note">'+esc(note)+'</p>':'')+
-   (actions?'<div class="actions">'+actions+'</div>':'')+'</div></section>';
+   (actions?'<div class="actions">'+actions+'</div>':'')+'</div></div></section>';
  const display=inspection.querySelector('.display-card');
  enableDisplayGesture(display);
  if(c.kind === 'cover') enableCoverRelief(display,module.entry.art);
@@ -518,7 +518,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=contours-2'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=depth-12'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');

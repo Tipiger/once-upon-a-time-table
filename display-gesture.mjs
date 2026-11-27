@@ -53,7 +53,7 @@ export function enableDisplayGesture(button) {
     p.x = event.clientX;
     p.y = event.clientY;
     if (pinch && points.size >= 2) {
-      zoom = Math.min(2.5, Math.max(.75, pinch.zoom * separation() / pinch.distance));
+      zoom = Math.min(4, Math.max(.75, pinch.zoom * separation() / pinch.distance));
       button.style.setProperty('--card-zoom', String(zoom));
       stage.classList.toggle('is-zoomed', zoom > 1);
       return;

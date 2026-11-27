@@ -68,7 +68,7 @@ body {
  grid-area:2 / 1; min-height:0; min-width:0; overflow:auto; overscroll-behavior:contain;
  padding:1rem max(clamp(.8rem,4vw,2rem),calc((100% - 760px) / 2 + 2rem)) 2rem;
 }
-#inspection { z-index:3; background:var(--desk); }
+#inspection { z-index:3; padding:0; overflow:clip; background:var(--desk); }
 body:has(#inspection:not([hidden])) .game-nav { visibility:hidden; }
 #app:has(.game-nav) { padding-bottom:calc(5.5rem + env(safe-area-inset-bottom)); }
 h1,h2,h3,p { margin:0; }
@@ -387,18 +387,22 @@ button.gallery-cover, button.gallery-cover:hover {
 
 .hand-nav .brand { padding-block:.55rem; }
 .discard-board > small { display:block; margin:.75rem 0; }
-.card-inspection { min-height:100%; display:flex; flex-direction:column; }
-.card-inspection .game-head { width:100%; }
-.inspection-body { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:.7rem; padding:.8rem 0; }
-.inspection-stage { display:grid; place-items:center; align-self:stretch; padding-block:.5rem; touch-action:none; }
-.inspection-stage.is-zoomed { overflow:clip; }
-.inspection-stage .display-card { transform:scale(var(--card-zoom,1)); transform-origin:50% 50%; }
-.inspection-body .display-card { width:min(78vw,350px,calc((100dvh - 245px)*.6437)); }
-.inspection-body .actions { width:min(90vw,380px); margin:0; }
-.inspection-note { text-align:center; color:var(--muted); }
-@media(max-height:480px) and (orientation:landscape) {
-  .inspection-body { display:grid; grid-template-columns:auto minmax(9rem,14rem); justify-content:center; align-content:center; }
-  .inspection-stage { grid-row:1 / span 3; align-self:center; }
-  .inspection-body .display-card { width:min(38vw,calc((100dvh - 100px)*.6437)); }
-  .inspection-body .actions { width:100%; }
+.card-inspection,.inspection-body { height:100%; }
+.inspection-body { display:grid; grid-template-rows:minmax(0,1fr) auto; }
+.inspection-stage {
+ display:grid; place-items:center; grid-template:100% / 100%; min-width:0; min-height:0;
+ container-type:size; touch-action:none;
 }
+.inspection-stage .display-card {
+ width:min(94vw,calc((100dvh - 154px)*.6437));
+ width:min(94cqw,calc(95cqh * .6437));
+ transform:scale(var(--card-zoom,1)); transform-origin:50% 50%;
+}
+.inspection-controls {
+ position:relative; z-index:1; pointer-events:none;
+ display:grid; justify-items:center; gap:.4rem; padding:.25rem max(1rem,env(safe-area-inset-right)) max(.6rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));
+}
+.inspection-controls :is(.flip-hint,.inspection-note) { padding:.1rem .55rem; border-radius:.4rem; text-align:center; color:var(--muted); }
+.inspection-stage.is-zoomed + .inspection-controls :is(.flip-hint,.inspection-note) { background:var(--desk); }
+.inspection-controls .actions { width:min(100%,380px); margin:0; }
+.inspection-controls button { pointer-events:auto; }
