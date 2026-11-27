@@ -71,16 +71,29 @@ function homeTheme() {
  const hint=document.getElementById('moduleInfo');
  if(hint) hint.textContent=entry.description;
 }
-function top(aux='') {return '<header class="between"><span class="brand"><i>✥</i>故事牌桌</span>'+ '<div class="head-actions">'+aux+'<button class="font-trigger soft" type="button" aria-haspopup="dialog">字体</button></div></header>' ;}
-const tabs = () => '<nav class="toolbar" aria-label="牌桌功能">'+[['hand','我的手牌'],['discard','弃牌堆'],...(table.host&&seat===1?[['dealer','发牌台']]:[])].map(([a,t])=>'<button data-action="tab" data-value="'+a+'" aria-pressed="'+(page===a)+'">'+t+'</button>').join('')+'</nav>';
+const appearance = '<div class="head-actions"><button class="soft font-trigger" type="button" aria-haspopup="dialog">字体</button><button class="soft theme-trigger" type="button" aria-haspopup="dialog">主题</button></div>';
+function top() {
+ return '<header class="between"><span class="brand">故事牌桌</span>'+appearance+'</header>';
+}
+const tabItems = [
+ ['hand','我的手牌','<rect x="8" y="4" width="12" height="16" rx="2"/><path d="m5 6-2 1 3 14 3-1"/>'],
+ ['discard','弃牌堆','<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/>'],
+ ['dealer','发牌台','<path d="m2 8 10-5 10 5-10 5zM3 12l9 5 9-5M3 16l9 5 9-5"/>']
+];
+function tabs() {
+ const visible = table.host ? tabItems : tabItems.slice(0,2);
+ return '<nav class="game-nav" aria-label="牌桌功能"><div>'+visible.map(([id,label,icon])=>
+   '<button data-action="tab" data-value="'+id+'" aria-pressed="'+(id===page)+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+icon+'</svg>'+label+'</button>'
+ ).join('')+'</div></nav>';
+}
 function home(){
- return top()+'<section class="hero"><div><h1>很久很久以前</h1><p>抽一手牌，和同桌的人讲一个故事。</p></div><div aria-hidden="true" class="deckfan"><div class="mini">✧</div><div class="mini">✥</div></div></section>'+
- (table?'<section class="panel row between"><div><b>上次的牌局</b><br><small>'+(table.seats?table.seats+' 人 · ':'')+(table.solo?'单机试玩':'同桌牌局')+'</small></div>'+btn('resume','继续牌局','primary')+'</section>':'')+
- '<section class="panel"><h2>新牌局</h2><div class="setup-fields">'+moduleSetup()+'<label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newSolo','单机试玩','primary')+btn('newTable','同桌开局')+'</div><p class="help">单机可切换座位；同桌时每人用自己的手机扫码领牌。</p></section>';
+ return top()+'<section class="hero"><h1>很久很久以前</h1></section>'+
+ (table?'<section class="panel row between"><div><b>上次的牌局</b><br><small>'+esc(deck.entry.name)+' · '+seat+' 号</small></div>'+btn('resume','继续牌局','primary')+'</section>':'')+
+ '<section class="panel"><h2>新牌局</h2><div class="setup-fields">'+moduleSetup()+'<label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newTable','开始牌局','primary')+'</div><p class="help">开局后，在发牌台出示二维码，让其他玩家领取手牌。</p></section>';
 }
 function heading(){
- const ctrl=table.solo?'<label class="playerswitch">试玩座位<select id="seatChoice" aria-label="切换试玩座位">'+options(table.seats,seat,' 号')+'</select></label>':'<span class="small">'+seat+' 号 · '+(table.host?'房主':'玩家')+'</span>';
- return top(ctrl)+'<div class="row between back-row"><span class="small">'+esc(deck.entry.name)+' / '+(table.solo?'单机试玩':'同桌牌局')+'</span>'+ '<div class="module-links">'+viewModuleButton+btn('home','牌局首页','ghost')+'</div></div>';
+ return '<header class="game-head"><div class="row between"><h1>'+esc(deck.entry.name)+'</h1><div class="module-links">'+viewModuleButton+btn('home','牌局首页','ghost')+'</div></div>'+
+ '<div class="row between"><small>'+seat+' 号 · '+(table.host?'房主':'玩家')+'</small>'+appearance+'</div></header>';
 }
 function inbox(player){
  const batch=player.inbox[0];
@@ -104,7 +117,7 @@ function dealer(){
 function qrLink() {const url=new URL(location.href);url.search='';url.hash='';return g.transferLink(url,slip);}
 function issueSlip(){
  const n=slip.cards.filter(id=>get(id).kind==='story').length, e=slip.cards.length-n;
- return '<section class="panel center"><h2>'+slip.seat+' 号的'+(slip.opening?'起手牌':'补牌')+'</h2><div class="small">'+[n?'故事牌 ×'+n:'',e?'结局牌 ×'+e:''].filter(Boolean).join(' · ')+'</div><canvas class="qr" id="qr" aria-label="本批牌的领取二维码"></canvas><p class="help">用手机相机扫码，在同一浏览器中领取。</p><div class="actions">'+btn('closeSlip','完成','primary')+btn('copy','复制领牌链接','soft')+'</div>'+(table.solo?'<div class="actions">'+btn('simulate','模拟 '+slip.seat+' 号扫码领取','soft')+'</div>':'')+'</section>';
+ return '<section class="panel center"><h2>'+slip.seat+' 号的'+(slip.opening?'起手牌':'补牌')+'</h2><div class="small">'+[n?'故事牌 ×'+n:'',e?'结局牌 ×'+e:''].filter(Boolean).join(' · ')+'</div><canvas class="qr" id="qr" aria-label="本批牌的领取二维码"></canvas><p class="help">用手机相机扫码，在同一浏览器中领取。</p><div class="actions">'+btn('closeSlip','完成','primary')+btn('copy','复制领牌链接','soft')+'</div>'+'</section>';
 }
 function paintQR(){
  const canvas=document.querySelector('#qr');if(!canvas)return;
@@ -167,12 +180,12 @@ function playerChange(fn){
  const s=seat;return change(t=>({...t,players:{...t.players,[s]:fn(t.players[s])}}));
 }
 function remember(){localStorage.setItem(latest,JSON.stringify({id:table.id,seat}));}
-async function create(solo) {
+async function create() {
  const config=Object.fromEntries(['seats','stories','endings'].map(id=>[id,+document.getElementById(id).value]));
  const activeDeck=await modules.open(selected);
  const host=g.startGame(activeDeck,config);
  seat=1;target=2;
- const t={id:host.game,host,solo,seats:host.seats,players:{1:g.receive(null,host.history[0],activeDeck)},mySeat:1};
+ const t={id:host.game,host,seats:host.seats,players:{1:g.receive(null,host.history[0],activeDeck)},mySeat:1};
  table=await g.updateSaved(key(t.id),()=>t);deck=activeDeck;remember();page='hand';
 }
 async function receiveRemote(packet){
@@ -180,7 +193,7 @@ async function receiveRemote(packet){
  const t=await g.updateSaved(key(packet.game),old=>{
    if(old?.host||old&&old.mySeat!==packet.seat)throw Error('该牌局在此浏览器已有座位，请用对应玩家的手机扫码');
    const player=g.receive(old?.players[packet.seat],packet,activeDeck);
-   return {...(old??{id:packet.game,host:null,solo:false,seats:null,mySeat:packet.seat}),players:{[packet.seat]:player}};
+   return {...(old??{id:packet.game,host:null,seats:null,mySeat:packet.seat}),players:{[packet.seat]:player}};
  });
  table=t;deck=activeDeck;seat=t.mySeat;remember();page='hand';
 }
@@ -191,7 +204,7 @@ async function act(a,v){
    previewCard=a==='zoomArt' ? previewDeck.byId.get(v) : null;
    return;
  }
- if(a==='newSolo'||a==='newTable'){await create(a==='newSolo');return;}
+ if(a==='newTable'){await create();return;}
  if(a==='home'){page='home';return;}
  if(a==='resume'){page='hand';return;}
  if(a==='tab'){page=v;return;}
@@ -215,24 +228,7 @@ async function act(a,v){
    });
    page=target===1?'hand':'slip';return;
  }
- if(a==='simulate'){
-   const n=slip.seat;
-   await change(t=>{
-     let p=t.players[n];
-     if(!p&&!slip.opening)throw Error('请先展示该座位的起手牌码并领取');
-     return {...t,players:{...t.players,[n]:g.receive(p,slip,deck)}};
-   });
-   seat=n;remember();page='hand';return;
- }
- if(a==='switch'){
-   const n=+v;
-   await change(t=>{
-     if(!t.solo||!t.host)throw Error('仅单机试玩可切换座位');
-     if(t.players[n])return t;
-     return {...t,players:{...t.players,[n]:g.receive(null,t.host.history.find(p=>p.opening&&p.seat===n),deck)}};
-   });
-   seat=n;remember();page='hand';
- }
+
 }
 async function perform(a,v){
  if(busy)return;busy=true;
@@ -251,9 +247,10 @@ app.addEventListener('click',e=>{
    const from=new URL(document.referrer);
    if(from.origin===location.origin && from.pathname===location.pathname && history.length>1){e.preventDefault();history.back();return;}
  }
+ if(e.target.closest('.theme-trigger')){themePicker.showModal();return;}
  if(e.target.closest('.font-trigger')){openFontPicker();return;}const b=e.target.closest('button[data-action]');if(b)perform(b.dataset.action,b.dataset.value);});
 app.addEventListener('change',e=>{if(e.target.id==='module'){selected=e.target.value;homeTheme();}
- if(e.target.id==='seatChoice')perform('switch',e.target.value);});
+});
 async function openPacket(){
  try{await receiveRemote(g.readLink(location.href));history.replaceState(null,'',location.pathname+location.search);}
  catch(err){tell(err.message);}
@@ -272,7 +269,7 @@ async function init(){
      const saved=await g.updateSaved(key(prev.id));
      const id=saved && savedModule(saved);
      if(modules.entries.some(e=>e.id===id)){
-       deck=await modules.open(id);table=saved;seat=prev.seat;page='hand';
+       deck=await modules.open(id);table=saved;seat=saved.host ? 1 : saved.mySeat;page='hand';
      }
    }
    if(location.hash.startsWith('#deal='))await openPacket();
@@ -310,5 +307,23 @@ async function openFontPicker() {
 picker.addEventListener('change', event => {
   setFont(event.target.value);
   try { localStorage.setItem(moduleFontKey(), event.target.value); } catch {}
+});
+const themePicker = document.getElementById('theme-picker');
+const themeKey = 'story-table.ui-theme';
+function setTheme(value) {
+  const theme = value === 'silver' ? 'silver' : 'graphite';
+  document.documentElement.dataset.uiTheme = theme;
+  themePicker.querySelector('input[value="' + theme + '"]').checked = true;
+  document.querySelector('meta[name="theme-color"]').content = theme === 'silver' ? '#e3e4e3' : '#303133';
+}
+let savedTheme;
+try { savedTheme = localStorage.getItem(themeKey); } catch {}
+setTheme(savedTheme);
+themePicker.addEventListener('change', event => {
+  setTheme(event.target.value);
+  try { localStorage.setItem(themeKey, event.target.value); } catch {}
+});
+window.addEventListener('storage', event => {
+  if (event.key === themeKey) setTheme(event.newValue);
 });
 init();
