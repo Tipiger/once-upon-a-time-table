@@ -27,6 +27,16 @@ export function startGame(module, { seats, stories, endings = 2 }) {
   shuffle(decks.ending);
   const host = { game: crypto.randomUUID(), module: module.moduleId, seats, decks, history: [] };
   for (let seat = 1; seat <= seats; seat++) deal(host, seat, stories, endings, true);
+  for (const packet of host.history) {
+    packet.v = 2;
+    packet.reserve = { story: [], ending: [] };
+  }
+  for (const kind of ['story', 'ending']) {
+    // A random starting seat shares out any remainder fairly between games.
+    const first = Math.floor(Math.random() * seats);
+    decks[kind].forEach((id, i) => host.history[(first + i) % seats].reserve[kind].push(id));
+    decks[kind] = [];
+  }
   return host;
 }
 
@@ -42,6 +52,7 @@ function deal(host, seat, stories, endings, opening) {
 }
 
 export function issue(host, seat, stories, endings = 0) {
+  requireState(!host.history[0]?.reserve, '本局请从个人补牌堆补牌');
   const next = structuredClone(host);
   deal(next, seat, stories, endings, false);
   return next;
@@ -50,31 +61,71 @@ export function issue(host, seat, stories, endings = 0) {
 // Reuse the same history entry to redisplay a code. No additional cards are drawn.
 export function transferLink(pageUrl, packet) {
   const url = new URL(pageUrl);
-  url.hash = 'deal=' + encodeURIComponent(JSON.stringify(packet));
+  if (packet.v === 2) {
+    const ids = list => list.map(encodeURIComponent).join(',');
+    const fields = ['2', encodeURIComponent(packet.game), encodeURIComponent(packet.module),
+      packet.seat, ids(packet.cards), ids(packet.reserve.story), ids(packet.reserve.ending)];
+    url.searchParams.set('v', 'reserve-1');
+    url.hash = 'deal=' + fields.join('/');
+  } else {
+    url.hash = 'deal=' + encodeURIComponent(JSON.stringify(packet));
+  }
   return url.href;
 }
 export function readLink(pageUrl) {
   const hash = new URL(pageUrl).hash;
   requireState(hash.startsWith('#deal='), '链接中没有领牌信息');
-  return JSON.parse(decodeURIComponent(hash.slice(6)));
+  const payload = hash.slice(6);
+  if (payload.startsWith('2/')) {
+    const fields = payload.split('/');
+    requireState(fields.length === 7, '领牌链接不完整');
+    const ids = value => value ? value.split(',').map(decodeURIComponent) : [];
+    const seat = Number(fields[3]);
+    return { v: 2, game: decodeURIComponent(fields[1]), module: decodeURIComponent(fields[2]),
+      seat, serial: seat, opening: true, cards: ids(fields[4]),
+      reserve: { story: ids(fields[5]), ending: ids(fields[6]) } };
+  }
+  return JSON.parse(decodeURIComponent(payload));
 }
 
 export function receive(player, packet, module) {
-  requireState(packet?.v === 1 && typeof packet.game === 'string' && packet.game.length > 0 &&
+  requireState((packet?.v === 1 || packet?.v === 2) && typeof packet.game === 'string' && packet.game.length > 0 &&
     packet.module === module.moduleId && positive(packet.serial) && positive(packet.seat) &&
     typeof packet.opening === 'boolean' && Array.isArray(packet.cards) && packet.cards.length > 0, '领牌信息无效或模组不匹配');
   requireState(player || packet.opening, '请先领取起手牌');
+  if (packet.v === 2) {
+    requireState(packet.opening && packet.serial === packet.seat &&
+      Array.isArray(packet.reserve?.story) && Array.isArray(packet.reserve?.ending), '个人补牌堆格式无效');
+    const kinds = new Map(module.cards.map(c => [c.id, c.kind]));
+    for (const kind of ['story', 'ending']) {
+      requireState(packet.reserve[kind].every(id => kinds.get(id) === kind), '补牌类型无效');
+    }
+    const ids = [...packet.cards, ...packet.reserve.story, ...packet.reserve.ending];
+    requireState(new Set(ids).size === ids.length, '起手牌与补牌堆含有重复卡牌');
+  }
   const cardIds = new Set(module.cards.map(c => c.id));
   requireState(packet.cards.every(id => cardIds.has(id)) && new Set(packet.cards).size === packet.cards.length, '牌号无效或重复');
   const state = player ?? { game: packet.game, module: packet.module, seat: packet.seat, hand: [],
     discard: [], received: [], inbox: [], shown: null, confirming: false, wonWith: null };
   requireState(state.game === packet.game && state.module === packet.module && state.seat === packet.seat, '这批牌属于其他牌局或座位');
   if (state.received.includes(packet.serial)) return state;
-  requireState(!state.wonWith && !(player && packet.opening), '当前不能领取这批牌');
+  requireState(!state.reserve && !state.wonWith && !(player && packet.opening), '当前不能领取这批牌');
   const owned = new Set([...state.hand, ...state.discard, ...state.inbox.flatMap(batch => batch.cards)]);
   requireState(packet.cards.every(id => !owned.has(id)), '这批牌含有已领取的牌');
-  return { ...state, received: [...state.received, packet.serial], shown: null, confirming: false,
+  return { ...state, ...(packet.v === 2 ? { reserve: structuredClone(packet.reserve) } : {}), received: [...state.received, packet.serial], shown: null, confirming: false,
     inbox: [...state.inbox, { cards: [...packet.cards], revealed: false }] };
+}
+
+export function drawLocal(state, stories, endings = 0) {
+  requireState(state.reserve && !state.wonWith && !state.shown && !state.inbox.length, '当前无法补牌');
+  requireState(whole(stories) && whole(endings) && stories + endings > 0, '补牌数量无效');
+  const { story, ending } = state.reserve;
+  requireState(story.length >= stories && ending.length >= endings, '个人补牌堆余量不足');
+  return {
+    ...state,
+    reserve: { story: story.slice(stories), ending: ending.slice(endings) },
+    inbox: [{ cards: [...story.slice(0, stories), ...ending.slice(0, endings)], revealed: false }]
+  };
 }
 
 export function revealBatch(state) {
@@ -112,6 +163,18 @@ function discardShown(state) {
 export function answerEnding(state, confirm) {
   requireState(state.confirming && typeof confirm === 'boolean', '当前没有待确认的结局');
   return confirm ? { ...discardShown(state), wonWith: state.shown } : { ...state, confirming: false };
+}
+
+export function returnToHand(state, id) {
+  requireState(state.discard.includes(id) && !state.hand.includes(id), '这张牌已不在弃牌堆');
+  requireState(!state.shown && !state.inbox.length, '请先完成当前的卡牌操作');
+  requireState(!state.wonWith || state.wonWith === id, '请先收回获胜的结局牌');
+  return {
+    ...state,
+    hand: [...state.hand, id],
+    discard: state.discard.filter(cardId => cardId !== id),
+    wonWith: null
+  };
 }
 
 // Use separate host and player keys, e.g. host/<game> and player/<game>.

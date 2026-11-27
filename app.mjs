@@ -1,4 +1,4 @@
-import * as g from './game.mjs';
+import * as g from './game.mjs?v=reserve-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import QRCode from './vendor/index.js';
 
@@ -89,7 +89,7 @@ function tabs() {
 function home(){
  return top()+'<section class="hero"><h1>很久很久以前</h1></section>'+
  (table?'<section class="panel row between"><div><b>上次的牌局</b><br><small>'+esc(deck.entry.name)+' · '+seat+' 号</small></div>'+btn('resume','继续牌局','primary')+'</section>':'')+
- '<section class="panel"><h2>新牌局</h2><div class="setup-fields">'+moduleSetup()+'<label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newTable','开始牌局','primary')+'</div><p class="help">开局后，在发牌台出示二维码，让其他玩家领取手牌。</p></section>';
+ '<section class="panel"><h2>新牌局</h2><div class="setup-fields">'+moduleSetup()+'<label>游戏人数<select id="seats">'+options(6,2,' 人',2)+'</select></label><label>每人故事牌<select id="stories">'+options(10,3,' 张')+'</select></label><label>每人结局牌<select id="endings">'+options(4,2,' 张')+'</select></label></div><div class="actions">'+btn('newTable','开始牌局','primary')+'</div><p class="help">其他玩家开局扫码一次，之后在自己的手机上补牌。</p></section>';
 }
 function heading(){
  return '<header class="game-head"><div class="row between"><h1>'+esc(deck.entry.name)+'</h1><div class="module-links">'+viewModuleButton+btn('home','牌局首页','ghost')+'</div></div>'+
@@ -108,11 +108,25 @@ function hand(player) {
    return '<section class="hand-section hand-' + kind + '" aria-label="' + title + '">' +
      '<h2 class="hand-heading"><span>' + title + '</span></h2>' + content + '</section>';
  };
- return '<div class="hand-board">' + section('ending', '结局牌') + section('story', '故事牌') + '</div>';
+ const drawButton = player.reserve ? '<div class="row between"><small>个人补牌堆 · 故事 '+player.reserve.story.length+' / 结局 '+player.reserve.ending.length+'</small>'+btn('drawMenu','补牌','soft')+'</div>' : '';
+ return '<div class="hand-board">' + drawButton + section('ending', '结局牌') + section('story', '故事牌') + '</div>';
+}
+function drawMenu(player) {
+ const { story, ending } = player.reserve;
+ const choices = [
+   [1,0,'补 1 张故事牌'], [2,0,'补 2 张故事牌'], [0,1,'补 1 张结局牌'], [1,1,'故事、结局各 1 张']
+ ];
+ const buttons = choices.map(([s,e,label]) =>
+   '<button data-action="draw" data-value="'+s+','+e+'"'+(story.length<s || ending.length<e?' disabled':'')+'>'+label+'</button>'
+ ).join('');
+ return '<section class="panel"><div class="row between"><h2>个人补牌堆</h2>'+btn('tab','返回手牌','soft','hand')+'</div>'+
+   '<p class="help">剩余 '+story.length+' 张故事牌 · '+ending.length+' 张结局牌</p><div class="actions">'+buttons+'</div></section>';
 }
 function dealer(){
  const host=table.host, history=host.history.filter(p=>p.seat===target), opening=history[0], last=history.at(-1);
- return '<section class="panel"><h2>给谁发牌？</h2><div class="seat-grid">'+Array.from({length:host.seats},(_,i)=>'<button data-action="target" data-value="'+(i+1)+'" aria-pressed="'+(target===i+1)+'">'+(i+1)+' 号'+(i===0?' · 我':'')+'</button>').join('')+'</div><div class="line"></div><h3>'+target+' 号玩家</h3><div class="actions">'+btn('slip',target===1?'查看起手牌记录':'出示起手牌码','soft',opening.serial)+(last.opening?'':btn('slip','重显上次补牌码','soft',last.serial))+'</div><div class="line"></div><h3>补牌</h3><div class="actions">'+btn('issue','故事 ×1','primary','1,0')+btn('issue','故事 ×2','','2,0')+btn('issue','故事＋结局','','1,1')+'</div><p class="help">剩余 '+host.decks.story.length+' 张故事牌 · '+host.decks.ending.length+' 张结局牌</p></section>';
+ return '<section class="panel"><h2>给谁发牌？</h2><div class="seat-grid">'+Array.from({length:host.seats},(_,i)=>'<button data-action="target" data-value="'+(i+1)+'" aria-pressed="'+(target===i+1)+'">'+(i+1)+' 号'+(i===0?' · 我':'')+'</button>').join('')+'</div><div class="line"></div><h3>'+target+' 号玩家</h3><div class="actions">'+btn('slip',target===1?'查看起手牌记录':'出示起手牌码','soft',opening.serial)+(last.opening?'':btn('slip','重显上次补牌码','soft',last.serial))+ '</div>' +
+   (opening.reserve ? '<p class="help">每人扫码领取自己的起手牌和补牌堆，之后在手牌页补牌。</p>' :
+    '<div class="line"></div><h3>补牌</h3><div class="actions">'+btn('issue','故事 ×1','primary','1,0')+btn('issue','故事 ×2','','2,0')+btn('issue','故事＋结局','','1,1')+'</div><p class="help">剩余 '+host.decks.story.length+' 张故事牌 · '+host.decks.ending.length+' 张结局牌</p>')+'</section>';
 }
 function qrLink() {const url=new URL(location.href);url.search='';url.hash='';return g.transferLink(url,slip);}
 function issueSlip(){
@@ -125,6 +139,22 @@ function paintQR(){
  const n=code.getModuleCount(), size=(n+8)*6;canvas.width=canvas.height=size;
  const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);ctx.fillStyle='#121912';
  for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(code.isDark(y,x))ctx.fillRect((x+4)*6,(y+4)*6,6,6);
+}
+let selectedDiscard = null;
+function discardView(player) {
+ const id = selectedDiscard;
+ if (id && player.discard.includes(id)) {
+   const locked = player.wonWith && player.wonWith !== id;
+   const note = locked ? '请先收回获胜的结局牌。' : player.wonWith ? '收回这张结局牌会撤销本次获胜。' : '';
+   return '<section class="overlay" role="dialog" aria-modal="true" aria-label="查看弃牌">'+
+     card(id,{large:true})+(note?'<p>'+note+'</p>':'')+
+     '<div class="actions">'+btn('closeDiscard','返回弃牌堆','soft')+
+     (locked?'':btn('recall','收回手牌','primary',id))+'</div></section>';
+ }
+ selectedDiscard = null;
+ return tabs()+'<div class="sectionhead"><h2>个人弃牌堆</h2><small>'+player.discard.length+' 张</small></div>'+
+   (player.discard.length ? '<div class="grid">'+[...player.discard].reverse().map(id=>card(id,{action:'inspectDiscard'})).join('')+'</div>' :
+     '<p class="empty">你打出的牌会留在这里。</p>');
 }
 function overlay(player){
  if(player.confirming)return '<section class="overlay" role="dialog" aria-modal="true"><div class="panel dialog"><h2>用这张结局结束本局？</h2><blockquote>'+esc(get(player.shown).textZh)+'</blockquote><div class="actions">'+btn('cancelWin','取消')+btn('win','确认获胜','primary')+'</div></div></section>';
@@ -167,7 +197,15 @@ function render(){
  else if(!player)body='<p>请先领取起手牌。</p>';
  else if(player.shown){app.innerHTML=overlay(player);return;}
  else if(player.inbox.length)body=inbox(player);
- else if(page==='discard')body=tabs()+'<div class="sectionhead"><h2>个人弃牌堆</h2><small>'+player.discard.length+' 张</small></div>'+(player.discard.length?'<div class="grid">'+[...player.discard].reverse().map(id=>card(id)).join('')+'</div>':'<p class="empty">你打出的牌会留在这里。</p>');
+ else if(page==='draw' && player.reserve && !player.wonWith)body=drawMenu(player);
+ else if(page==='discard'){
+   body=discardView(player);
+   if(selectedDiscard){
+     app.innerHTML=body;
+     app.querySelector('[data-action="closeDiscard"]').focus();
+     return;
+   }
+ }
  else if(player.wonWith)body=tabs()+'<div class="result"><span class="seal">♛</span><h1>故事圆满落幕</h1><p>'+seat+' 号玩家获胜</p><blockquote>'+esc(get(player.wonWith).textZh)+'</blockquote>'+btn('home','回到牌局首页','primary')+'</div>';
  else body=tabs()+hand(player);
  app.innerHTML=heading()+body;
@@ -207,7 +245,23 @@ async function act(a,v){
  if(a==='newTable'){await create();return;}
  if(a==='home'){page='home';return;}
  if(a==='resume'){page='hand';return;}
- if(a==='tab'){page=v;return;}
+ if(a==='tab'){selectedDiscard=null;page=v;return;}
+ if(a==='inspectDiscard'){selectedDiscard=v;return;}
+ if(a==='closeDiscard'){selectedDiscard=null;return;}
+ if(a==='recall'){
+   if(page!=='discard' || selectedDiscard!==v)return;
+   selectedDiscard=null;
+   await playerChange(s=>g.returnToHand(s,v));
+   page='hand';
+   tell('已收回手牌');
+   return;
+ }
+ if(a==='drawMenu'){page='draw';return;}
+ if(a==='draw'){
+   const [stories,endings]=v.split(',').map(Number);
+   await playerChange(p=>g.drawLocal(p,stories,endings));
+   page='hand';return;
+ }
  if(a==='target'){target=+v;return;}
  if(a==='reveal')return playerChange(g.revealBatch);
  if(a==='collect'){page='hand';return playerChange(g.collectBatch);}
@@ -278,6 +332,7 @@ async function init(){
  }catch(err){app.textContent='牌桌未能打开：'+err.message;}
 }
 document.addEventListener('keydown',event=>{
+  if(page==='discard' && selectedDiscard && event.key==='Escape')perform('closeDiscard');
   if(page==='art' && previewCard && event.key==='Escape')perform('closeArt');
 });
 window.addEventListener('hashchange',async()=>{if(location.hash.startsWith('#deal=')){await openPacket();render();}});
