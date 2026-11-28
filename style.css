@@ -408,16 +408,16 @@ button.gallery-cover, button.gallery-cover:hover {
 
 .inspection-controls:empty { display:none; }
 @media (prefers-reduced-motion:no-preference) {
- .inspection-entering .display-tilt { animation:inspection-arrive 440ms; }
- .inspection-entering .display-card { animation:inspection-glint 440ms; }
+ .inspection-entering { --arrival-time:480ms; }
+ .inspection-entering .display-tilt { animation:inspection-arrive var(--arrival-time); }
+ .inspection-entering .display-card { animation:inspection-glint var(--arrival-time); }
 }
 @keyframes inspection-arrive {
- from { transform:scale(.72); animation-timing-function:cubic-bezier(.16,.76,.32,1); }
- 47% { transform:scale(1); animation-timing-function:ease-out; }
- 69% { transform:translate(5px,-2px) rotateX(-5deg) rotateY(14deg); animation-timing-function:cubic-bezier(.28,.07,.24,1); }
- to { transform:rotateX(0deg) rotateY(0deg); }
+ from { transform:rotateX(-5deg) rotateY(14deg) scale3d(.72,.72,.72); animation-timing-function:cubic-bezier(.16,.76,.32,1); }
+ 40% { transform:rotateX(-5deg) rotateY(14deg) scale3d(1,1,1); animation-timing-function:cubic-bezier(.22,.67,.42,1); }
+ to { transform:rotateX(0deg) rotateY(0deg) scale3d(1,1,1); }
 }
 @keyframes inspection-glint {
- 0%,47%,100% { --drag-shine:0; --foil-at:125%; }
- 69% { --drag-shine:.65; --foil-at:67%; }
+ from,40% { --drag-shine:.58; --foil-at:69%; animation-timing-function:cubic-bezier(.22,.67,.42,1); }
+ to { --drag-shine:0; --foil-at:125%; }
 }
