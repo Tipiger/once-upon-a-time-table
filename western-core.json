@@ -2,7 +2,7 @@
   "moduleId": "once-upon-a-time-3e-core",
   "source": "https://www.atlas-games.com/pdf_storage/OUAT3CoreCardlistWEB.pdf",
   "sourceKey": "ID 由官方牌表的 A/B/C 栏及栏内编号组成。三栏合为一个模组。",
-  "localization": "故事牌采用中文工作译名。结局牌按官方编号提供中文剧情目标概述，供玩家用自己的话收尾。",
+  "localization": "结局牌按官方英文牌表逐张核对。简短概括用于小牌面，检视时显示依照该牌结局编写的中文收尾句。",
   "cardCanvas": {
     "width": 1120,
     "height": 1740
@@ -316,103 +316,120 @@
       "id": "A39",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "宫中共舞"
+      "textZh": "说不定就在咱们讲故事的这会儿，他们还在王宫里跳舞呢。",
+      "summaryZh": "宫中共舞"
     },
     {
       "id": "A40",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "暴政终结"
+      "textZh": "暴君统治王国的日子总算结束了，全国上下一片欢腾。",
+      "summaryZh": "暴政终结"
     },
     {
       "id": "A41",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "国王赦罪"
+      "textZh": "他犯下的罪可不轻，可国王到底还是留了他一条命。",
+      "summaryZh": "国王饶命"
     },
     {
       "id": "A42",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "勇气换来财富"
+      "textZh": "她后来成了个富人，靠的就是当初的那份勇气。",
+      "summaryZh": "勇气换来财富"
     },
     {
       "id": "A43",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "逃回故乡"
+      "textZh": "她总算逃出了那个可怕的地方，一路逃回了家。",
+      "summaryZh": "逃回家中"
     },
     {
       "id": "A44",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "守护珍宝"
+      "textZh": "从那以后，她把宝贝看得紧紧的，再没让它离开过自己的视线。",
+      "summaryZh": "珍宝不离眼"
     },
     {
       "id": "A45",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "王子亮明身份"
+      "textZh": "他这才告诉她，自己就是王子。两人从此过上了幸福的日子。",
+      "summaryZh": "王子亮明身份"
     },
     {
       "id": "A46",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "以真身成婚"
+      "textZh": "等她说出了自己的真实身份，两人便结了婚。",
+      "summaryZh": "表明身份成婚"
     },
     {
       "id": "A47",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "御宴佳肴"
+      "textZh": "厨子拿它做了道菜送上宴席，滋味可真好！",
+      "summaryZh": "宴上佳肴"
     },
     {
       "id": "A48",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "国王允婚"
+      "textZh": "国王终于松了口，答应了这门婚事，两人也就结成了夫妻。",
+      "summaryZh": "国王允婚"
     },
     {
       "id": "A49",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "女王兑现奖赏"
+      "textZh": "女王果然守信，把先前许诺的奖赏交给了他们。",
+      "summaryZh": "女王兑现奖赏"
     },
     {
       "id": "A50",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "君主复位"
+      "textZh": "王位终于还给了本该坐在上面的人。",
+      "summaryZh": "君主复位"
     },
     {
       "id": "A51",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "结伴脱逃返家"
+      "textZh": "抓住他们的人没能把他们困住，他们逃了出来，一路逃回了家。",
+      "summaryZh": "脱身逃回家"
     },
     {
       "id": "A52",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "物归原主"
+      "textZh": "那件被偷走的东西，最后经他们的手回到了原主人那里。",
+      "summaryZh": "物归原主"
     },
     {
       "id": "A53",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "国王践约"
+      "textZh": "国王答应的事都办到了，大伙儿皆大欢喜。",
+      "summaryZh": "国王践约"
     },
     {
       "id": "A54",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "王子恢复神智"
+      "textZh": "王子的疯病治好了，他终于恢复了神智。",
+      "summaryZh": "王子恢复神智"
     },
     {
       "id": "A55",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "二人继承王位"
+      "textZh": "再过些年，他们一个会成为国王，一个会成为王后。",
+      "summaryZh": "日后为王为后"
     },
     {
       "id": "B01",
@@ -722,103 +739,120 @@
       "id": "B39",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "献礼悦亲"
+      "textZh": "他送的这份礼物真稀奇，母亲见了，心里说不出的欢喜。",
+      "summaryZh": "奇礼悦母"
     },
     {
       "id": "B40",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "铭记父训"
+      "textZh": "打那天起，父亲劝她的那番话，她一直都记在心里。",
+      "summaryZh": "铭记父亲忠告"
     },
     {
       "id": "B41",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "预言成真"
+      "textZh": "事情果然让那位老婆婆说中了，她的预言就这样成了真。",
+      "summaryZh": "老妇预言成真"
     },
     {
       "id": "B42",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "骨肉团聚"
+      "textZh": "父母终于又见到了自己的孩子，一家人已经失散太久了。",
+      "summaryZh": "骨肉团聚"
     },
     {
       "id": "B43",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "作恶而失明"
+      "textZh": "他们为自己的恶行和谎话付出了代价，余生再也看不见东西了。",
+      "summaryZh": "作恶失明"
     },
     {
       "id": "B44",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "子女继承遗物"
+      "textZh": "等他们离开人世，那件东西便传到了他们的孩子手中。",
+      "summaryZh": "留给子女"
     },
     {
       "id": "B45",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "以行乞赎罪"
+      "textZh": "余下的岁月里，他只能靠讨饭过活。想想他做过的事，这个下场倒也公道。",
+      "summaryZh": "余生行乞"
     },
     {
       "id": "B46",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "改过自新"
+      "textZh": "他终于明白自己错在哪儿，从此改过，踏踏实实地做个好人。",
+      "summaryZh": "改过自新"
     },
     {
       "id": "B47",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "伤愈心未愈"
+      "textZh": "他的伤口早已长好，可心里的伤，这一生都没能愈合。",
+      "summaryZh": "伤愈心仍碎"
     },
     {
       "id": "B48",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "认清继母"
+      "textZh": "可见，光凭平日里那副模样，有时还真看不出继母是个怎样的人。",
+      "summaryZh": "继母另有一面"
     },
     {
       "id": "B49",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "宽恕与婚姻"
+      "textZh": "到最后，他还是原谅了她，两人也结成了夫妻。",
+      "summaryZh": "宽恕后成婚"
     },
     {
       "id": "B50",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "姐妹的忠心"
+      "textZh": "他这才明白，自己的那位姊妹一直对他有多么忠心。",
+      "summaryZh": "姊妹的忠心"
     },
     {
       "id": "B51",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "村庄复兴"
+      "textZh": "村子渐渐恢复了元气，又像从前一样兴旺了起来。",
+      "summaryZh": "村庄复兴"
     },
     {
       "id": "B52",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "换位复原"
+      "textZh": "等他们彼此换了位置，一切就又恢复了正常。",
+      "summaryZh": "换位复原"
     },
     {
       "id": "B53",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "永不相争"
+      "textZh": "他们向彼此许了诺，往后再也不争斗了。",
+      "summaryZh": "永不相争"
     },
     {
       "id": "B54",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "赤诚致胜"
+      "textZh": "可见，心怀勇气、待人赤诚的人，到头来总能赢。",
+      "summaryZh": "勇气与赤诚"
     },
     {
       "id": "B55",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "慎择同伴"
+      "textZh": "这个故事倒是提醒了我们，挑选同行的伙伴，可得仔细掂量。",
+      "summaryZh": "慎择同伴"
     },
     {
       "id": "C01",
@@ -1128,104 +1162,121 @@
       "id": "C39",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "永远无法卸下"
+      "textZh": "只要她还活着，那东西就再也取不下来了。",
+      "summaryZh": "一生无法卸下"
     },
     {
       "id": "C40",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "女巫葬身釜中"
+      "textZh": "女巫最后送了命，偏偏就死在她自己的那口大锅里。",
+      "summaryZh": "葬身自家锅中"
     },
     {
       "id": "C41",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "驱逐怪物"
+      "textZh": "那可憎的怪物吃了败仗，被一路赶出了王国。",
+      "summaryZh": "怪物被逐出境"
     },
     {
       "id": "C42",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "失物无踪"
+      "textZh": "任凭他们怎么找，那东西始终没有下落，再也没找回来。",
+      "summaryZh": "失物无踪"
     },
     {
       "id": "C43",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "违命后的忏悔"
+      "textZh": "他当初没有听命，如今天天看着那后果，天天为此流泪。",
+      "summaryZh": "因违命落泪"
     },
     {
       "id": "C44",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "解咒成婚"
+      "textZh": "他身上的魔法解除了，到了第二天，两人就结了婚。",
+      "summaryZh": "解咒次日成婚"
     },
     {
       "id": "C45",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "恢复人形"
+      "textZh": "就这样，它又变回了原来的人形。",
+      "summaryZh": "恢复人形"
     },
     {
       "id": "C46",
       "kind": "ending",
       "sourcePage": 2,
-      "textZh": "访客原是怪物"
+      "textZh": "到这时她才明白，来拜访她的那位客人，从头到尾都是个怪物。",
+      "summaryZh": "访客原是怪物"
     },
     {
       "id": "C47",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "恶人坠井"
+      "textZh": "那些作恶的人，到头来全都被扔进了井里。",
+      "summaryZh": "恶人被掷下井"
     },
     {
       "id": "C48",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "破法重获自由"
+      "textZh": "困住他们的咒语终于破了，他们也重获自由。",
+      "summaryZh": "破法重获自由"
     },
     {
       "id": "C49",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "应验解咒"
+      "textZh": "当初的预言果真应验，诅咒终于解除了。",
+      "summaryZh": "应验解咒"
     },
     {
       "id": "C50",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "火焚邪地"
+      "textZh": "火越烧越旺，那处邪恶之地就这样被烧毁了。",
+      "summaryZh": "火焚邪地"
     },
     {
       "id": "C51",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "除怪安城"
+      "textZh": "怪物被消灭了，城里的人总算又能过安稳日子了。",
+      "summaryZh": "除怪安城"
     },
     {
       "id": "C52",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "合葬与国丧"
+      "textZh": "他们最后合葬在一处，整个王国都为他们哀悼。",
+      "summaryZh": "合葬举国哀悼"
     },
     {
       "id": "C53",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "真爱解咒"
+      "textZh": "到头来，解开这道魔咒的，正是真心相爱的那份情意。",
+      "summaryZh": "真爱解咒"
     },
     {
       "id": "C54",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "国名的由来"
+      "textZh": "说到这儿，你也就知道这个王国的名字为什么这么特别了。",
+      "summaryZh": "国名的由来"
     },
     {
       "id": "C55",
       "kind": "ending",
       "sourcePage": 3,
-      "textZh": "仇敌死后成婚"
+      "textZh": "仇敌已经死了，两人总算可以成婚了。",
+      "summaryZh": "仇敌死后成婚"
     }
   ],
-  "endingLabel": "结局目标"
+  "endingLabel": "结局"
 }

@@ -34,7 +34,7 @@ function renderCard(c, module, {back=false,action='',large=false,flip=false,inse
   const cls='card '+(back?'back '+(end?'endback':''):end?'endface':c.image?'storyface illustrated':'storyface')+(large?' large':'')+(flip?' flip':'');
   const attr=action?' data-action="'+action+'" data-value="'+esc(c.id)+'"':'';
   const body=back?'<span>✧</span><span class="seal">'+(end?'☾':'✥')+'</span><strong>'+(end?'结局牌':'故事牌')+'</strong>':
-    end?'<span class="kind">✧ '+esc(module.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(c.textZh)+'</span><span>❧</span>':
+    end?'<span class="kind">✧ '+esc(module.endingLabel||'结局')+' ✧</span><span class="sentence">'+esc(large ? c.textZh : (c.summaryZh || c.textZh))+'</span><span>❧</span>':
     (c.interrupt?'<span class="interrupt">打断</span>':'')+
     (insetArt?'':illustration(c, module, action === 'zoomArt'))+
     '<strong>'+esc(c.labelZh)+'</strong>';
@@ -231,7 +231,7 @@ function renderDraw(player) {
  dialog.querySelectorAll('.draw-card').forEach((button, index) => {
    const c = get(batch.cards[index]);
    button.disabled = revealed || dialog.dataset.preparing === 'true';
-   if (revealed) button.setAttribute('aria-label', c.textZh || c.labelZh);
+   if (revealed) button.setAttribute('aria-label', c.summaryZh || c.textZh || c.labelZh);
  });
  if (!dialog.open) dialog.showModal();
  if (revealed) collect.focus({preventScroll:true});
@@ -386,7 +386,7 @@ function render(){
      app.innerHTML=playerHeader(homeBack(),'弃牌堆',false)+tabs()+discardView(player);
    }
  } else if(player.wonWith){
-   app.innerHTML=playerHeader(homeBack(),'牌局结果')+tabs()+'<section class="result"><span class="seal" aria-hidden="true">♛</span><h2>'+seat+' 号玩家获胜</h2><blockquote>'+esc(get(player.wonWith).textZh)+'</blockquote></section>';
+   app.innerHTML=playerHeader(homeBack(),'牌局结果')+tabs()+'<section class="result"><span class="seal" aria-hidden="true">♛</span><h2>'+seat+' 号玩家获胜</h2><blockquote>'+esc(get(player.wonWith).summaryZh || get(player.wonWith).textZh)+'</blockquote></section>';
  } else {
    app.innerHTML=handHeader()+tabs()+hand(player);
  }
@@ -521,7 +521,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=castle-clouds-1'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=ending-copy-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');
