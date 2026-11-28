@@ -1,4 +1,4 @@
-import { enableCoverRelief, preloadCoverRelief } from './cover-relief.mjs?v=relief-entry-1';
+import { enableCoverRelief, preloadCoverRelief } from './cover-relief.mjs?v=relief-entry-2';
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import { enableDisplayGesture } from './display-gesture.mjs?v=inspection-pop-1';

@@ -136,6 +136,10 @@ export async function enableCoverRelief(button,art) {
     if(gpu)gpu.canvas.addEventListener('webglcontextlost',onContextLost,{once:true});
     else startWorker();
     for(const type of ['pointermove','pointerup','pointercancel','click','transitionrun'])button.addEventListener(type,refresh);
+    // Sample the settled side even if a slow frame skipped the second half of the flip.
+    turn.addEventListener('transitionend',event=>{
+      if(event.target===turn && event.propertyName==='--turn-progress')refresh();
+    });
     const resize=new ResizeObserver(refresh);resize.observe(button);
     const cleanup=new MutationObserver(()=>{
       if(button.isConnected)return;
