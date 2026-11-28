@@ -617,4 +617,24 @@ picker.addEventListener('change', event => {
 window.addEventListener('storage', event => {
   if (event.key === themeKey || event.key === null) setTheme(event.newValue);
 });
-init();
+async function startAssetCache() {
+  if (!('serviceWorker' in navigator)) return;
+  const workers = navigator.serviceWorker;
+  const registration = workers.register('./asset-worker.js', {updateViaCache:'none'});
+  if (workers.controller) {
+    registration.catch(() => {});
+    return;
+  }
+  // Let the first visit cache its initial artwork, without holding up a slow connection.
+  let finish;
+  const claimed = new Promise(resolve => { finish = resolve; });
+  workers.addEventListener('controllerchange', finish);
+  const timer = setTimeout(finish, 1500);
+  try {
+    await Promise.race([registration.then(() => workers.controller || claimed), claimed]);
+  } finally {
+    clearTimeout(timer);
+    workers.removeEventListener('controllerchange', finish);
+  }
+}
+startAssetCache().catch(() => {}).then(init);
