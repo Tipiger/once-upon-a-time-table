@@ -158,6 +158,32 @@ function showCardDisplay(c, module, title, back, actions='', note='') {
  display.focus({preventScroll:true});
 }
 
+// Keep the private table covered until the enlarged card reaches its pile.
+async function flyToPile(destination) {
+ const display = inspection.querySelector('.display-card');
+ if (!display || !display.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+ inspection.querySelector('.win-dialog[open]')?.close();
+ inspection.insertAdjacentHTML('beforeend', tabs());
+ const nav = inspection.querySelector('.game-nav');
+ nav.inert = true;
+ const icon = nav.querySelector('[data-value="'+destination+'"] svg');
+ const start = display.getBoundingClientRect();
+ const end = icon.getBoundingClientRect();
+ const dx = end.left + end.width / 2 - start.left - start.width / 2;
+ const dy = end.top + end.height / 2 - start.top - start.height / 2;
+ const zoom = start.width / display.offsetWidth;
+ const scale = Math.min(end.width / display.offsetWidth, end.height / display.offsetHeight);
+ const angle = destination === 'discard' ? 720 : -720;
+ inspection.classList.add('transferring');
+ const flight = display.animate([
+   {transform:'translate(0px, 0px) rotate(0deg) scale('+zoom+')'},
+   {transform:'translate('+dx+'px, '+dy+'px) rotate('+angle+'deg) scale('+scale+')'}
+ ], {duration:680, easing:'cubic-bezier(.4,0,.24,1)', fill:'forwards'});
+ try { await flight.finished; }
+ catch (error) { if (error.name !== 'AbortError') throw error; }
+ finally { inspection.classList.remove('transferring'); }
+}
+
 function drawDialog(batch) {
  const title = batch.opening === undefined ? '领牌' : batch.opening ? '起手牌' : '补牌';
  const cards = batch.cards.map(id => {
@@ -437,10 +463,11 @@ async function act(a,v){
  if(a==='closeDiscard'){selectedDiscard=null;return;}
  if(a==='recall'){
    if(page!=='discard' || selectedDiscard!==v)return;
-   selectedDiscard=null;
    await playerChange(s=>g.returnToHand(s,v));
+   selectedDiscard=null;
    page='hand';
    returnToCard=null;
+   await flyToPile('hand');
    tell('已收回手牌');
    return;
  }
@@ -463,8 +490,15 @@ async function act(a,v){
  }
  if(a==='show'){await playerChange(s=>g.showCard(s,v));rememberCard(v,'show');return;}
  if(a==='withdraw')return playerChange(g.withdraw);
- if(a==='play'){await playerChange(s=>g.playShown(s,deck));if(!current().confirming)returnToCard=null;return;}
- if(a==='cancelWin'||a==='win'){await playerChange(s=>g.answerEnding(s,a==='win'));if(a==='win')returnToCard=null;return;}
+ if(a==='cancelWin')return playerChange(s=>g.answerEnding(s,false));
+ if(a==='play'||a==='win'){
+   await playerChange(s=>a==='win' ? g.answerEnding(s,true) : g.playShown(s,deck));
+   if(!current().confirming){
+     returnToCard=null;
+     await flyToPile('discard');
+   }
+   return;
+ }
  if(a==='slip'){slip=table.host.history.find(p=>p.serial===+v);page='slip';return;}
  if(a==='closeSlip'){page='dealer';return;}
  if(a==='copy'){await navigator.clipboard.writeText(qrLink());tell('已复制领牌链接');return;}

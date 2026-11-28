@@ -69,7 +69,10 @@ body {
  padding:1rem max(clamp(.8rem,4vw,2rem),calc((100% - 760px) / 2 + 2rem)) 2rem;
 }
 #inspection { z-index:3; padding:0; overflow:clip; background:var(--desk); }
-body:has(#inspection:not([hidden])) .game-nav { visibility:hidden; }
+#app[inert] { visibility:hidden; }
+#inspection .game-nav { pointer-events:none; }
+#inspection.transferring .inspection-controls { visibility:hidden; }
+#inspection.transferring .inspection-stage { z-index:3; pointer-events:none; }
 #app:has(.game-nav) { padding-bottom:calc(5.5rem + env(safe-area-inset-bottom)); }
 h1,h2,h3,p { margin:0; }
 h1,h2,h3 { line-height:1.25; }
