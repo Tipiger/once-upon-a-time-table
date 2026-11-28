@@ -33,6 +33,7 @@ export function enableDisplayGesture(button) {
     if (event.button !== 0 || points.has(event.pointerId)) return;
     if (!points.size && event.target !== button) return;
     if (points.size && (event.pointerType !== 'touch' || points.values().next().value.type !== 'touch')) return;
+    button.closest('.inspection-entering')?.classList.remove('inspection-entering');
     points.set(event.pointerId,{x:event.clientX, y:event.clientY, type:event.pointerType});
     button.setPointerCapture(event.pointerId);
     if (points.size === 1) {
@@ -79,6 +80,7 @@ export function enableDisplayGesture(button) {
   for (const type of ['pointerup','pointercancel','lostpointercapture']) stage.addEventListener(type, release);
   button.addEventListener('click', event => {
     if (event.detail && suppressClick) return;
+    button.closest('.inspection-entering')?.classList.remove('inspection-entering');
     const back = button.dataset.back !== 'true';
     button.dataset.back = String(back);
     button.setAttribute('aria-label', back ? '牌背，翻回牌面' : frontLabel);

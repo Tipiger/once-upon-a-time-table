@@ -166,7 +166,6 @@ button.turnable, button.turnable:hover {
 .card-turn > .back { transform:rotateY(180deg); }
 .draw-dialog[data-revealed=false] .card-turn, .display-card[data-back=true] .card-turn { transform:rotateY(180deg); }
 .display-card { width:min(78vw,350px,calc((100dvh - 175px)*.6437)); }
-.flip-hint { font-size:.9rem; color:var(--muted); }
 
 body:has(.draw-dialog[open]) { overflow:hidden; }
 .draw-dialog {
@@ -402,7 +401,23 @@ button.gallery-cover, button.gallery-cover:hover {
  position:relative; z-index:1; pointer-events:none;
  display:grid; justify-items:center; gap:.4rem; padding:.25rem max(1rem,env(safe-area-inset-right)) max(.6rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));
 }
-.inspection-controls :is(.flip-hint,.inspection-note) { padding:.1rem .55rem; border-radius:.4rem; text-align:center; color:var(--muted); }
-.inspection-stage.is-zoomed + .inspection-controls :is(.flip-hint,.inspection-note) { background:var(--desk); }
+.inspection-controls .inspection-note { padding:.1rem .55rem; border-radius:.4rem; text-align:center; color:var(--muted); }
+.inspection-stage.is-zoomed + .inspection-controls .inspection-note { background:var(--desk); }
 .inspection-controls .actions { width:min(100%,380px); margin:0; }
 .inspection-controls button { pointer-events:auto; }
+
+.inspection-controls:empty { display:none; }
+@media (prefers-reduced-motion:no-preference) {
+ .inspection-entering .display-tilt { animation:inspection-arrive 440ms; }
+ .inspection-entering .display-card { animation:inspection-glint 440ms; }
+}
+@keyframes inspection-arrive {
+ from { transform:scale(.72); animation-timing-function:cubic-bezier(.16,.76,.32,1); }
+ 47% { transform:scale(1); animation-timing-function:ease-out; }
+ 69% { transform:translate(5px,-2px) rotateX(-5deg) rotateY(14deg); animation-timing-function:cubic-bezier(.28,.07,.24,1); }
+ to { transform:rotateX(0deg) rotateY(0deg); }
+}
+@keyframes inspection-glint {
+ 0%,47%,100% { --drag-shine:0; --foil-at:125%; }
+ 69% { --drag-shine:.65; --foil-at:67%; }
+}
