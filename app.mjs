@@ -518,7 +518,7 @@ async function openPacket(){
 }
 async function init(){
  try{
-   modules=catalog(await readJSON('./modules.json?v=depth-12'));selected=modules.entries[0].id;
+   modules=catalog(await readJSON('./modules.json?v=castle-clouds-1'));selected=modules.entries[0].id;
    const params=new URLSearchParams(location.search);
    if(['module','art'].includes(params.get('preview')) && !location.hash.startsWith('#deal=')){
      const requested=params.get('module');
