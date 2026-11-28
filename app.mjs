@@ -175,12 +175,18 @@ async function flyToPile(destination) {
  const scale = Math.min(end.width / display.offsetWidth, end.height / display.offsetHeight);
  const angle = destination === 'discard' ? 360 : -360;
  inspection.classList.add('transferring');
- // Quadratic ease-out: p(t) = 2t - t², so linear and angular speed fall uniformly to zero.
- const flight = display.animate([
-   {transform:'translate(0px, 0px) rotate(0deg) scale('+zoom+')'},
-   {transform:'translate('+dx+'px, '+dy+'px) rotate('+angle+'deg) scale('+scale+')'}
- ], {duration:680, easing:'cubic-bezier(0.3333333333,0.6666666667,0.6666666667,1)', fill:'forwards'});
- try { await flight.finished; }
+ const stage = display.closest('.inspection-stage');
+ const timing = {duration:680, fill:'forwards'};
+ // At normalized time t, the center moves by (dx*t, dy*t²).
+ const horizontal = stage.animate({transform:['translateX(0px)', 'translateX('+dx+'px)']},
+   {...timing, easing:'linear'});
+ const fall = stage.animate({translate:['0px 0px', '0px '+dy+'px']},
+   {...timing, easing:'cubic-bezier(0.3333333333,0,0.6666666667,0.3333333333)'});
+ const spin = display.animate([
+   {transform:'rotate(0deg) scale('+zoom+')'},
+   {transform:'rotate('+angle+'deg) scale('+scale+')'}
+ ], {...timing, easing:'cubic-bezier(0.3333333333,0.6666666667,0.6666666667,1)'});
+ try { await Promise.all([horizontal.finished, fall.finished, spin.finished]); }
  catch (error) { if (error.name !== 'AbortError') throw error; }
  finally { inspection.classList.remove('transferring'); }
 }
