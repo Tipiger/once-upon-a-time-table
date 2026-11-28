@@ -1,4 +1,4 @@
-import { enableCoverRelief } from './cover-relief.mjs?v=native-relief-1';
+import { enableCoverRelief, preloadCoverRelief } from './cover-relief.mjs?v=relief-entry-1';
 import * as g from './game.mjs?v=gallery-flip-1';
 import { catalog, readJSON, savedModule } from './catalog.mjs?v=fonts-1';
 import { enableDisplayGesture } from './display-gesture.mjs?v=inspection-pop-1';
@@ -341,6 +341,7 @@ function renderArtPreview() {
   }).join('');
   const visible=galleryKind==='all' ? cards : cards.filter(c=>c.kind===galleryKind);
   const entry = previewDeck.entry;
+  preloadCoverRelief(entry.art);
   const cover = entry.art?.cover ? '<button type="button" class="gallery-cover" data-action="zoomCover" data-value="'+esc(entry.id)+'" aria-label="检视'+esc(entry.name)+'牌组封面">'+
     '<span class="gallery-cover-art" aria-hidden="true"></span>'+inspectIcon+'</button>' : '';
   const synopsis = entry.synopsis || entry.description;

@@ -421,3 +421,8 @@ button.gallery-cover, button.gallery-cover:hover {
  from,40% { --drag-shine:.58; --foil-at:69%; animation-timing-function:cubic-bezier(.22,.67,.42,1); }
  to { --drag-shine:0; --foil-at:125%; }
 }
+
+/* Let the renderer measure the opening pose before revealing the card. */
+.display-card[data-relief-pending] { opacity:0; pointer-events:none; }
+.inspection-entering .display-card[data-relief-pending],
+.inspection-entering .display-card[data-relief-pending] .display-tilt { animation-play-state:paused; }

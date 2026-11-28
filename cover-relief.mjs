@@ -20,8 +20,14 @@ function prepareTextures(art) {
   return textures;
 }
 
+// Start decoding while the gallery is open. Inspection shares this promise and can retry a failed preload.
+export function preloadCoverRelief(art) {
+  if (art?.coverSurface) prepareTextures(art).catch(()=>{});
+}
+
 export async function enableCoverRelief(button,art) {
-  if(!art.coverSurface)return;
+  if(!art?.coverSurface)return;
+  button.setAttribute('data-relief-pending','');
   try {
     const [picture,map]=await prepareTextures(art);
     if(!button.isConnected)return;
@@ -32,13 +38,22 @@ export async function enableCoverRelief(button,art) {
     let worker=null,ready=false,busy=false,frame=0,until=0,submitted='',latest=null;
     const rasterFaces=[];
 
+    function revealFirstFrame(){
+      if(!button.hasAttribute('data-relief-pending'))return;
+      button.removeAttribute('data-relief-pending');
+      refresh(); // Track the entire entry animation even after slow first-frame preparation.
+    }
+
     function submit(){
       if(!latest || latest.key===submitted || !button.isConnected)return;
       if(gpu){
         const face=faces[Number(latest.back)];
         if(gpu.canvas.parentElement!==face)face.append(gpu.canvas);
         gpu.draw(latest);
-        gpu.canvas.style.visibility='visible';
+        if(!gpu.gl.isContextLost()){
+          gpu.canvas.style.visibility='visible';
+          revealFirstFrame();
+        }
       }else{
         if(!worker || !ready || busy)return;
         busy=true;
@@ -75,13 +90,17 @@ export async function enableCoverRelief(button,art) {
       worker=null;
       for(const ctx of rasterFaces)ctx?.canvas.remove();
     }
+    function fallbackToArtwork(){
+      stopWorker();
+      button.removeAttribute('data-relief-pending');
+    }
     async function startWorker(){
-      if(typeof Worker!=='function' || typeof OffscreenCanvas!=='function' || typeof createImageBitmap!=='function')return;
+      if(typeof Worker!=='function' || typeof OffscreenCanvas!=='function' || typeof createImageBitmap!=='function'){fallbackToArtwork();return;}
       try{
         worker=new Worker(new URL('./relief-worker.mjs',import.meta.url),{type:'module'});
-        worker.onerror=stopWorker;
+        worker.onerror=fallbackToArtwork;
         worker.onmessage=({data})=>{
-          if(data.error){stopWorker();return;}
+          if(data.error){fallbackToArtwork();return;}
           if(data.bitmap){
             const {pose,bitmap}=data;
             // The worker coalesces input on the caller side; never queue an old series of tilts.
@@ -94,9 +113,11 @@ export async function enableCoverRelief(button,art) {
                 rasterFaces[side]=canvas.getContext('2d',{alpha:false});
               }
               const ctx=rasterFaces[side];
+              if(!ctx){bitmap.close();fallbackToArtwork();return;}
               if(ctx.canvas.width!==pose.w || ctx.canvas.height!==pose.h){ctx.canvas.width=pose.w;ctx.canvas.height=pose.h;}
               ctx.drawImage(bitmap,0,0);
               ctx.canvas.style.visibility='visible';
+              revealFirstFrame();
             }
             bitmap.close();
           }
@@ -105,7 +126,7 @@ export async function enableCoverRelief(button,art) {
         const [artwork,relief]=await Promise.all([createImageBitmap(picture),createImageBitmap(map)]);
         if(!worker || !button.isConnected){artwork.close();relief.close();return;}
         worker.postMessage({artwork,relief,depth:art.coverSurface.encodingDepth},[artwork,relief]);
-      }catch{stopWorker();}
+      }catch{fallbackToArtwork();}
     }
     function onContextLost(){
       gpu.canvas.remove();
@@ -123,5 +144,8 @@ export async function enableCoverRelief(button,art) {
     });
     cleanup.observe(button.closest('#inspection'),{childList:true});
     refresh();
-  }catch(error){console.warn('Cover relief unavailable',error);}
+  }catch(error){
+    button.removeAttribute('data-relief-pending');
+    console.warn('Cover relief unavailable',error);
+  }
 }
