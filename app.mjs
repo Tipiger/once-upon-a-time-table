@@ -167,16 +167,20 @@ async function flyToPile(destination) {
  const nav = inspection.querySelector('.game-nav');
  nav.inert = true;
  const icon = nav.querySelector('[data-value="'+destination+'"] svg');
+ inspection.classList.add('transferring');
+ try {
+   await animateCardFlight(display.closest('.inspection-stage'), display, icon.getBoundingClientRect(), destination);
+ } finally { inspection.classList.remove('transferring'); }
+}
+
+async function animateCardFlight(stage, display, end, destination, delay=0) {
  const start = display.getBoundingClientRect();
- const end = icon.getBoundingClientRect();
  const dx = end.left + end.width / 2 - start.left - start.width / 2;
  const dy = end.top + end.height / 2 - start.top - start.height / 2;
  const zoom = start.width / display.offsetWidth;
  const scale = Math.min(end.width / display.offsetWidth, end.height / display.offsetHeight);
  const angle = destination === 'discard' ? 360 : -360;
- inspection.classList.add('transferring');
- const stage = display.closest('.inspection-stage');
- const timing = {duration:680, fill:'forwards'};
+ const timing = {duration:680, delay, fill:'both'};
  // At normalized time t, the center moves by (dx*t, dy*t²).
  const horizontal = stage.animate({transform:['translateX(0px)', 'translateX('+dx+'px)']},
    {...timing, easing:'linear'});
@@ -188,7 +192,31 @@ async function flyToPile(destination) {
  ], {...timing, easing:'cubic-bezier(0.3333333333,0.6666666667,0.6666666667,1)'});
  try { await Promise.all([horizontal.finished, fall.finished, spin.finished]); }
  catch (error) { if (error.name !== 'AbortError') throw error; }
- finally { inspection.classList.remove('transferring'); }
+}
+
+async function collectToHand(dialog) {
+ if (!dialog?.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+ const layer = document.createElement('div');
+ layer.className = 'collection-flight';
+ layer.inert = true;
+ layer.innerHTML = tabs();
+ dialog.append(layer);
+ try {
+   const end = layer.querySelector('[data-value="hand"] svg').getBoundingClientRect();
+   const cards = [...dialog.querySelectorAll('.draw-tray .draw-card')];
+   const flights = cards.map((source, i) => {
+     const rect = source.getBoundingClientRect();
+     const stage = document.createElement('div');
+     stage.className = 'collection-flight-card';
+     Object.assign(stage.style, {left:rect.left+'px', top:rect.top+'px', width:rect.width+'px', height:rect.height+'px'});
+     const copy = source.cloneNode(true);
+     stage.append(copy);
+     layer.append(stage);
+     // Keep large batches quick while giving neighboring cards distinct arrivals.
+     return animateCardFlight(stage, copy, end, 'hand', i * Math.min(45, 180 / Math.max(1, cards.length-1)));
+   });
+   await Promise.all(flights);
+ } finally { layer.remove(); }
 }
 
 function drawDialog(batch) {
@@ -487,12 +515,8 @@ async function act(a,v){
  if(a==='reveal')return playerChange(g.revealBatch);
  if(a==='collect'){
    const dialog=app.querySelector('.draw-dialog');
-   if(dialog && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-     const leaving=dialog.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(1.25rem) scale(.95)'}],
-       {duration:190,easing:'ease-in',fill:'forwards'});
-     try { await leaving.finished; } finally { leaving.cancel(); }
-   }
    await playerChange(g.collectBatch);
+   await collectToHand(dialog);
    page='hand';return;
  }
  if(a==='show'){await playerChange(s=>g.showCard(s,v));rememberCard(v,'show');return;}

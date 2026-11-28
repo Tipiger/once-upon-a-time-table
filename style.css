@@ -204,6 +204,11 @@ body:has(.draw-dialog[open]) { overflow:hidden; }
 .draw-card:disabled { opacity:1; cursor:default; }
 .draw-footer { min-height:44px; }
 .draw-footer button { min-width:10rem; }
+/* The flight layer stays in the modal top layer, outside the scrollable tray. */
+.draw-dialog:has(.collection-flight) { animation:none; }
+.collection-flight { position:fixed; inset:0; z-index:1; overflow:clip; background:var(--desk); pointer-events:none; }
+.collection-flight-card { position:absolute; z-index:3; }
+.collection-flight-card > .draw-card { width:100%; height:100%; }
 @keyframes draw-arrive { from { opacity:0; transform:translateY(1.1rem) scale(.96); } }
 @media(max-height:480px) and (orientation:landscape) {
   .display-card { width:min(38vw,calc((100dvh - 50px)*.6437)); }
