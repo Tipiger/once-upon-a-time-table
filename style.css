@@ -77,6 +77,11 @@ body {
 #inspection.transferring::before { content:""; position:fixed; inset:0; z-index:-1; }
 #inspection.transferring::before, .draw-dialog:has(.collection-flight)::backdrop {
  background:var(--flight-tint); -webkit-backdrop-filter:var(--flight-blur); backdrop-filter:var(--flight-blur);
+ animation:clear-flight-glass var(--flight-duration) linear both;
+}
+@keyframes clear-flight-glass {
+ from { -webkit-backdrop-filter:var(--flight-blur); backdrop-filter:var(--flight-blur); }
+ to { -webkit-backdrop-filter:blur(0px); backdrop-filter:blur(0px); }
 }
 #inspection .game-nav { pointer-events:none; }
 #inspection.transferring .inspection-controls { visibility:hidden; }

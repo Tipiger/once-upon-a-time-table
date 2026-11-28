@@ -158,6 +158,8 @@ function showCardDisplay(c, module, title, back, actions='', note='') {
  display.focus({preventScroll:true});
 }
 
+const cardFlightDuration = 680;
+
 // The source list stays inert at its original scroll position until the card lands.
 async function flyToPile(destination) {
  const display = inspection.querySelector('.display-card');
@@ -170,6 +172,7 @@ async function flyToPile(destination) {
  icon.classList.add('flight-target');
  topbar.innerHTML = tableNav(homeBack());
  topbar.inert = true;
+ inspection.style.setProperty('--flight-duration',cardFlightDuration+'ms');
  inspection.classList.add('transferring');
  try {
    await animateCardFlight(display.closest('.inspection-stage'), display, icon.getBoundingClientRect(), destination);
@@ -186,7 +189,7 @@ async function animateCardFlight(stage, display, end, destination, delay=0) {
  const zoom = start.width / display.offsetWidth;
  const scale = Math.min(end.width / display.offsetWidth, end.height / display.offsetHeight);
  const angle = destination === 'discard' ? 360 : -360;
- const timing = {duration:680, delay, fill:'both'};
+ const timing = {duration:cardFlightDuration, delay, fill:'both'};
  // At normalized time t, the center moves by (dx*t, dy*t²).
  const horizontal = stage.animate({transform:['translateX(0px)', 'translateX('+dx+'px)']},
    {...timing, easing:'linear'});
@@ -206,12 +209,15 @@ async function collectToHand(dialog) {
  layer.className = 'collection-flight';
  layer.inert = true;
  layer.innerHTML = tabs();
+ const cards = [...dialog.querySelectorAll('.draw-tray .draw-card')];
+ const stagger = Math.min(45, 180 / Math.max(1, cards.length-1));
+ const lastDelay = Math.max(0, cards.length-1) * stagger;
+ dialog.style.setProperty('--flight-duration',(cardFlightDuration + lastDelay)+'ms');
  dialog.append(layer);
  try {
    const icon = layer.querySelector('[data-value="hand"] svg');
    icon.classList.add('flight-target');
    const end = icon.getBoundingClientRect();
-   const cards = [...dialog.querySelectorAll('.draw-tray .draw-card')];
    const flights = cards.map((source, i) => {
      const rect = source.getBoundingClientRect();
      const stage = document.createElement('div');
@@ -221,7 +227,7 @@ async function collectToHand(dialog) {
      stage.append(copy);
      layer.append(stage);
      // Keep large batches quick while giving neighboring cards distinct arrivals.
-     return animateCardFlight(stage, copy, end, 'hand', i * Math.min(45, 180 / Math.max(1, cards.length-1)));
+     return animateCardFlight(stage, copy, end, 'hand', i * stagger);
    });
    await Promise.all(flights);
  } finally { layer.remove(); }
