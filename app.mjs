@@ -173,12 +173,13 @@ async function flyToPile(destination) {
  const dy = end.top + end.height / 2 - start.top - start.height / 2;
  const zoom = start.width / display.offsetWidth;
  const scale = Math.min(end.width / display.offsetWidth, end.height / display.offsetHeight);
- const angle = destination === 'discard' ? 720 : -720;
+ const angle = destination === 'discard' ? 360 : -360;
  inspection.classList.add('transferring');
+ // Quadratic ease-out: p(t) = 2t - t², so linear and angular speed fall uniformly to zero.
  const flight = display.animate([
    {transform:'translate(0px, 0px) rotate(0deg) scale('+zoom+')'},
    {transform:'translate('+dx+'px, '+dy+'px) rotate('+angle+'deg) scale('+scale+')'}
- ], {duration:680, easing:'cubic-bezier(.4,0,.24,1)', fill:'forwards'});
+ ], {duration:680, easing:'cubic-bezier(0.3333333333,0.6666666667,0.6666666667,1)', fill:'forwards'});
  try { await flight.finished; }
  catch (error) { if (error.name !== 'AbortError') throw error; }
  finally { inspection.classList.remove('transferring'); }
