@@ -158,7 +158,7 @@ function showCardDisplay(c, module, title, back, actions='', note='') {
  display.focus({preventScroll:true});
 }
 
-// Keep the private table covered until the enlarged card reaches its pile.
+// The source list stays inert at its original scroll position until the card lands.
 async function flyToPile(destination) {
  const display = inspection.querySelector('.display-card');
  if (!display || !display.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -167,10 +167,16 @@ async function flyToPile(destination) {
  const nav = inspection.querySelector('.game-nav');
  nav.inert = true;
  const icon = nav.querySelector('[data-value="'+destination+'"] svg');
+ icon.classList.add('flight-target');
+ topbar.innerHTML = tableNav(homeBack());
+ topbar.inert = true;
  inspection.classList.add('transferring');
  try {
    await animateCardFlight(display.closest('.inspection-stage'), display, icon.getBoundingClientRect(), destination);
- } finally { inspection.classList.remove('transferring'); }
+ } finally {
+   inspection.classList.remove('transferring');
+   topbar.inert = false;
+ }
 }
 
 async function animateCardFlight(stage, display, end, destination, delay=0) {
@@ -202,7 +208,9 @@ async function collectToHand(dialog) {
  layer.innerHTML = tabs();
  dialog.append(layer);
  try {
-   const end = layer.querySelector('[data-value="hand"] svg').getBoundingClientRect();
+   const icon = layer.querySelector('[data-value="hand"] svg');
+   icon.classList.add('flight-target');
+   const end = icon.getBoundingClientRect();
    const cards = [...dialog.querySelectorAll('.draw-tray .draw-card')];
    const flights = cards.map((source, i) => {
      const rect = source.getBoundingClientRect();
@@ -268,12 +276,16 @@ async function prepareDrawArt(dialog, batch) {
  }
 }
 
+let keepBatchBackground = false;
 function renderDraw(player) {
  const batch = player.inbox[0];
  const batchKey = JSON.stringify([table.id, seat, batch.cards]);
  let dialog = app.querySelector('.draw-dialog');
  if (!dialog || dialog.dataset.batch !== batchKey) {
-   app.innerHTML = handHeader()+tabs()+hand(player)+drawDialog(batch);
+   if (!keepBatchBackground) app.innerHTML = handHeader()+tabs()+hand(player);
+   dialog?.remove();
+   app.insertAdjacentHTML('beforeend',drawDialog(batch));
+   keepBatchBackground = false;
    dialog = app.querySelector('.draw-dialog');
    dialog.dataset.batch = batchKey;
    dialog.dataset.revealed = String(batch.revealed);
@@ -482,6 +494,7 @@ function render(){
  } else if(!player){
    app.innerHTML=playerHeader(homeBack(),'领牌')+'<p>请先领取起手牌。</p>';
  } else if(player.shown){
+   if (!app.querySelector('.hand-board')) app.innerHTML = handHeader()+tabs()+hand(player);
    showHandDisplay(player);
  } else if(player.inbox.length){
    renderDraw(player);
@@ -549,15 +562,16 @@ async function act(a,v){
    if(page!=='discard' || selectedDiscard!==v)return;
    await playerChange(s=>g.returnToHand(s,v));
    selectedDiscard=null;
-   page='hand';
    returnToCard=null;
    await flyToPile('hand');
+   page='hand';
    tell('已收回手牌');
    return;
  }
  if(a==='draw'){
    if(page!=='draw' || !['story','ending'].includes(v))return;
    await playerChange(p=>g.drawLocal(p,Number(v==='story'),Number(v==='ending')));
+   keepBatchBackground=true;
    page='hand';return;
  }
  if(a==='target'){target=+v;return;}
@@ -590,6 +604,7 @@ async function act(a,v){
      const players=target===1?{...t.players,1:g.receive(t.players[1],packet,deck)}:t.players;
      slip=packet;return {...t,host,players};
    });
+   keepBatchBackground=target===1;
    page=target===1?'hand':'slip';return;
  }
 
