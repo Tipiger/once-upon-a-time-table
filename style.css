@@ -193,14 +193,35 @@ body:has(.draw-dialog[open]) { overflow:hidden; }
   box-shadow:0 .5rem 1rem #080a0b66;
 }
 .draw-card:only-child { flex-basis:min(48vw,13rem,37dvh); }
-.reserve-panel .reserve-piles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(.75rem,4vw,2rem); max-width:25rem; margin:0 auto .9rem; }
-.reserve-pile { display:grid; justify-items:center; align-content:start; gap:.5rem; }
-.reserve-pile .card { width:100%; max-width:8.5rem; padding:0 .35rem .55rem; }
-.reserve-pile .back strong { white-space:nowrap; }
-.reserve-counts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.35rem; width:100%; max-width:8.5rem; }
-.reserve-counts button { padding-inline:0; white-space:nowrap; font-size:.875rem; font-weight:600; }
-.reserve-mixed { display:flex; justify-content:center; padding-top:.8rem; border-top:1px solid var(--line); }
-.reserve-panel button:disabled { opacity:.45; cursor:default; }
+/* Two piles on the felt. Only the upper card follows the pointer. */
+.panel.reserve-panel { position:relative; isolation:isolate; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5%; padding:1.6rem 5% 1.25rem; color:#fff6da; background:radial-gradient(ellipse at 30% 0%,#486e5e,#294b40 66%,#243e35); border:0; border-radius:16px; box-shadow:0 4px 11px #302d2019; }
+.reserve-panel::before { content:""; position:absolute; z-index:-1; inset:8px; border:1px solid #c4ccae69; border-radius:10px; }
+.reserve-pile { display:grid; justify-items:center; align-content:start; min-width:0; }
+.reserve-pile h2 { margin:0; font:600 clamp(18px,4vw,23px)/1.45 serif; letter-spacing:.08em; }
+.reserve-pile small { color:#dcdec7; margin-top:3px; font-variant-numeric:tabular-nums; }
+button.reserve-stack, button.reserve-stack:hover { display:block; position:relative; width:min(100%,clamp(76px,25vw,144px)); aspect-ratio:1120/1740; min-height:0; margin:1.4rem 0 0; padding:0; background:transparent; border:0; border-radius:6%; transform:rotate(-3deg); touch-action:none; user-select:none; -webkit-user-select:none; cursor:grab; filter:drop-shadow(3px 9px 5px #08110c61); }
+button.reserve-stack[data-kind=ending] { transform:rotate(3deg); --pile-art:var(--ending-back); }
+button.reserve-stack[data-kind=story] { --pile-art:var(--story-back); }
+button.reserve-stack.dragging { cursor:grabbing; z-index:1; }
+.reserve-stack:focus-visible { outline:3px solid #ffe4a1; outline-offset:6px; }
+.reserve-stack:disabled { cursor:default; }
+.reserve-stack:empty { border:1px dashed #c4ccae69; }
+.reserve-stack i { position:absolute; inset:0; pointer-events:none; border:1px solid #a39579; border-radius:6%; }
+.reserve-edge { background:#ede2c7; transform:translate(calc((var(--layer) + 1)*.8px),calc((var(--layer) + 1)*2.4px)); box-shadow:0 1px #6b644e; }
+.reserve-back { background:#635c49 var(--pile-art,none) center/100% 100% no-repeat; }
+.reserve-top { transform:translateY(var(--pull,0px)); transition:transform .22s ease-out; box-shadow:0 2px 3px #171c1360; }
+.dragging .reserve-top { transition:none; }
+.reserve-arrow { margin-top:1.75rem; height:2.3rem; font:27px/1 sans-serif; opacity:.75; }
+@media (prefers-reduced-motion:no-preference){
+ .reserve-panel:not(.touched) .reserve-stack:enabled .reserve-top { animation:reserve-peek 1.45s ease-in-out .15s 1; }
+ .reserve-panel:not(.touched) .reserve-arrow { animation:reserve-point 1.45s ease-in-out .15s 1; }
+ .reserve-panel:not(.touched) .reserve-pile:nth-child(2) :is(.reserve-arrow,.reserve-stack:enabled .reserve-top) { animation-delay:.8s; }
+ @keyframes reserve-peek { 45%,60% { transform:translateY(18px); } }
+ @keyframes reserve-point { 45%,60% { transform:translateY(9px); opacity:1; } }
+}
+@media (prefers-reduced-motion:reduce){ .reserve-top { transition:none; } }
+.reserve-confirm { max-width:22rem; padding:1.4rem; text-align:center; }
+.reserve-confirm h2 { margin:0 0 1.25rem; font-size:1.25rem; }
 .draw-card:disabled { opacity:1; cursor:default; }
 .draw-footer { min-height:44px; }
 .draw-footer button { min-width:10rem; }

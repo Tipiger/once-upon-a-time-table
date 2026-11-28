@@ -311,22 +311,70 @@ function hand(player) {
 function drawMenu(player) {
  const heading=playerHeader(homeBack(),'补牌堆',false)+tabs();
  if(!player.reserve)return heading+'<section class="panel"><p>本局由房主在发牌台补牌，扫码即可领取。</p></section>';
- const { story, ending } = player.reserve;
- function drawButton(stories, endings, label, description) {
-   const disabled = player.wonWith || story.length < stories || ending.length < endings;
-   return '<button type="button" data-action="draw" data-value="'+stories+','+endings+'" aria-label="'+description+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
- }
  function pile(kind, label) {
-   const isStory = kind === 'story';
-   const remaining = player.reserve[kind].length;
-   const buttons = [[1,'补一张'], [2,'补两张']].map(([count,text]) => drawButton(isStory ? count : 0, isStory ? 0 : count, text, text+label));
-   return '<section class="reserve-pile" aria-label="'+label+'">'+renderCard({kind}, deck, {back:true})+
-     '<small>剩余 '+remaining+' 张</small><div class="reserve-counts">'+buttons.join('')+'</div></section>';
+   const count=player.reserve[kind].length;
+   const layers=Array.from({length:Math.min(6,Math.max(0,count-1))},(_,i)=>
+     '<i class="reserve-edge" style="--layer:'+i+'"></i>').reverse().join('');
+   return '<section class="reserve-pile"><h2>'+label+'堆</h2><small>剩 '+count+' 张</small>'+
+     '<button type="button" class="reserve-stack" data-kind="'+kind+'" aria-haspopup="dialog" aria-label="下拖抽取'+label+'，剩余 '+count+' 张"'+
+     (count && !player.wonWith?'':' disabled')+'>'+layers+
+     (count>1?'<i class="reserve-back"></i>':'')+(count?'<i class="reserve-back reserve-top"></i>':'')+'</button>'+
+     (count && !player.wonWith?'<span class="reserve-arrow" aria-hidden="true">↓</span>':'')+'</section>';
  }
- return heading+
-   '<section class="panel reserve-panel" aria-label="补牌">'+
-   '<div class="reserve-piles">'+pile('story','故事牌')+pile('ending','结局牌')+'</div>'+
-   '<div class="reserve-mixed">'+drawButton(1,1,'各补一张','故事牌、结局牌各补一张')+'</div></section>';
+ return heading+'<section class="panel reserve-panel" aria-label="补牌">'+pile('story','故事牌')+pile('ending','结局牌')+'</section>'+
+   '<dialog class="reserve-confirm" aria-labelledby="reserve-question"><form method="dialog"><h2 id="reserve-question"></h2>'+
+   '<div class="actions"><button value="cancel" autofocus>取消</button><button value="draw" class="primary">抽取</button></div></form></dialog>';
+}
+
+function enableReserveDrag() {
+ const dialog=app.querySelector('.reserve-confirm');
+ if(!dialog)return;
+ let active=null, pending=null;
+ function confirmDraw(stack) {
+   if(busy || pending || dialog.open || stack.disabled)return;
+   pending=stack;
+   dialog.returnValue='';
+   dialog.querySelector('h2').textContent='是否抽取一张'+(stack.dataset.kind==='story'?'故事牌':'结局牌')+'？';
+   dialog.showModal();
+ }
+ dialog.addEventListener('close',()=>{
+   const stack=pending;
+   if(!stack)return;
+   pending=null;
+   stack.style.removeProperty('--pull');
+   if(dialog.returnValue==='draw')perform('draw',stack.dataset.kind);
+   else stack.focus({preventScroll:true});
+ });
+ for(const stack of app.querySelectorAll('.reserve-stack:not(:disabled)')){
+   stack.addEventListener('pointerdown',e=>{
+     if(busy || pending || active || !e.isPrimary || e.button!==0)return;
+     active={id:e.pointerId,stack,x:e.clientX,y:e.clientY};
+     stack.closest('.reserve-panel').classList.add('touched');
+     stack.classList.add('dragging');
+     stack.setPointerCapture(e.pointerId);
+   });
+   const tracks=e=>active?.stack===stack && active.id===e.pointerId;
+   stack.addEventListener('pointermove',e=>{
+     if(!tracks(e))return;
+     const distance=Math.max(0,Math.min(e.clientY-active.y,stack.offsetHeight*.8));
+     stack.style.setProperty('--pull',distance+'px');
+   });
+   function finish(e){
+     if(!tracks(e))return;
+     const dy=e.clientY-active.y, dx=e.clientX-active.x;
+     const ready=e.type==='pointerup' && dy>=stack.offsetHeight*.32 && dy>Math.abs(dx);
+     active=null;
+     stack.classList.remove('dragging');
+     if(stack.hasPointerCapture(e.pointerId))stack.releasePointerCapture(e.pointerId);
+     if(ready){
+       stack.style.setProperty('--pull',Math.min(dy,stack.offsetHeight*.8)+'px');
+       confirmDraw(stack);
+     }else stack.style.removeProperty('--pull');
+   }
+   for(const name of ['pointerup','pointercancel','lostpointercapture'])stack.addEventListener(name,finish);
+   // Keyboard and assistive activation have no pointer click count.
+   stack.addEventListener('click',e=>{if(e.detail===0 && !e.pointerType && !active)confirmDraw(stack);});
+ }
 }
 function dealer(){
  const host=table.host, history=host.history.filter(p=>p.seat===target), opening=history[0], last=history.at(-1);
@@ -439,6 +487,7 @@ function render(){
    renderDraw(player);
  } else if(page==='draw'){
    app.innerHTML=drawMenu(player);
+   enableReserveDrag();
  } else if(page==='discard'){
    if(selectedDiscard && player.discard.includes(selectedDiscard)){
      showDiscardDisplay(player,selectedDiscard);
@@ -507,8 +556,8 @@ async function act(a,v){
    return;
  }
  if(a==='draw'){
-   const [stories,endings]=v.split(',').map(Number);
-   await playerChange(p=>g.drawLocal(p,stories,endings));
+   if(page!=='draw' || !['story','ending'].includes(v))return;
+   await playerChange(p=>g.drawLocal(p,Number(v==='story'),Number(v==='ending')));
    page='hand';return;
  }
  if(a==='target'){target=+v;return;}
